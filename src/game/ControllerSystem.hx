@@ -3,6 +3,7 @@ package game;
 import js.Browser;
 import engine.Entity;
 import engine.System;
+import engine.Engine;
 import engine.display.Sprite;
 
 class ControllerSystem implements System
@@ -23,7 +24,7 @@ class ControllerSystem implements System
         return e.hasComponent(Robot) && e.hasComponent(Sprite);
     }
 
-    public function logic(e :Entity, dt :Float) : Void
+    public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
         var sprite :Sprite = e.getComponent(Sprite);
         if(_isUp) sprite.y -= dt * VELOCITY;

@@ -1,5 +1,6 @@
 import engine.display.Sprite;
 import engine.display.FillSprite;
+import engine.display.GradientFillSprite;
 import engine.Entity;
 import engine.Engine;
 import game.Robot;
@@ -21,10 +22,10 @@ class Main {
 	{
 		var c = new Entity();
 		engine.root.addChild(c);
-		c.addComponent(new FillSprite("#ff00ff", 30, 30));
+		c.addComponent(new GradientFillSprite(0xff00ff, 800, 600));
 
 		var nc = new Entity();
-		nc.addComponent(new FillSprite("#00f33f", 20, 20));
+		nc.addComponent(new FillSprite(0x00f33f, 20, 20));
 		nc.addComponent(new Robot());
 		nc.getComponent(FillSprite).angle = 55;
 		nc.getComponent(Sprite).x = 35;

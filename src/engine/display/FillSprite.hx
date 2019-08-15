@@ -2,11 +2,11 @@ package engine.display;
 
 class FillSprite extends Sprite
 {
-    public var color :String;
+    public var color :Int;
     public var width :Float;
     public var height :Float;
 
-    public function new(color :String, width :Float, height :Float) : Void
+    public function new(color :Int, width :Float, height :Float) : Void
     {
         super();
         this.color = color;

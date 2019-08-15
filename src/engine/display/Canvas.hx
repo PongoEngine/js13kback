@@ -26,9 +26,11 @@ abstract Canvas(CanvasRenderingContext2D)
         this.restore();
     }
 
-    @:extern public inline function setColor(color :String) : Void
+    public function setColor(color :Int) : Void
     {
-        this.fillStyle = color;
+        var hex :String = untyped color.toString(16);
+        hex = "000000".substr(0, 6 - hex.length) + hex;
+        this.fillStyle = "#" + hex;
     }
 
     @:extern public inline function drawRect(x :Float, y :Float, width :Float, height :Float) : Void

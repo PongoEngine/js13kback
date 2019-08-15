@@ -26,7 +26,7 @@ class Engine
 				dt = 0;
 			}
 			lastTime = time;
-			update(root, canvas2d, dt, _systems);
+			update(this, root, canvas2d, dt, _systems);
 			Browser.window.requestAnimationFrame(updateFn);
 		}
 		Browser.window.requestAnimationFrame(updateFn);
@@ -56,12 +56,12 @@ class Engine
 		}
 	}
 
-    private static function update(entity :Entity, canvas :Canvas, dt :Float, systems :Array<System>) : Void
+    private static function update(engine :Engine, entity :Entity, canvas :Canvas, dt :Float, systems :Array<System>) : Void
 	{
 		canvas.save();
 		for(system in systems) {
 			if(system.shouldUpdate(entity)) {
-				system.logic(entity, dt);
+				system.logic(engine, entity, dt);
 			}
 		}
 		var sprite = entity.getComponent(Sprite);
@@ -72,7 +72,7 @@ class Engine
 			sprite.draw(canvas);
 		}
 		for(c in entity.children()) {
-			update(c, canvas, dt, systems);
+			update(engine, c, canvas, dt, systems);
 		}
 		canvas.restore();
 	}
