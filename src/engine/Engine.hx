@@ -32,12 +32,29 @@ class Engine
 		Browser.window.requestAnimationFrame(updateFn);
     }
 
+	public function getGroup(fn :Entity -> Bool) : Array<Entity>
+	{
+		var group = [];
+		addToGroup(this.root, fn, group);
+		return group;
+	}
+
 	public inline function addSystem(system :System) : Void
 	{
 		_systems.push(system);
 	}
 
     private var _systems :Array<System>;
+
+	private static function addToGroup(entity :Entity, fn :Entity -> Bool, group :Array<Entity>) : Void
+	{
+		if(fn(entity)) {
+			group.push(entity);
+		}
+		for(c in entity.children()) {
+			addToGroup(c, fn, group);
+		}
+	}
 
     private static function update(entity :Entity, canvas :Canvas, dt :Float, systems :Array<System>) : Void
 	{

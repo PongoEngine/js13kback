@@ -26,26 +26,31 @@ class ControllerSystem implements System
     public function logic(e :Entity, dt :Float) : Void
     {
         var sprite :Sprite = e.getComponent(Sprite);
-        // sprite.angle += 4;
+        if(_isUp) sprite.y -= dt * VELOCITY;
+        if(_isDown) sprite.y += dt * VELOCITY;
+        if(_isLeft) sprite.x -= dt * VELOCITY;
+        if(_isRight) sprite.x += dt * VELOCITY;
     }
 
     private function _keyChange(isKeyDown :Bool, keyCode :String) : Void
     {
-        _isUp = false;
-        _isDown = false;
-        _isLeft = false;
-        _isRight = false;
         if (keyCode == '38') {
             _isUp = isKeyDown;
+            if(_isUp) _isDown = false;
         }
         else if (keyCode == '40') {
             _isDown = isKeyDown;
+            if(_isDown) _isUp = false;
         }
         else if (keyCode == '37') {
             _isLeft = isKeyDown;
+            if(_isLeft) _isRight = false;
         }
         else if (keyCode == '39') {
             _isRight = isKeyDown;
+            if(_isRight) _isLeft = false;
         }
     }
+
+    private static inline var VELOCITY = 130;
 }
