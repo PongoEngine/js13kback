@@ -1,0 +1,15 @@
+{
+  "name": "js13k",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.3",
+    "parcel-plugin-haxe": "^0.0.4",
+    "terser": "^4.1.4"
+  },
+  "scripts": {
+    "start": "npx parcel src/index.html -p 4321",
+    "compress": "npx terser --compress --mangle-props regex='/shouldUpdate|centerAnchor|systems|update|anchorX|anchorY|logic|^_([^_]+)?/' --mangle -o .cache/haxe.js -- .cache/haxe.js"
+  }
+}
