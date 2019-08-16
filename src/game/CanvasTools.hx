@@ -23,12 +23,12 @@
 
 package game;
 
-import js.html.CanvasElement;
+import js.html.ImageElement;
 import engine.display.Texture;
 
 class CanvasTools
 {
-    public static function createGradient(r :Int, g :Int, b :Int, randomAmount :Int, width :Int, height :Int, cellWidth :Int) : CanvasElement
+    public static function createGradient(r :Int, g :Int, b :Int, randomAmount :Int, width :Int, height :Int, cellWidth :Int) : ImageElement
     {
         return Texture.create(width, height, function(canvas) {
             var widthLength = Math.round(width / cellWidth);

@@ -23,13 +23,34 @@
 
 package game;
 
-import engine.Component;
+import js.Browser;
+import engine.Entity;
+import engine.System;
+import engine.Engine;
+import engine.display.Sprite;
 
-class Robot implements Component
+class CameraSystem implements System
 {
-    public var cool :Int = 132320;
-
     public function new() : Void
     {
+    }
+
+    public function shouldUpdate(e :Entity) : Bool
+    {
+        return e.hasComponent(Stage) && e.hasComponent(Sprite);
+    }
+
+    public function logic(engine :Engine, e :Entity, dt :Float) : Void
+    {
+        var players = engine.getGroup(e -> e.hasComponent(Player));
+        var p = players[0];
+
+        if(p != null) {
+            var stageSprite = e.getComponent(Sprite);
+            var pSprite = p.getComponent(Sprite);
+            stageSprite.x = -pSprite.x + Main.GAME_WIDTH/2;
+            stageSprite.y = -pSprite.y + Main.GAME_HEIGHT/2;
+            // trace("sp!");
+        }
     }
 }

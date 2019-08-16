@@ -43,10 +43,18 @@ class Sprite implements Component
 
     }
 
-    public function centerAnchor() : Void
+    public function setXY(x :Float, y :Float) : Sprite
+    {
+        this.x = x;
+        this.y = y;
+        return this;
+    }
+
+    public function centerAnchor() : Sprite
     {
         this.anchorX = this.naturalWidth()/2;
         this.anchorY = this.naturalHeight()/2;
+        return this;
     }
 
     public function naturalWidth() : Float

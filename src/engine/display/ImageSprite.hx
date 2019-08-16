@@ -23,30 +23,30 @@
  
 package engine.display;
 
-import js.html.CanvasElement;
+import js.html.ImageElement;
 
-class CanvasSprite extends Sprite
+class ImageSprite extends Sprite
 {
-    public var canvasElement :CanvasElement;
+    public var image :ImageElement;
 
-    public function new(canvasElement :CanvasElement) : Void
+    public function new(image :ImageElement) : Void
     {
         super();
-        this.canvasElement = canvasElement;
+        this.image = image;
     }
 
     override function draw(canvas:Canvas) : Void
     {
-        canvas.drawCanvas(canvasElement, 0, 0);
+        canvas.drawCanvas(image, 0, 0);
     }
 
     override public function naturalWidth() : Float
     {
-        return canvasElement.width;
+        return image.width;
     }
 
     override public function naturalHeight() : Float
     {
-        return canvasElement.height;
+        return image.height;
     }
 }

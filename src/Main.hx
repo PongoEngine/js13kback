@@ -23,43 +23,56 @@
 
 import engine.display.Sprite;
 import engine.display.FillSprite;
-import engine.display.CanvasSprite;
+import engine.display.ImageSprite;
 import engine.Entity;
 import engine.Engine;
-import game.Robot;
-import game.RobotSystem;
+import game.Player;
+import game.Stage;
 import game.ControllerSystem;
+import game.CameraSystem;
 import game.CanvasTools;
 import js.Browser;
 
 class Main {
+	public static var GAME_WIDTH :Int = 800;
+	public static var GAME_HEIGHT :Int = 600;
+
 	static function main() {
 		var app = Browser.document.getElementById("app");
 		var canvas = Browser.document.createCanvasElement();
-		canvas.width = 800;
-		canvas.height = 600;
+		canvas.width = GAME_WIDTH;
+		canvas.height = GAME_HEIGHT;
 		app.appendChild(canvas);
 		startGame(new Engine(canvas));
 	}
 
 	static inline function startGame(engine :Engine) : Void
 	{
-		var background = CanvasTools.createGradient(255,200,30,100,800,600,20);
-		var character = CanvasTools.createGradient(100,200,0,100,40,40,20);
+		var background = CanvasTools.createGradient(255,200,30,10,1900,GAME_HEIGHT,10);
+		var character = CanvasTools.createGradient(10,40,100,200,40,40,10);
 		var c = new Entity();
 		engine.root.addChild(c);
-		c.addComponent(new CanvasSprite(background));
+		c.addComponent(new ImageSprite(background));
+		c.addComponent(new Stage());
 
 		var nc = new Entity();
-		nc.addComponent(new CanvasSprite(character));
-		nc.getComponent(Sprite).blendmode = MULTIPLY;
-		nc.addComponent(new Robot());
+		nc.addComponent(new ImageSprite(character));
+		nc.getComponent(Sprite).blendmode = NORMAL;
+		nc.addComponent(new Player());
 		nc.getComponent(Sprite).x = 35;
 		nc.getComponent(Sprite).y = 35;
-		nc.getComponent(CanvasSprite).centerAnchor();
+		nc.getComponent(ImageSprite).centerAnchor();
+
+		for(i in 0...200) {
+			c.addChild(new Entity()
+				.addComponent(new ImageSprite(CanvasTools.createGradient(140,40,140,30,40,40,10))
+					.centerAnchor()
+					.setXY(1900 * Math.random(), GAME_HEIGHT * Math.random())));
+		}
+
 		c.addChild(nc);
 
-		engine.addSystem(new RobotSystem());
 		engine.addSystem(new ControllerSystem());
+		engine.addSystem(new CameraSystem());
 	}
 }

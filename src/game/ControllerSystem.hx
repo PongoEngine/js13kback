@@ -44,7 +44,7 @@ class ControllerSystem implements System
 
     public function shouldUpdate(e :Entity) : Bool
     {
-        return e.hasComponent(Robot) && e.hasComponent(Sprite);
+        return e.hasComponent(Player) && e.hasComponent(Sprite);
     }
 
     public function logic(engine :Engine, e :Entity, dt :Float) : Void

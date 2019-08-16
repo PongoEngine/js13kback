@@ -23,6 +23,7 @@
 
 package engine.display;
 
+import js.html.ImageElement;
 import js.html.CanvasElement;
 import js.Browser;
 import js.html.CanvasRenderingContext2D;
@@ -59,9 +60,9 @@ abstract Canvas(CanvasRenderingContext2D)
         this.fillRect(x,y,width,height);
     }
 
-    @:extern public inline function drawCanvas(canvas :CanvasElement, x :Float, y :Float) : Void
+    @:extern public inline function drawCanvas(image :ImageElement, x :Float, y :Float) : Void
     {
-        this.drawImage(canvas, x, y);
+        this.drawImage(image, x, y);
     }
 
     @:extern public inline function translate(x :Float, y :Float) : Void
