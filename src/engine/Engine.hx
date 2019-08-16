@@ -92,6 +92,7 @@ class Engine
 			canvas.translate(sprite.x, sprite.y);
 			canvas.rotate(sprite.angle);
 			canvas.translate(-sprite.anchorX, -sprite.anchorY);
+			canvas.setBlendMode(sprite.blendmode);
 			sprite.draw(canvas);
 		}
 		for(c in entity.children()) {

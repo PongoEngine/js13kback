@@ -44,16 +44,16 @@ class Main {
 
 	static inline function startGame(engine :Engine) : Void
 	{
-		var background = CanvasTools.createGradient(255,200,30,800,600,10);
-		var character = CanvasTools.createGradient(20,200,150,40,40,10);
+		var background = CanvasTools.createGradient(255,200,30,100,800,600,20);
+		var character = CanvasTools.createGradient(100,200,0,100,40,40,20);
 		var c = new Entity();
 		engine.root.addChild(c);
 		c.addComponent(new CanvasSprite(background));
 
 		var nc = new Entity();
 		nc.addComponent(new CanvasSprite(character));
+		nc.getComponent(Sprite).blendmode = MULTIPLY;
 		nc.addComponent(new Robot());
-		// nc.getComponent(CanvasSprite).angle = 55;
 		nc.getComponent(Sprite).x = 35;
 		nc.getComponent(Sprite).y = 35;
 		nc.getComponent(CanvasSprite).centerAnchor();
