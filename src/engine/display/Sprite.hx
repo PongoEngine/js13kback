@@ -18,4 +18,20 @@ class Sprite implements Component
     {
 
     }
+
+    public function centerAnchor() : Void
+    {
+        this.anchorX = this.naturalWidth()/2;
+        this.anchorY = this.naturalHeight()/2;
+    }
+
+    public function naturalWidth() : Float
+    {
+        return 0;
+    }
+
+    public function naturalHeight() : Float
+    {
+        return 0;
+    }
 }

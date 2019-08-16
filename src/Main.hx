@@ -1,11 +1,12 @@
 import engine.display.Sprite;
 import engine.display.FillSprite;
-import engine.display.GradientFillSprite;
+import engine.display.CanvasSprite;
 import engine.Entity;
 import engine.Engine;
 import game.Robot;
 import game.RobotSystem;
 import game.ControllerSystem;
+import game.CanvasTools;
 import js.Browser;
 
 class Main {
@@ -20,17 +21,19 @@ class Main {
 
 	static inline function startGame(engine :Engine) : Void
 	{
+		var background = CanvasTools.createGradient(255,200,30,800,600,10);
+		var character = CanvasTools.createGradient(20,200,150,40,40,10);
 		var c = new Entity();
 		engine.root.addChild(c);
-		c.addComponent(new GradientFillSprite(0xff00ff, 800, 600));
+		c.addComponent(new CanvasSprite(background));
 
 		var nc = new Entity();
-		nc.addComponent(new FillSprite(0x00f33f, 20, 20));
+		nc.addComponent(new CanvasSprite(character));
 		nc.addComponent(new Robot());
-		nc.getComponent(FillSprite).angle = 55;
+		// nc.getComponent(CanvasSprite).angle = 55;
 		nc.getComponent(Sprite).x = 35;
 		nc.getComponent(Sprite).y = 35;
-		nc.getComponent(FillSprite).centerAnchor();
+		nc.getComponent(CanvasSprite).centerAnchor();
 		c.addChild(nc);
 
 		engine.addSystem(new RobotSystem());

@@ -26,16 +26,19 @@ abstract Canvas(CanvasRenderingContext2D)
         this.restore();
     }
 
-    public function setColor(color :Int) : Void
+    public function setColor(r :Int, g :Int, b :Int, a :Int) : Void
     {
-        var hex :String = untyped color.toString(16);
-        hex = "000000".substr(0, 6 - hex.length) + hex;
-        this.fillStyle = "#" + hex;
+        this.fillStyle = 'rgb(${r},${g},${b},${a})';
     }
 
     @:extern public inline function drawRect(x :Float, y :Float, width :Float, height :Float) : Void
     {
         this.fillRect(x,y,width,height);
+    }
+
+    @:extern public inline function drawCanvas(canvas :CanvasElement, x :Float, y :Float) : Void
+    {
+        this.drawImage(canvas, x, y);
     }
 
     @:extern public inline function translate(x :Float, y :Float) : Void

@@ -20,6 +20,6 @@ class RobotSystem implements System
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
         var sprite :Sprite = e.getComponent(Sprite);
-        sprite.angle += 190 * dt;
+        // sprite.angle += 190 * dt;
     }
 }
