@@ -52,23 +52,34 @@ class Main {
 		var character = CanvasTools.createGradient(10,40,100,200,40,40,10);
 		var c = new Entity();
 		engine.root.addChild(c);
-		c.addComponent(new ImageSprite(background));
-		c.addComponent(new Stage());
+		c.add(new ImageSprite(background));
+		c.add(new Stage());
 
 		var nc = new Entity();
-		nc.addComponent(new ImageSprite(character));
-		nc.getComponent(Sprite).blendmode = NORMAL;
-		nc.addComponent(new Player());
-		nc.getComponent(Sprite).x = 35;
-		nc.getComponent(Sprite).y = 35;
-		nc.getComponent(ImageSprite).centerAnchor();
+		nc.add(new ImageSprite(character));
+		nc.get(Sprite).blendmode = NORMAL;
+		nc.add(new Player());
+		nc.get(Sprite).x = 35;
+		nc.get(Sprite).y = 35;
+		nc.get(ImageSprite).centerAnchor();
 
-		for(i in 0...200) {
+		for(i in 0...20) {
+			
+
 			c.addChild(new Entity()
-				.addComponent(new ImageSprite(CanvasTools.createGradient(140,40,140,30,40,40,10))
+				.add(new ImageSprite(CanvasTools.createCircle(20, 10, 20, 33, 140, 10))
 					.centerAnchor()
+					.setBlendmode(MULTIPLY)
+					.setXY(1900 * Math.random(), GAME_HEIGHT * Math.random())));
+					// .setXY(200, 200)));
+
+			c.addChild(new Entity()
+				.add(new ImageSprite(CanvasTools.createGradient(140,40,40,10,90,40,3))
+					.centerAnchor()
+					.setBlendmode(HARD_LIGHT)
 					.setXY(1900 * Math.random(), GAME_HEIGHT * Math.random())));
 		}
+			
 
 		c.addChild(nc);
 

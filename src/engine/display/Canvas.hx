@@ -50,7 +50,7 @@ abstract Canvas(CanvasRenderingContext2D)
         this.restore();
     }
 
-    public function setColor(r :Int, g :Int, b :Int, a :Int) : Void
+    public function setColor(r :Int, g :Int, b :Int, a :Float) : Void
     {
         this.fillStyle = 'rgb(${r},${g},${b},${a})';
     }

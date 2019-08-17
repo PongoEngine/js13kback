@@ -10,6 +10,6 @@
   },
   "scripts": {
     "start": "npx parcel src/index.html -p 4321",
-    "compress": "npx terser --compress --mangle-props regex='/shouldUpdate|centerAnchor|systems|update|anchorX|anchorY|logic|^_([^_]+)?/' --mangle -o .cache/haxe.js -- .cache/haxe.js"
+    "compress": "npx terser --compress --mangle-props regex='/shouldUpdate|GAME_WIDTH|GAME_HEIGHT|drawPixel|drawCircle|createCircle|setBlendMode|naturalWidth|naturalHeight|drawImage|getGroup|addToGroup|createGradient|centerAnchor|systems|update|anchorX|anchorY|logic|^_([^_]+)?/' --mangle -o .cache/haxe.js -- .cache/haxe.js"
   }
 }

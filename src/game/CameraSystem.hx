@@ -23,7 +23,6 @@
 
 package game;
 
-import js.Browser;
 import engine.Entity;
 import engine.System;
 import engine.Engine;
@@ -37,20 +36,35 @@ class CameraSystem implements System
 
     public function shouldUpdate(e :Entity) : Bool
     {
-        return e.hasComponent(Stage) && e.hasComponent(Sprite);
+        return e.has(Stage) && e.has(Sprite);
     }
 
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
-        var players = engine.getGroup(e -> e.hasComponent(Player));
+        var players = engine.getGroup(e -> e.has(Player) && e.has(Sprite));
         var p = players[0];
+        var stageSprite = e.get(Sprite);
 
         if(p != null) {
-            var stageSprite = e.getComponent(Sprite);
-            var pSprite = p.getComponent(Sprite);
-            stageSprite.x = -pSprite.x + Main.GAME_WIDTH/2;
-            stageSprite.y = -pSprite.y + Main.GAME_HEIGHT/2;
-            // trace("sp!");
+            var playerComp = p.get(Player);
+            var pSprite = p.get(Sprite);
+            stageSprite.x = getVal(playerComp.isLeft, playerComp.isRight, Main.GAME_WIDTH/2, pSprite.x + pSprite.naturalWidth()/2, stageSprite.x);
+            stageSprite.y = getVal(playerComp.isUp, playerComp.isDown, Main.GAME_HEIGHT/2, pSprite.y + pSprite.naturalHeight()/2, stageSprite.y);
         }
     }
+
+    private function getVal(isPlus :Bool, isMinus :Bool, mid :Float, playerCur :Float, stageCur :Float) : Float
+    {
+        var offset = isPlus ? 100 : isMinus ? -100 : 0;
+        var target = -playerCur + (mid + offset);
+        var distX = target - stageCur;
+        var percentage = Math.abs(distX) / 600;
+        var maxP = percentage > 1 ? 1 : percentage;
+        stageCur += maxP * distX;
+        return stageCur;
+    }
+
+    private var _targetX :Float = 0;
+    private var _targetY :Float = 0;
+    private var _time :Float = 0;
 }

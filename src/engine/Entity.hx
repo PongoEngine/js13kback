@@ -35,25 +35,25 @@ abstract Entity({children:Array<Entity>})
         return this.children;
     }
 
-    @:extern public inline function addComponent(component :Component) : Entity
+    @:extern public inline function add(component :Component) : Entity
     {
         untyped this[component.name] = component;
         return cast this;
     }
 
-    @:extern public inline function removeComponent<T:Component>(class_ :Class<T>) : Void
+    @:extern public inline function remove<T:Component>(class_ :Class<T>) : Void
     {
         #if !macro
         js.Syntax.delete(this, untyped class_._n);
         #end
     }
 
-    @:extern public inline function getComponent<T:Component>(class_ :Class<T>) : T
+    @:extern public inline function get<T:Component>(class_ :Class<T>) : T
     {
         return untyped this[class_._n];
     }
 
-    @:extern public inline function hasComponent<T:Component>(class_ :Class<T>) : Bool
+    @:extern public inline function has<T:Component>(class_ :Class<T>) : Bool
     {
         return untyped this[class_._n];
     }

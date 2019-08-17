@@ -87,7 +87,7 @@ class Engine
 				system.logic(engine, entity, dt);
 			}
 		}
-		var sprite = entity.getComponent(Sprite);
+		var sprite = entity.get(Sprite);
 		if(sprite != null) {
 			canvas.translate(sprite.x, sprite.y);
 			canvas.rotate(sprite.angle);

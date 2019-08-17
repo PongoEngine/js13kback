@@ -44,16 +44,20 @@ class ControllerSystem implements System
 
     public function shouldUpdate(e :Entity) : Bool
     {
-        return e.hasComponent(Player) && e.hasComponent(Sprite);
+        return e.has(Player) && e.has(Sprite);
     }
 
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
-        var sprite :Sprite = e.getComponent(Sprite);
+        var sprite :Sprite = e.get(Sprite);
         if(_isUp) sprite.y -= dt * VELOCITY;
         if(_isDown) sprite.y += dt * VELOCITY;
         if(_isLeft) sprite.x -= dt * VELOCITY;
         if(_isRight) sprite.x += dt * VELOCITY;
+        e.get(Player).isLeft = _isLeft;
+        e.get(Player).isRight = _isRight;
+        e.get(Player).isUp = _isUp;
+        e.get(Player).isDown = _isDown;
     }
 
     private function _keyChange(isKeyDown :Bool, keyCode :String) : Void

@@ -43,6 +43,12 @@ class Sprite implements Component
 
     }
 
+    public function setBlendmode(blendmode :BlendMode) : Sprite
+    {
+        this.blendmode = blendmode;
+        return this;
+    }
+
     public function setXY(x :Float, y :Float) : Sprite
     {
         this.x = x;
