@@ -35,6 +35,12 @@ import game.SoundSystem;
 import game.CanvasTools;
 import js.Browser;
 
+import engine.sound.theory.Scale;
+import engine.sound.theory.Scale.ScaleType;
+import engine.sound.theory.Note;
+import engine.sound.theory.Note.Root;
+import engine.sound.theory.Step;
+import engine.sound.theory.Octave;
 
 class Main {
 	public static var GAME_WIDTH :Int = 800;
@@ -84,6 +90,17 @@ class Main {
 
 		engine.addSystem(new ControllerSystem());
 		engine.addSystem(new CameraSystem());
-		engine.addSystem(new SoundSystem());
+
+		var scale = new Scale(Root.F_SHARP, ScaleType.HARMONIC_MINOR);
+		engine.addSystem(new SoundSystem([
+			scale.getNote(new Step(0), new Octave(2)),
+			scale.getNote(new Step(1), new Octave(2)),
+			scale.getNote(new Step(2), new Octave(2)),
+			scale.getNote(new Step(3), new Octave(2)),
+			scale.getNote(new Step(7), new Octave(2)),
+			scale.getNote(new Step(6), new Octave(2)),
+			scale.getNote(new Step(5), new Octave(2)),
+			scale.getNote(new Step(6), new Octave(2)),
+		]));
 	}
 }

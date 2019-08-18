@@ -26,29 +26,19 @@ package game;
 import engine.Entity;
 import engine.System;
 import engine.Engine;
+import js.html.audio.OscillatorType;
+import engine.sound.theory.Note;
+import engine.sound.theory.Duration;
 
 class SoundSystem implements System
 {
-    public function new() : Void
+    public function new(notes :Array<Note>) : Void
     {
-        // var seq1 = sequence([
-        //     arp(triad(new Step(0), new Octave(2)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE),
-        //     arp(triad(new Step(1), new Octave(2)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE),
-        //     arp(triad(new Step(2), new Octave(2)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE),
-        //     arp(triad(new Step(3), new Octave(2)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE)
-        // ]);
-        // var seq2 = sequence([
-        //     arp(triad(new Step(0), new Octave(1)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE),
-        //     arp(triad(new Step(1), new Octave(1)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE),
-        //     arp(triad(new Step(2), new Octave(1)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE),
-        //     arp(triad(new Step(3), new Octave(1)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE)
-        // ]);
-        // var fn = repeat(100000, parallel([seq1, seq2]));
-        // var shen = new Shen(fn);
-		// var scale = new Scale(Root.F_SHARP, ScaleType.NATURAL_MINOR);
-        // _sage = new Sage(new Pulse(0), shen.update.bind(scale));
         _elapsed = 0;
-        _bpm = 120;
+        _bpm = 20;
+        _play = true;
+        _notes = notes;
+        _noteIndex = 0;
     }
 
     public function shouldUpdate(e :Entity) : Bool
@@ -59,13 +49,24 @@ class SoundSystem implements System
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
         _elapsed += dt;
-        if(_elapsed > 60000/(_bpm*10000)) {
+        if(_elapsed > 6/_bpm) {
             _elapsed = 0;
-            // _sage.update(engine.sound);
+            var note = _notes[_noteIndex];
+            if(_play) {
+                engine.sound.play(note.toInt(), Duration.QUARTER, OscillatorType.SAWTOOTH);
+            }
+            else {
+                engine.sound.stop(note.toInt());
+                _noteIndex++;
+                _noteIndex%=_notes.length;
+            }
+            _play = !_play;
         }
     }
 
     private var _elapsed :Float;
-    // private var _sage :Sage;
     private var _bpm :Int;
+    private var _play :Bool;
+    private var _notes :Array<Note>;
+    private var _noteIndex :Int;
 }
