@@ -51,6 +51,7 @@ extern abstract Duration(Int)
     @:op(A / B) static inline function divideByDuration(a :Duration, b :Duration) : Duration return cast Math.floor(a.toInt()/b.toInt());
     @:op(A + B) static function addition(a :Duration, b :Duration) : Duration;
     @:op(A - B) static function subtraction(a :Duration, b :Duration) : Duration;
+    @:op(A * B) static function multiplication(a :Duration, b :Int) : Duration;
 
     //Comparison with Duration
     @:op(A == B) static function equal(a :Duration, b :Duration) : Bool;
