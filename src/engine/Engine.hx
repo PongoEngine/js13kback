@@ -28,16 +28,27 @@ import engine.display.Sprite;
 import engine.Entity;
 import engine.display.Canvas;
 import engine.System;
+import engine.sound.Sound;
 import js.Browser;
 
 class Engine 
 {
     public var root (default, null) :Entity;
+    public var sound (default, null) :Sound;
 
     public function new(canvas :CanvasElement) : Void
     {
         this.root = new Entity();
         this._systems = [];
+		var hasTouched = false;
+		this.sound = new Sound();
+
+		canvas.onclick = function() {
+			if(!hasTouched) {
+				hasTouched = true;
+				this.sound.resume();
+			}
+		}
 
         var canvas2d = new Canvas(canvas);
         var lastTime :Float = 0;

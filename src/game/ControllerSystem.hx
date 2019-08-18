@@ -80,5 +80,5 @@ class ControllerSystem implements System
         }
     }
 
-    private static inline var VELOCITY = 230;
+    private static inline var VELOCITY = 300;
 }

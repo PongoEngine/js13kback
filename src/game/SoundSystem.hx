@@ -26,43 +26,50 @@ package game;
 import engine.Entity;
 import engine.System;
 import engine.Engine;
-import engine.display.Sprite;
+import shen.Shen;
+import shen.theory.Duration;
+import shen.theory.Step;
+import shen.theory.Note;
+import shen.theory.Note.Root;
+import shen.midi.Data;
+import shen.rhythm.Pulse;
+import shen.midi.Velocity;
+import shen.theory.Scale;
+import shen.theory.Octave;
+import shen.theory.Chord;
+import shen.compose.Compose.arp;
+import shen.theory.Chord.triad;
+import shen.virtual.Msg;
+import shen.virtual.Keys;
+import shen.virtual.Sage;
 
-class CameraSystem implements System
+class SoundSystem implements System
 {
     public function new() : Void
     {
+        var shen = new Shen(arp(triad(new Step(0), new Octave(2)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE));
+		var scale = new Scale(Root.G, ScaleType.MELODIC_MINOR);
+		_fn = shen.update.bind(scale);
+        _pusle = new Pulse(0);
+        _elapsed = 0;
     }
 
     public function shouldUpdate(e :Entity) : Bool
     {
-        return e.has(Stage) && e.has(Sprite);
+        return true;
     }
 
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
-        var players = engine.getGroup(e -> e.has(Player) && e.has(Sprite));
-        var p = players[0];
-        var stageSprite = e.get(Sprite);
-
-        if(p != null) {
-            var playerComp = p.get(Player);
-            var pSprite = p.get(Sprite);
-            stageSprite.x = getVal(playerComp.isLeft, playerComp.isRight, Main.GAME_WIDTH/2, pSprite.x + pSprite.naturalWidth()/2, stageSprite.x);
-            stageSprite.y = getVal(playerComp.isUp, playerComp.isDown, Main.GAME_HEIGHT/2, pSprite.y + pSprite.naturalHeight()/2, stageSprite.y);
+        _elapsed += dt;
+        if(_elapsed > 0.2) {
+            _elapsed = 0;
+            _fn(_pusle);
+            _pusle++;
         }
     }
 
-    private static function getVal(isPlus :Bool, isMinus :Bool, mid :Float, playerCur :Float, stageCur :Float) : Float
-    {
-        var offset = isPlus ? 0 : isMinus ? -0 : 0;
-        var target = -playerCur + (mid + offset);
-        var distX = target - stageCur;
-        var percentage = Math.abs(distX) / 500;
-        stageCur += percentage*percentage*percentage * distX;
-        return (stageCur);
-    }
-
-    private var _targetX :Float = 0;
-    private var _targetY :Float = 0;
+    private var _pusle :Pulse;
+    private var _fn :Pulse -> Data;
+    private var _elapsed :Float;
 }

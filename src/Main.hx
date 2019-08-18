@@ -30,8 +30,10 @@ import game.Player;
 import game.Stage;
 import game.ControllerSystem;
 import game.CameraSystem;
+import game.SoundSystem;
 import game.CanvasTools;
 import js.Browser;
+
 
 class Main {
 	public static var GAME_WIDTH :Int = 800;
@@ -48,7 +50,7 @@ class Main {
 
 	static inline function startGame(engine :Engine) : Void
 	{
-		var background = CanvasTools.createGradient(255,200,30,10,1900,GAME_HEIGHT,10);
+		var background = CanvasTools.createGradient(255,200,30,80,1900,GAME_HEIGHT,10);
 		var character = CanvasTools.createGradient(10,40,100,200,40,40,10);
 		var c = new Entity();
 		engine.root.addChild(c);
@@ -62,28 +64,25 @@ class Main {
 		nc.get(Sprite).x = 35;
 		nc.get(Sprite).y = 35;
 		nc.get(ImageSprite).centerAnchor();
+		c.addChild(nc);
 
 		for(i in 0...20) {
-			
-
 			c.addChild(new Entity()
-				.add(new ImageSprite(CanvasTools.createCircle(20, 10, 20, 33, 140, 10))
+				.add(new ImageSprite(CanvasTools.createCircle(20, 100, 20, 33, 140, 10))
 					.centerAnchor()
-					.setBlendmode(MULTIPLY)
+					.setBlendmode(HARD_LIGHT)
 					.setXY(1900 * Math.random(), GAME_HEIGHT * Math.random())));
 					// .setXY(200, 200)));
 
 			c.addChild(new Entity()
-				.add(new ImageSprite(CanvasTools.createGradient(140,40,40,10,90,40,3))
+				.add(new ImageSprite(CanvasTools.createGradient(140,40,40,50,90,40,3))
 					.centerAnchor()
 					.setBlendmode(HARD_LIGHT)
 					.setXY(1900 * Math.random(), GAME_HEIGHT * Math.random())));
 		}
-			
-
-		c.addChild(nc);
 
 		engine.addSystem(new ControllerSystem());
 		engine.addSystem(new CameraSystem());
+		engine.addSystem(new SoundSystem());
 	}
 }
