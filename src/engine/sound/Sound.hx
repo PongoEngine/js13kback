@@ -27,9 +27,14 @@ class Sound
         this._audioContext.resume();
     }
 
-    public function play(key :Key, octave :Int) : Void
+    public function play(key :Int) : Void
     {
-        _notes.get(key, octave).play();
+        _notes.get(key).play();
+    }
+
+    public function stop(key :Int) : Void
+    {
+        _notes.get(key).stop();
     }
 
     private var _audioContext : AudioContext;

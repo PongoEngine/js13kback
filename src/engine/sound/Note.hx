@@ -5,23 +5,44 @@ import js.html.audio.AudioContext;
 import js.html.audio.GainNode;
 import js.html.audio.PeriodicWave;
 
-abstract Note(OscillatorNode) 
+class Note
 {
-    public inline function new(hz :Float, ctx :AudioContext, gain :GainNode, wav :PeriodicWave) : Void
+    public function new(hz :Float, ctx :AudioContext, gain :GainNode, wav :PeriodicWave) : Void
     {
-        this = ctx.createOscillator();
-        this.connect(gain);
-        this.setPeriodicWave(wav);
-        this.frequency.value = hz;
+        _hz = hz;
+        _ctx = ctx;
+        _gain = gain;
+        _wav = wav;
+        _osc = null;
     }
 
     public function play() : Void
     {
-        this.start();
+        if(_osc == null) {
+            _osc = _ctx.createOscillator();
+            _osc.connect(_gain);
+            _osc.setPeriodicWave(_wav);
+            _osc.frequency.value = _hz;
+            _osc.start();
+        }
+        else {
+            this.stop();
+            this.play();
+        }
     }
 
     public function stop() : Void
     {
-        this.stop();
+        if(_osc != null) {
+            _osc.disconnect();
+            _osc.stop();
+            _osc = null;
+        }
     }
+
+    private var _hz :Float;
+    private var _ctx :AudioContext;
+    private var _gain :GainNode;
+    private var _wav :PeriodicWave;
+    private var _osc :OscillatorNode;
 }

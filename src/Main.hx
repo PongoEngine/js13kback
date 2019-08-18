@@ -28,6 +28,7 @@ import engine.Entity;
 import engine.Engine;
 import game.Player;
 import game.Stage;
+import game.SoundComp;
 import game.ControllerSystem;
 import game.CameraSystem;
 import game.SoundSystem;
@@ -54,6 +55,7 @@ class Main {
 		var character = CanvasTools.createGradient(10,40,100,200,40,40,10);
 		var c = new Entity();
 		engine.root.addChild(c);
+		engine.root.add(new SoundComp());
 		c.add(new ImageSprite(background));
 		c.add(new Stage());
 
@@ -72,7 +74,6 @@ class Main {
 					.centerAnchor()
 					.setBlendmode(HARD_LIGHT)
 					.setXY(1900 * Math.random(), GAME_HEIGHT * Math.random())));
-					// .setXY(200, 200)));
 
 			c.addChild(new Entity()
 				.add(new ImageSprite(CanvasTools.createGradient(140,40,40,50,90,40,3))

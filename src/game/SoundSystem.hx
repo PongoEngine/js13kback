@@ -26,50 +26,46 @@ package game;
 import engine.Entity;
 import engine.System;
 import engine.Engine;
-import shen.Shen;
-import shen.theory.Duration;
-import shen.theory.Step;
-import shen.theory.Note;
-import shen.theory.Note.Root;
-import shen.midi.Data;
-import shen.rhythm.Pulse;
-import shen.midi.Velocity;
-import shen.theory.Scale;
-import shen.theory.Octave;
-import shen.theory.Chord;
-import shen.compose.Compose.arp;
-import shen.theory.Chord.triad;
-import shen.virtual.Msg;
-import shen.virtual.Keys;
-import shen.virtual.Sage;
 
 class SoundSystem implements System
 {
     public function new() : Void
     {
-        var shen = new Shen(arp(triad(new Step(0), new Octave(2)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE));
-		var scale = new Scale(Root.G, ScaleType.MELODIC_MINOR);
-		_fn = shen.update.bind(scale);
-        _pusle = new Pulse(0);
+        // var seq1 = sequence([
+        //     arp(triad(new Step(0), new Octave(2)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE),
+        //     arp(triad(new Step(1), new Octave(2)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE),
+        //     arp(triad(new Step(2), new Octave(2)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE),
+        //     arp(triad(new Step(3), new Octave(2)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE)
+        // ]);
+        // var seq2 = sequence([
+        //     arp(triad(new Step(0), new Octave(1)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE),
+        //     arp(triad(new Step(1), new Octave(1)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE),
+        //     arp(triad(new Step(2), new Octave(1)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE),
+        //     arp(triad(new Step(3), new Octave(1)), new Duration(12), Velocity.FF, CHANNEL_1, Duration.WHOLE)
+        // ]);
+        // var fn = repeat(100000, parallel([seq1, seq2]));
+        // var shen = new Shen(fn);
+		// var scale = new Scale(Root.F_SHARP, ScaleType.NATURAL_MINOR);
+        // _sage = new Sage(new Pulse(0), shen.update.bind(scale));
         _elapsed = 0;
+        _bpm = 120;
     }
 
     public function shouldUpdate(e :Entity) : Bool
     {
-        return true;
+        return e.has(SoundComp);
     }
 
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
         _elapsed += dt;
-        if(_elapsed > 0.2) {
+        if(_elapsed > 60000/(_bpm*10000)) {
             _elapsed = 0;
-            _fn(_pusle);
-            _pusle++;
+            // _sage.update(engine.sound);
         }
     }
 
-    private var _pusle :Pulse;
-    private var _fn :Pulse -> Data;
     private var _elapsed :Float;
+    // private var _sage :Sage;
+    private var _bpm :Int;
 }
