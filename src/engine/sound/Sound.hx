@@ -1,11 +1,8 @@
 package engine.sound;
 
-import js.Syntax;
 import js.html.audio.AudioContext;
 import js.html.audio.StereoPannerNode;
 import js.html.audio.GainNode;
-import js.lib.Float32Array;
-import js.html.audio.OscillatorNode;
 import engine.sound.Frequencies;
 import js.html.audio.OscillatorType;
 import engine.sound.theory.Duration;

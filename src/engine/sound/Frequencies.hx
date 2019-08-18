@@ -15,28 +15,12 @@ abstract Frequencies(Array<Float>)
         for(freq in aFreqs) {
             this = this.concat(createNotes(freq));
         }
-        // _osc = [];
     }
 
     public function get(index :Int) : Float
     {
         return this[index];
     }
-
-    // public function play(key :Int, duration :Duration, ctx :AudioContext, gain :GainNode, type :OscillatorType) : Void
-    // {
-    //     if(_osc[key] == null) {
-    //         _osc[key] = new Oscillator();
-    //     }
-    //     _osc[key].play(_frequencies[key], ctx, gain, type);
-    // }
-
-    // public function stop(key :Int) : Void
-    // {
-    //     if(_osc[key] != null) {
-    //         _osc[key].stop();
-    //     }
-    // }
 
     public static function createNotes(a :Float) : Array<Float>
     {
