@@ -53,6 +53,15 @@ class Engine
         var canvas2d = new Canvas(canvas);
         var lastTime :Float = 0;
 
+		Browser.document.addEventListener("visibilitychange", function(e) {
+			if(Browser.document.hidden) {
+				this.sound.mute();
+			}
+			else {
+				this.sound.unmute();
+			}
+		});
+
 		function updateFn(time :Float) {
 			canvas2d.clear(800, 600);
 			var dt = (time - lastTime) * 0.001;

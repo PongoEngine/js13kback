@@ -40,7 +40,11 @@ import engine.sound.theory.Scale.ScaleType;
 import engine.sound.theory.Note;
 import engine.sound.theory.Note.Root;
 import engine.sound.theory.Step;
+import engine.sound.theory.Pulse;
 import engine.sound.theory.Octave;
+import engine.sound.theory.Duration;
+import engine.sound.Sequencer;
+import js.html.audio.OscillatorType;
 
 class Main {
 	public static var GAME_WIDTH :Int = 800;
@@ -91,16 +95,12 @@ class Main {
 		engine.addSystem(new ControllerSystem());
 		engine.addSystem(new CameraSystem());
 
-		var scale = new Scale(Root.F_SHARP, ScaleType.HARMONIC_MINOR);
-		engine.addSystem(new SoundSystem([
-			scale.getNote(new Step(0), new Octave(2)),
-			scale.getNote(new Step(1), new Octave(2)),
-			scale.getNote(new Step(2), new Octave(2)),
-			scale.getNote(new Step(3), new Octave(2)),
-			scale.getNote(new Step(7), new Octave(2)),
-			scale.getNote(new Step(6), new Octave(2)),
-			scale.getNote(new Step(5), new Octave(2)),
-			scale.getNote(new Step(6), new Octave(2)),
-		]));
+		var scale = new Scale(Root.A, ScaleType.NATURAL_MINOR);
+		engine.addSystem(new SoundSystem(new Sequencer([
+			{note:scale.getNote(new Step(0), new Octave(3)), duration:Duration.QUARTER, start:new Pulse(0), type:OscillatorType.SQUARE},
+			{note:scale.getNote(new Step(1), new Octave(3)), duration:Duration.QUARTER, start:new Pulse(Duration.QUARTER.toInt()), type:OscillatorType.SQUARE},
+			{note:scale.getNote(new Step(2), new Octave(3)), duration:Duration.QUARTER, start:new Pulse(Duration.QUARTER.toInt()*2), type:OscillatorType.SQUARE},
+			{note:scale.getNote(new Step(3), new Octave(3)), duration:Duration.QUARTER, start:new Pulse(Duration.QUARTER.toInt()*3), type:OscillatorType.SQUARE},
+		], Duration.WHOLE)));
 	}
 }

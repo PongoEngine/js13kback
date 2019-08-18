@@ -27,18 +27,16 @@ import engine.Entity;
 import engine.System;
 import engine.Engine;
 import js.html.audio.OscillatorType;
-import engine.sound.theory.Note;
-import engine.sound.theory.Duration;
+import engine.sound.Sequencer;
+
 
 class SoundSystem implements System
 {
-    public function new(notes :Array<Note>) : Void
+    public function new(sequence :Sequencer) : Void
     {
         _elapsed = 0;
-        _bpm = 20;
-        _play = true;
-        _notes = notes;
-        _noteIndex = 0;
+        _bpm = 120;
+        _sequence = sequence;
     }
 
     public function shouldUpdate(e :Entity) : Bool
@@ -51,22 +49,11 @@ class SoundSystem implements System
         _elapsed += dt;
         if(_elapsed > 6/_bpm) {
             _elapsed = 0;
-            var note = _notes[_noteIndex];
-            if(_play) {
-                engine.sound.play(note.toInt(), Duration.QUARTER, OscillatorType.SAWTOOTH);
-            }
-            else {
-                engine.sound.stop(note.toInt());
-                _noteIndex++;
-                _noteIndex%=_notes.length;
-            }
-            _play = !_play;
+            _sequence.update(engine.sound);
         }
     }
 
     private var _elapsed :Float;
     private var _bpm :Int;
-    private var _play :Bool;
-    private var _notes :Array<Note>;
-    private var _noteIndex :Int;
+    private var _sequence :Sequencer;
 }
