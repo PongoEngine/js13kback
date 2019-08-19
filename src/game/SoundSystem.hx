@@ -26,7 +26,6 @@ package game;
 import engine.Entity;
 import engine.System;
 import engine.Engine;
-import js.html.audio.OscillatorType;
 import engine.sound.Sequencer;
 
 
@@ -35,8 +34,8 @@ class SoundSystem implements System
     public function new(sequence :Sequencer) : Void
     {
         _elapsed = 0;
-        _bpm = 120;
         _sequence = sequence;
+        
     }
 
     public function shouldUpdate(e :Entity) : Bool
@@ -46,14 +45,10 @@ class SoundSystem implements System
 
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
-        _elapsed += dt;
-        if(_elapsed > 6/_bpm) {
-            _elapsed = 0;
-            _sequence.update(engine.sound);
-        }
+        _sequence.update(engine.mixer, dt);
     }
 
     private var _elapsed :Float;
-    private var _bpm :Int;
+    private var _duration :Float;
     private var _sequence :Sequencer;
 }

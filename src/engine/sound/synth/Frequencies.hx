@@ -1,4 +1,4 @@
-package engine.sound;
+package engine.sound.synth;
 
 import js.Syntax;
 import js.html.audio.AudioContext;
