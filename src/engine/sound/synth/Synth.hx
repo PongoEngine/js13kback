@@ -1,8 +1,30 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2019 Jeremy Meltingtallow
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+ * Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+ * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
+ * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package engine.sound.synth;
 
 import engine.sound.Track.ADSR;
 import js.html.audio.AudioContext;
-import js.html.audio.StereoPannerNode;
 import js.html.audio.BiquadFilterNode;
 import js.html.audio.ConvolverNode;
 import js.html.audio.WaveShaperNode;
@@ -94,7 +116,8 @@ class Synth
         return impulse;
     }
 
-    private function makeDistortionCurve(amount :Int = 50) {
+    private function makeDistortionCurve(amount :Int = 50) : Float32Array
+    {
         var k = amount;
         var n_samples = Math.floor(_audioContext.sampleRate);
         var curve = new Float32Array(n_samples);
@@ -111,7 +134,6 @@ class Synth
 
     private var _oscPool : Array<Oscillator>;
     private var _oscActive : Array<{osc:Oscillator,duration:Duration,start:Pulse,elapsed:Pulse}>;
-
     private var _audioContext : AudioContext;
     private var _masterGainNode : GainNode;
     private var _waveShaper :WaveShaperNode;
