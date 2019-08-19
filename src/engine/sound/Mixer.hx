@@ -1,6 +1,6 @@
 package engine.sound;
 
-import engine.sound.Track.ASDR;
+import engine.sound.Track.ADSR;
 import js.html.audio.OscillatorType;
 import engine.sound.theory.Duration;
 import engine.sound.theory.Pulse;
@@ -28,9 +28,9 @@ class Mixer
         _synth.resume();
     }
 
-    public function play(key :Int, start:Pulse, duration :Duration, type :OscillatorType, asdr :ASDR) : Void
+    public function play(key :Int, start:Pulse, duration :Duration, type :OscillatorType, adsr :ADSR) : Void
     {
-        _synth.play(key, start, duration, type, asdr);
+        _synth.play(key, start, duration, type, adsr);
     }
 
     public function checkNotes(cur :Pulse) : Void

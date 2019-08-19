@@ -1,6 +1,6 @@
 package engine.sound.synth;
 
-import engine.sound.Track.ASDR;
+import engine.sound.Track.ADSR;
 import js.html.audio.AudioContext;
 import js.html.audio.StereoPannerNode;
 import js.html.audio.BiquadFilterNode;
@@ -21,20 +21,18 @@ class Synth
     public function new() : Void
     {
         _audioContext = new AudioContext({sampleRate: 44100});
-        _waveShaper = _audioContext.createWaveShaper();
-        _waveShaper.oversample = OverSampleType._4X;
         _equalizerNode = _audioContext.createBiquadFilter();
         _equalizerNode.type = BiquadFilterType.ALLPASS;
-        // _reverbNode = _audioContext.createConvolver();
-        // _reverbNode.buffer = impulseResponse(4, 4, false);
-        _panner = _audioContext.createStereoPanner();
-        _panner.pan.setTargetAtTime(0, _audioContext.currentTime, 1);
+        _reverbNode = _audioContext.createConvolver();
+        _reverbNode.buffer = impulseResponse(0.5, 2, false);
+        _waveShaper = _audioContext.createWaveShaper();
+        _waveShaper.curve = makeDistortionCurve();
+        _waveShaper.oversample = OverSampleType._4X;
         _masterGainNode = _audioContext.createGain();
 
-        _waveShaper.connect(_equalizerNode);
-        _equalizerNode.connect(_panner);
-        // _reverbNode.connect(_panner);
-        _panner.connect(_masterGainNode);
+        _equalizerNode.connect(_reverbNode);
+        _reverbNode.connect(_waveShaper);
+        _waveShaper.connect(_masterGainNode);
         
         _masterGainNode.connect(_audioContext.destination);
 
@@ -59,10 +57,12 @@ class Synth
         this._audioContext.resume();
     }
 
-    public function play(key :Int, start:Pulse, duration :Duration, type :OscillatorType, asdr :ASDR) : Void
+    public function play(key :Int, start:Pulse, duration :Duration, type :OscillatorType, adsr :ADSR) : Void
     {
         var osc = _oscPool.length > 0 ? _oscPool.pop() : new Oscillator();
-        osc.play(_frequencies.get(key), _audioContext, _waveShaper, type, asdr);
+        // osc.play(_frequencies.get(key), _audioContext, _equalizerNode, type, adsr);
+        // osc.play(_frequencies.get(key), _audioContext, _waveShaper, type, adsr);
+        osc.play(_frequencies.get(key), _audioContext, _masterGainNode, type, adsr);
         _oscActive.push({osc:osc,duration:duration,start:start,elapsed:new Pulse(0)});
     }
 
@@ -88,20 +88,34 @@ class Synth
 
         for (i in 0...length){
             var n = reverse ? length - i : i;
-            impulseL[i] = (1 * 2 - 1) * Math.pow(1 - n / length, decay);
-            impulseR[i] = (1 * 2 - 1) * Math.pow(1 - n / length, decay);
+            impulseL[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
+            impulseR[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
         }
         return impulse;
     }
+
+    private function makeDistortionCurve(amount :Int = 50) {
+        var k = amount;
+        var n_samples = Math.floor(_audioContext.sampleRate);
+        var curve = new Float32Array(n_samples);
+        var deg = Math.PI / 180;
+        var i = 0;
+        var x :Float;
+        while (i < n_samples) {
+            ++i;
+            x = i * 2 / n_samples - 1;
+            curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+        }
+        return curve;
+    };
 
     private var _oscPool : Array<Oscillator>;
     private var _oscActive : Array<{osc:Oscillator,duration:Duration,start:Pulse,elapsed:Pulse}>;
 
     private var _audioContext : AudioContext;
     private var _masterGainNode : GainNode;
-    private var _panner :StereoPannerNode;
     private var _waveShaper :WaveShaperNode;
-    // private var _reverbNode :ConvolverNode;
+    private var _reverbNode :ConvolverNode;
     private var _equalizerNode :BiquadFilterNode;
     private var _frequencies :Frequencies;
     private static inline var GAME_VOLUME = 1;

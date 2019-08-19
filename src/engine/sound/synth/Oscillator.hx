@@ -6,7 +6,7 @@ import js.html.audio.OscillatorOptions;
 import js.html.audio.AudioContext;
 import js.html.audio.OscillatorType;
 import js.html.audio.AudioNode;
-import engine.sound.Track.ASDR;
+import engine.sound.Track.ADSR;
 
 class Oscillator
 {
@@ -15,7 +15,7 @@ class Oscillator
         _osc = null;
     }
 
-    public function play(freq :Float, ctx :AudioContext, audio :AudioNode, type :OscillatorType, asdr :ASDR) : Void
+    public function play(freq :Float, ctx :AudioContext, audio :AudioNode, type :OscillatorType, adsr :ADSR) : Void
     {
         if(_osc == null) {
             _gain = ctx.createGain();
@@ -30,14 +30,14 @@ class Oscillator
             var ct = ctx.currentTime;
 
             _gain.gain.setValueAtTime(0,ct);
-            _gain.gain.linearRampToValueAtTime(1,ct+asdr.attack);
-            _gain.gain.linearRampToValueAtTime(asdr.sustainVal,ct+asdr.attack+asdr.decay);
-            _gain.gain.linearRampToValueAtTime(asdr.sustainVal,ct+asdr.attack+asdr.decay+asdr.sustain);
-            _gain.gain.linearRampToValueAtTime(0,ct+asdr.attack+asdr.decay+asdr.sustain+asdr.release);
+            _gain.gain.linearRampToValueAtTime(adsr.attackAmp ,ct+adsr.attackDur);
+            _gain.gain.linearRampToValueAtTime(adsr.sustainAmp,ct+adsr.attackDur+adsr.decayDur);
+            _gain.gain.linearRampToValueAtTime(adsr.sustainAmp,ct+adsr.attackDur+adsr.decayDur+adsr.sustainDur);
+            _gain.gain.linearRampToValueAtTime(0,ct+adsr.attackDur+adsr.decayDur+adsr.sustainDur+adsr.releaseDur);
         }
         else {
             this.stop();
-            this.play(freq, ctx, audio, type, asdr);
+            this.play(freq, ctx, audio, type, adsr);
         }
     }
 

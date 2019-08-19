@@ -16,7 +16,10 @@ class Sequencer
 {
     public function new(track :Track, scale :Scale) : Void
     {
-        _pulse = new Pulse(0);
+        _elapsed = 0;
+        _duration = (60 / track.bpm) / Pulse.PPQN;
+        _lastPulse = new Pulse(-1);
+        _curPulse = new Pulse(0);
         _track = track;
         for(trackinfo in _track.infos) {
             trackinfo.notes = createNotes(trackinfo, scale);
@@ -25,28 +28,35 @@ class Sequencer
 
     public function update(mixer :Mixer, dt :Float) : Void
     {
-        for(info in _track.infos) {
-            if(info.notes.exists(_pulse)) {
-                for(note in info.notes.get(_pulse)) {
-                    mixer.play(note.note.toInt(), note.start, note.duration, note.type, info.asdr);
+        if(_curPulse != _lastPulse) {
+            for(info in _track.infos) {
+                if(info.notes.exists(_curPulse)) {
+                    for(note in info.notes.get(_curPulse)) {
+                        mixer.play(note.note.toInt(), note.start, note.duration, note.type, info.adsr);
+                    }
                 }
-            }
-        } 
+            } 
 
-        mixer.checkNotes(_pulse);
+            mixer.checkNotes(_curPulse);
+            _lastPulse = _curPulse;
+        }
 
-        _pulse++;
-
-        if(_pulse > _track.duration) {
-            _pulse = new Pulse(0);
+        _elapsed += dt;
+        if(_elapsed >= _duration) {
+            _elapsed = _elapsed - _duration;
+            _curPulse++;
+        }
+        if(_curPulse > _track.duration) {
+            _curPulse = new Pulse(0);
+            _lastPulse = new Pulse(-1);
         }
     }
 
-    private static function createNotes(track :TrackInfo, scale :Scale) : Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, type :OscillatorType}>>
+    private static function createNotes(info :TrackInfo, scale :Scale) : Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, type :OscillatorType}>>
     {
         var notes = new Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, type :OscillatorType}>>();
         var laneIndex = 0;
-        for(lane in track.lanes) {
+        for(lane in info.lanes) {
             var str = (lane + "").replace("|", "");
             var curChar = 0;
             var start = new Pulse(0);
@@ -56,15 +66,15 @@ class Sequencer
                         notes.set(start, []);
                     }
 
-                    var duration = new Duration(Std.parseInt(str.charAt(curChar)) * track.noteLength.toInt());
+                    var duration = new Duration(Std.parseInt(str.charAt(curChar)) * info.noteLength.toInt());
                     notes.get(start).push({
-                        note: scale.getNote(new Step(laneIndex), new Octave(2)),
+                        note: scale.getNote(new Step(laneIndex), info.octave),
                         duration: duration,
                         start: start,
-                        type: track.type
+                        type: info.type
                     });
                 }
-                start += track.noteLength;
+                start += info.noteLength;
                 curChar++;
             }
             laneIndex++;
@@ -73,5 +83,8 @@ class Sequencer
     }
 
     private var _track :Track;
-    private var _pulse :Pulse;
+    private var _lastPulse :Pulse;
+    private var _curPulse :Pulse;
+    private var _elapsed :Float;
+    private var _duration :Float;
 }

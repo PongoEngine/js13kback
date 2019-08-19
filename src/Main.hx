@@ -22,7 +22,6 @@
  */
 
 import engine.display.Sprite;
-import engine.display.FillSprite;
 import engine.display.ImageSprite;
 import engine.Entity;
 import engine.Engine;
@@ -90,7 +89,7 @@ class Main {
 		engine.addSystem(new ControllerSystem());
 		engine.addSystem(new CameraSystem());
 
-		var scale = new Scale(Root.C_SHARP, ScaleType.NATURAL_MINOR);
+		var scale = new Scale(Root.F_SHARP, ScaleType.MELODIC_MINOR);
 		engine.addSystem(new SoundSystem(new Sequencer(TrackA.a, scale)));
 	}
 }
