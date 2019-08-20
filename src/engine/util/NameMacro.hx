@@ -21,19 +21,47 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package game;
+package engine.util;
 
-import engine.Component;
+import haxe.macro.Context;
+import haxe.macro.Expr;
+import haxe.macro.TypeTools;
 
-class Player implements Component
-{
-    public var isLeft :Bool = false;
-    public var isRight :Bool = false;
-    public var isUp :Bool = false;
-    public var isDown :Bool = false;
-    public var val :Int = 0;
+class NameMacro {
+  macro static public function fromInterface():Array<Field> {
+    var fields = Context.getBuildFields();
+    var id = _uniqueID + "";
 
-    public function new() : Void
-    {
+    var name = TypeTools.findField(Context.getLocalClass().get(), "name");
+    if(name == null) {
+      fields.push({
+        name:  "name",
+        access:  [Access.APublic, Access.AFinal],
+        kind: FieldType.FVar(macro:String, macro $v{id}), 
+        pos: Context.currentPos(),
+      });
+      _uniqueID++;
     }
+
+    if(name != null) {
+      fields.push({
+        name:  "_n",
+        access:  [Access.APublic, Access.AFinal, Access.AStatic],
+        kind: FieldType.FVar(macro:String, Context.getTypedExpr(name.expr())), 
+        pos: Context.currentPos(),
+      });
+    }
+    else {
+      fields.push({
+        name:  "_n",
+        access:  [Access.APublic, Access.AFinal, Access.AStatic],
+        kind: FieldType.FVar(macro:String, macro $v{id}), 
+        pos: Context.currentPos(),
+      });
+    }
+    
+    return fields;
+  }
+
+  private static var _uniqueID = 0;
 }

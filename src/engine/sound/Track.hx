@@ -25,6 +25,7 @@ package engine.sound;
 
 import engine.sound.theory.Pulse;
 import engine.sound.theory.Note;
+import engine.sound.theory.Step;
 import engine.sound.theory.Octave;
 import engine.sound.theory.Duration;
 import js.html.audio.OscillatorType;
@@ -40,6 +41,7 @@ typedef TrackInfo = {
     type:OscillatorType,
     noteLength: Pulse,
     octave: Octave,
+    offset: Step,
     lanes: Array<String>,
     ?notes: Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, type :OscillatorType}>>,
     adsr: ADSR

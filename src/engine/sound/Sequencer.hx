@@ -66,6 +66,9 @@ class Sequencer
         _elapsed += dt;
         if(_elapsed >= _duration) {
             _elapsed = _elapsed - _duration;
+            if(_elapsed >= _duration) {
+                _elapsed = 0;
+            }
             _curPulse++;
         }
         if(_curPulse > _track.duration) {
@@ -90,7 +93,7 @@ class Sequencer
 
                     var duration = new Duration(Std.parseInt(str.charAt(curChar)) * info.noteLength.toInt());
                     notes.get(start).push({
-                        note: scale.getNote(new Step(laneIndex), info.octave),
+                        note: scale.getNote(new Step(laneIndex) + info.offset, info.octave),
                         duration: duration,
                         start: start,
                         type: info.type

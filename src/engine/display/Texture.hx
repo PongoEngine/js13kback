@@ -39,6 +39,8 @@ class Texture
         var dataUrl = canvas.toDataURL();
         var img = Browser.document.createImageElement();
         img.src = dataUrl;
+        img.width = width;
+        img.height = height;
 
         return img;
     }

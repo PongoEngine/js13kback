@@ -47,7 +47,6 @@ abstract Scale(Array<Note>)
 
         var offsetOctave :Int = Math.floor(step / this.length);
         var rangedStep :Int = step - (offsetOctave*this.length);
-        var offsetNote = 12 * (offsetOctave+octave);
         var note :Int = this[rangedStep].toInt() + (12 * (offsetOctave+octave));
 
         return new Note(note);

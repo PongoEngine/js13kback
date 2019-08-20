@@ -23,7 +23,7 @@
 
 package engine;
 
-@:autoBuild(NameMacro.fromInterface())
+@:autoBuild(engine.util.NameMacro.fromInterface())
 interface Component
 {
     public var name (default, null):String;

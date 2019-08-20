@@ -23,17 +23,32 @@
 
 package game;
 
-import engine.Component;
+import js.Browser;
+import engine.Entity;
+import engine.System;
+import engine.Engine;
+import engine.display.Sprite;
 
-class Player implements Component
+class OrbitSystem implements System
 {
-    public var isLeft :Bool = false;
-    public var isRight :Bool = false;
-    public var isUp :Bool = false;
-    public var isDown :Bool = false;
-    public var val :Int = 0;
 
     public function new() : Void
     {
+    }
+
+    public function shouldUpdate(e :Entity) : Bool
+    {
+        return e.has(Orbit) && e.has(Sprite);
+    }
+
+    public function logic(engine :Engine, e :Entity, dt :Float) : Void
+    {
+        var sprite :Sprite = e.get(Sprite);
+        var orbit :Orbit = e.get(Orbit);
+        orbit.rotation += dt*6;
+        orbit.radius = 40;
+
+        sprite.x = orbit.x + (orbit.radius/2) * Math.cos(orbit.rotation * 0.1);
+        sprite.y = orbit.y + orbit.radius * Math.sin(orbit.rotation);
     }
 }

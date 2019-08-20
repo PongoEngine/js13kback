@@ -26,9 +26,11 @@ import engine.display.ImageSprite;
 import engine.Entity;
 import engine.Engine;
 import game.Player;
+import game.Orbit;
 import game.Stage;
 import game.SoundComp;
 import game.ControllerSystem;
+import game.OrbitSystem;
 import game.CameraSystem;
 import game.SoundSystem;
 import game.CanvasTools;
@@ -57,6 +59,7 @@ class Main {
 	{
 		var background = CanvasTools.createGradient(255,200,30,80,1900,GAME_HEIGHT,10);
 		var character = CanvasTools.createGradient(10,40,100,200,40,40,10);
+		var ball = CanvasTools.createGradient(220,220,220,200,10,10,1);
 		var c = new Entity();
 		engine.root.addChild(c);
 		engine.root.add(new SoundComp());
@@ -65,12 +68,17 @@ class Main {
 
 		var nc = new Entity();
 		nc.add(new ImageSprite(character));
-		nc.get(Sprite).blendmode = NORMAL;
+		nc.get(Sprite).blendmode = DARKEN;
 		nc.add(new Player());
 		nc.get(Sprite).x = 35;
 		nc.get(Sprite).y = 35;
 		nc.get(ImageSprite).centerAnchor();
-		c.addChild(nc);
+		nc.addChild(new Entity()
+			.add(new Orbit(character.width/2, character.height/2))
+			.add(new ImageSprite(ball)
+				.centerAnchor()
+				)
+			);
 
 		for(i in 0...20) {
 			c.addChild(new Entity()
@@ -86,10 +94,14 @@ class Main {
 					.setXY(1900 * Math.random(), GAME_HEIGHT * Math.random())));
 		}
 
+		c.addChild(nc);
+
+
 		engine.addSystem(new ControllerSystem());
 		engine.addSystem(new CameraSystem());
+		engine.addSystem(new OrbitSystem());
 
-		var scale = new Scale(Root.F_SHARP, ScaleType.MELODIC_MINOR);
+		var scale = new Scale(Root.D, ScaleType.NATURAL_MINOR);
 		engine.addSystem(new SoundSystem(new Sequencer(TrackA.a, scale)));
 	}
 }
