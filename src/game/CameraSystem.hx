@@ -48,15 +48,14 @@ class CameraSystem implements System
         if(p != null) {
             var playerComp = p.get(Player);
             var pSprite = p.get(Sprite);
-            stageSprite.x = getVal(playerComp.isLeft, playerComp.isRight, Main.GAME_WIDTH/2, pSprite.x + pSprite.naturalWidth()/2, stageSprite.x);
-            stageSprite.y = getVal(playerComp.isUp, playerComp.isDown, Main.GAME_HEIGHT/2, pSprite.y + pSprite.naturalHeight()/2, stageSprite.y);
+            stageSprite.x = getVal(Main.GAME_WIDTH/2, pSprite.x + pSprite.naturalWidth()/2, stageSprite.x);
+            stageSprite.y = getVal(Main.GAME_HEIGHT/2, pSprite.y + pSprite.naturalHeight()/2, stageSprite.y);
         }
     }
 
-    private static function getVal(isPlus :Bool, isMinus :Bool, mid :Float, playerCur :Float, stageCur :Float) : Float
+    private static function getVal(mid :Float, playerCur :Float, stageCur :Float) : Float
     {
-        var offset = isPlus ? 0 : isMinus ? -0 : 0;
-        var target = -playerCur + (mid + offset);
+        var target = -playerCur + (mid);
         var distX = target - stageCur;
         var percentage = Math.abs(distX) / 500;
         stageCur += percentage*percentage*percentage * distX;

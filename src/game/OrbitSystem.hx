@@ -23,7 +23,6 @@
 
 package game;
 
-import js.Browser;
 import engine.Entity;
 import engine.System;
 import engine.Engine;

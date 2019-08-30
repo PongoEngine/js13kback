@@ -27,8 +27,10 @@ import engine.display.Canvas;
 
 class Sprite implements Component
 {
-    public var x :Float = 0;
-    public var y :Float = 0;
+    public var x (default, set):Float = 0;
+    public var y (default, set):Float = 0;
+    public var lastX (default, null):Float = 0;
+    public var lastY (default, null):Float = 0;
     public var anchorX :Float = 0;
     public var anchorY :Float = 0;
     public var angle :Float = 0;
@@ -63,6 +65,32 @@ class Sprite implements Component
         return this;
     }
 
+    public function left(?x :Float) : Float
+    {
+        if(x == null) {
+            x = this.x;
+        }
+        return x - this.anchorX;
+    }
+
+    public function right(?x :Float) : Float
+    {
+        return this.left(x) + this.naturalWidth();
+    }
+
+    public function top(?y :Float) : Float
+    {
+        if(y == null) {
+            y = this.y;
+        }
+        return y - this.anchorY;
+    }
+
+    public function bottom(?y :Float) : Float
+    {
+        return this.top(y) + this.naturalHeight();
+    }
+
     public function naturalWidth() : Float
     {
         return 0;
@@ -71,5 +99,19 @@ class Sprite implements Component
     public function naturalHeight() : Float
     {
         return 0;
+    }
+
+    private function set_x(x :Float) : Float
+    {
+        this.lastX = this.x;
+        this.x = x;
+        return x;
+    }
+
+    private function set_y(y :Float) : Float
+    {
+        this.lastY = this.y;
+        this.y = y;
+        return y;
     }
 }

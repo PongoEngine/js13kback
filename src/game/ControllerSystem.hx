@@ -50,14 +50,14 @@ class ControllerSystem implements System
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
         var sprite :Sprite = e.get(Sprite);
-        if(_isUp) sprite.y -= dt * VELOCITY;
-        if(_isDown) sprite.y += dt * VELOCITY;
+        var player :Player = e.get(Player);
+        if(_isUp && player.isOnGround) {
+            e.get(Player).velocityY = -10;
+            player.isOnGround = false;
+            _isUp = false;
+        }
         if(_isLeft) sprite.x -= dt * VELOCITY;
         if(_isRight) sprite.x += dt * VELOCITY;
-        e.get(Player).isLeft = _isLeft;
-        e.get(Player).isRight = _isRight;
-        e.get(Player).isUp = _isUp;
-        e.get(Player).isDown = _isDown;
     }
 
     private function _keyChange(isKeyDown :Bool, keyCode :String) : Void
