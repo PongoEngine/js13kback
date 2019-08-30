@@ -75,11 +75,16 @@ class Engine
 		Browser.window.requestAnimationFrame(updateFn);
     }
 
-	public function getGroup(fn :Entity -> Bool) : Array<Entity>
+	public function getGroup(meetsCriteria :Entity -> Bool) : Array<Entity>
 	{
 		var group = [];
-		addToGroup(this.root, fn, group);
+		addToGroup(this.root, meetsCriteria, group);
 		return group;
+	}
+
+	public inline function iterate(meetsCriteria :Entity -> Bool, fn :Entity -> Bool) : Void
+	{
+		iterateOnGroup(this.root, meetsCriteria, fn);
 	}
 
 	public inline function addSystem(system :System) : Void
@@ -89,13 +94,23 @@ class Engine
 
     private var _systems :Array<System>;
 
-	private static function addToGroup(entity :Entity, fn :Entity -> Bool, group :Array<Entity>) : Void
+	private static function addToGroup(entity :Entity, meetsCriteria :Entity -> Bool, group :Array<Entity>) : Void
 	{
-		if(fn(entity)) {
+		if(meetsCriteria(entity)) {
 			group.push(entity);
 		}
 		for(c in entity.children()) {
-			addToGroup(c, fn, group);
+			addToGroup(c, meetsCriteria, group);
+		}
+	}
+
+	private static function iterateOnGroup(entity :Entity, meetsCriteria :Entity -> Bool, fn :Entity -> Bool) : Void
+	{
+		if(meetsCriteria(entity) && fn(entity)) {
+			return;
+		}
+		for(c in entity.children()) {
+			iterateOnGroup(c, meetsCriteria, fn);
 		}
 	}
 

@@ -28,11 +28,13 @@ import engine.Engine;
 import game.Player;
 import game.Orbit;
 import game.Stage;
+import game.Collider;
 import game.SoundComp;
 import game.ControllerSystem;
 import game.OrbitSystem;
 import game.CameraSystem;
 import game.SoundSystem;
+import game.CollisionSystem;
 import game.CanvasTools;
 import js.Browser;
 
@@ -70,6 +72,7 @@ class Main {
 		nc.add(new ImageSprite(character));
 		nc.get(Sprite).blendmode = DARKEN;
 		nc.add(new Player());
+		nc.add(new Collider());
 		nc.get(Sprite).x = 35;
 		nc.get(Sprite).y = 35;
 		nc.get(ImageSprite).centerAnchor();
@@ -82,12 +85,7 @@ class Main {
 
 		for(i in 0...20) {
 			c.addChild(new Entity()
-				.add(new ImageSprite(CanvasTools.createCircle(20, 100, 20, 33, 140, 10))
-					.centerAnchor()
-					.setBlendmode(HARD_LIGHT)
-					.setXY(1900 * Math.random(), GAME_HEIGHT * Math.random())));
-
-			c.addChild(new Entity()
+				.add(new Collider())
 				.add(new ImageSprite(CanvasTools.createGradient(140,40,40,50,90,40,3))
 					.centerAnchor()
 					.setBlendmode(HARD_LIGHT)
@@ -100,6 +98,7 @@ class Main {
 		engine.addSystem(new ControllerSystem());
 		engine.addSystem(new CameraSystem());
 		engine.addSystem(new OrbitSystem());
+		engine.addSystem(new CollisionSystem());
 
 		var scale = new Scale(Root.D, ScaleType.NATURAL_MINOR);
 		engine.addSystem(new SoundSystem(new Sequencer(TrackA.a, scale)));
