@@ -1,0 +1,6 @@
+package engine;
+
+interface Filter
+{
+    
+}
