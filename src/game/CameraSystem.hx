@@ -46,22 +46,26 @@ class CameraSystem implements System
         var stageSprite = e.get(Sprite);
 
         if(p != null) {
-            var playerComp = p.get(Player);
             var pSprite = p.get(Sprite);
-            stageSprite.x = getVal(Main.GAME_WIDTH/2, pSprite.x + pSprite.naturalWidth()/2, stageSprite.x);
-            stageSprite.y = getVal(Main.GAME_HEIGHT/2, pSprite.y + pSprite.naturalHeight()/2, stageSprite.y);
+            stageSprite.x = getVal(Main.GAME_WIDTH/2, pSprite.x + pSprite.naturalWidth()/2, stageSprite.x, _hasStarted);
+            stageSprite.y = getVal(Main.GAME_HEIGHT/2, pSprite.y + pSprite.naturalHeight()/2, stageSprite.y, _hasStarted);
+            _hasStarted = true;
         }
     }
 
-    private static function getVal(mid :Float, playerCur :Float, stageCur :Float) : Float
+    private static function getVal(mid :Float, playerCur :Float, stageCur :Float, hasStarted :Bool) : Float
     {
         var target = -playerCur + (mid);
         var distX = target - stageCur;
         var percentage = Math.abs(distX) / 500;
+        if(!hasStarted) {
+            return stageCur += distX;
+        }
         stageCur += percentage*percentage*percentage * distX;
-        return (stageCur);
+        return Math.round(stageCur);
     }
 
     private var _targetX :Float = 0;
     private var _targetY :Float = 0;
+    private var _hasStarted :Bool = false;
 }

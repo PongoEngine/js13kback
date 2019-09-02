@@ -52,12 +52,15 @@ class ControllerSystem implements System
         var sprite :Sprite = e.get(Sprite);
         var player :Player = e.get(Player);
         if(_isUp && player.isOnGround) {
-            e.get(Player).velocityY = -10;
+            e.get(Player).velocityY = -14;
             player.isOnGround = false;
             _isUp = false;
         }
         if(_isLeft) sprite.x -= dt * VELOCITY;
         if(_isRight) sprite.x += dt * VELOCITY;
+        if(_isLeft || _isRight) {
+            player.isOnGround = false;
+        }
     }
 
     private function _keyChange(isKeyDown :Bool, keyCode :String) : Void
@@ -80,5 +83,5 @@ class ControllerSystem implements System
         }
     }
 
-    private static inline var VELOCITY = 300;
+    private static inline var VELOCITY = 500;
 }

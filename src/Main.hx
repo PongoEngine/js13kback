@@ -43,10 +43,12 @@ import engine.sound.theory.Scale.ScaleType;
 import engine.sound.theory.Note.Root;
 import engine.sound.Sequencer;
 import game.TrackA;
+import engine.map.TileMap;
 
 class Main {
 	public static var GAME_WIDTH :Int = 800;
 	public static var GAME_HEIGHT :Int = 600;
+	public static var TILE_WIDTH :Int = 40;
 
 	static function main() {
 		var app = Browser.document.getElementById("app");
@@ -60,7 +62,7 @@ class Main {
 	static inline function startGame(engine :Engine) : Void
 	{
 		var background = CanvasTools.createGradient(255,200,30,80,1900,GAME_HEIGHT,10);
-		var character = CanvasTools.createGradient(10,40,100,200,40,40,10);
+		var character = CanvasTools.createGradient(10,40,100,200,TILE_WIDTH,TILE_WIDTH,10);
 		var ball = CanvasTools.createGradient(220,220,220,200,10,10,1);
 		var c = new Entity();
 		engine.root.addChild(c);
@@ -68,39 +70,45 @@ class Main {
 		c.add(new ImageSprite(background));
 		c.add(new Stage());
 
-		var nc = new Entity();
-		nc.add(new ImageSprite(character));
-		nc.get(Sprite).blendmode = DARKEN;
-		nc.add(new Player());
-		nc.add(new Collider());
-		nc.get(Sprite).x = 35;
-		nc.get(Sprite).y = 35;
-		nc.get(ImageSprite).centerAnchor();
-		nc.addChild(new Entity()
-			.add(new Orbit(character.width/2, character.height/2))
-			.add(new ImageSprite(ball)
-				.centerAnchor()
-				)
-			);
-
-		for(i in 0...20) {
-			c.addChild(new Entity()
-				.add(new Collider())
-				.add(new ImageSprite(CanvasTools.createGradient(140,40,40,50,90,40,3))
-					.centerAnchor()
-					.setBlendmode(HARD_LIGHT)
-					.setXY(1900 * Math.random(), GAME_HEIGHT * Math.random())));
-		}
-
-		c.addChild(nc);
-
+		var x :TileMap = TileMap.encode("./src/game/tiles.dsmap");
+		x.populate(function(x :Int, y :Int, type :TileType, width :Int) {
+			switch type {
+				case FLOOR: {
+					c.addChild(new Entity()
+						.add(new Collider())
+						.add(new ImageSprite(CanvasTools.createGradient(140,40,40,50,TILE_WIDTH*width,TILE_WIDTH,3))
+							.centerAnchor()
+							.setBlendmode(HARD_LIGHT)
+							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
+				}
+				case PLAYER: {
+					c.addChild(new Entity()
+						.add(new ImageSprite(character)
+							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)
+							.setBlendmode(DARKEN)
+							.centerAnchor())
+						.add(new Player())
+						.add(new Collider())
+						.addChild(new Entity()
+							.add(new Orbit(character.width/2, character.height/2))
+							.add(new ImageSprite(ball)
+								.centerAnchor())));
+				}
+			}
+		});
 
 		engine.addSystem(new ControllerSystem());
 		engine.addSystem(new CameraSystem());
 		engine.addSystem(new OrbitSystem());
 		engine.addSystem(new CollisionSystem());
-
 		var scale = new Scale(Root.D, ScaleType.NATURAL_MINOR);
 		engine.addSystem(new SoundSystem(new Sequencer(TrackA.a, scale)));
 	}
+}
+
+@:enum
+abstract TileType(Int) from Int
+{
+	var FLOOR = 0;
+	var PLAYER = 1;
 }

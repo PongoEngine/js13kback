@@ -32,8 +32,8 @@ class CanvasTools
     public static function createGradient(r :Int, g :Int, b :Int, randomAmount :Int, width :Int, height :Int, cellWidth :Int) : ImageElement
     {
         return Texture.create(width, height, function(canvas) {
-            var widthLength = Math.round(width / cellWidth);
-            var heightLength = Math.round(height / cellWidth);
+            var widthLength = Math.ceil(width / cellWidth);
+            var heightLength = Math.ceil(height / cellWidth);
 
             for(y in 0...heightLength) {
                 for(x in 0...widthLength) {
