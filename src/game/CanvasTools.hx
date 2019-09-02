@@ -26,10 +26,11 @@ package game;
 import engine.display.Canvas;
 import js.html.ImageElement;
 import engine.display.Texture;
+import engine.util.Simplex;
 
 class CanvasTools
 {
-    public static function createGradient(r :Int, g :Int, b :Int, randomAmount :Int, width :Int, height :Int, cellWidth :Int) : ImageElement
+    public static function createGradient(r :Int, g :Int, b :Int, randomAmount :Int, width :Int, height :Int, cellWidth :Int, simplex :Simplex) : ImageElement
     {
         return Texture.create(width, height, function(canvas) {
             var widthLength = Math.ceil(width / cellWidth);
@@ -37,63 +38,17 @@ class CanvasTools
 
             for(y in 0...heightLength) {
                 for(x in 0...widthLength) {
-                    canvas.setColor(val(r, randomAmount),val(g, randomAmount),val(b, randomAmount),1);
+                    canvas.setColor(val(r, randomAmount, x, y, simplex),val(g, randomAmount, x, y, simplex),val(b, randomAmount, x, y, simplex),1);
                     canvas.drawRect(x*cellWidth, y*cellWidth, cellWidth, cellWidth);
                 }
             }
         });
     }
 
-    public static function createCircle(r :Int, g :Int, b :Int, randomAmount :Int, radius :Int, cellWidth :Int) : ImageElement
-    {
-        var count = Math.floor(radius/cellWidth) / 2;
-        return Texture.create(radius*2+cellWidth, radius*2+cellWidth, function(canvas) {
-            var offset = 0;
-            var i = 0;
-            while(radius > 0) {
-                drawCircle(canvas, r, g, b, i/count, radius, cellWidth, offset, offset);
-                radius -= cellWidth;
-                offset += cellWidth;
-                i++;
-            }
-        });
-    }
-
-    private static function drawCircle(canvas :Canvas, r :Int, g :Int, b :Int, a :Float, radius :Int, cellWidth :Int, offsetX :Int, offsetY :Int) {
-        var x = radius;
-        var y = 0;
-        var radiusError = 1 - x;
-        var x0 = radius + offsetX;
-        var y0 = radius + offsetY;
-        canvas.setColor(r,g,b,a);
-        while (x >= y) {
-            drawPixel(canvas, x + x0, y + y0, cellWidth);
-            drawPixel(canvas, y + x0, x + y0, cellWidth);
-            drawPixel(canvas, -x + x0, y + y0, cellWidth);
-            drawPixel(canvas, -y + x0, x + y0, cellWidth);
-            drawPixel(canvas, -x + x0, -y + y0, cellWidth);
-            drawPixel(canvas, -y + x0, -x + y0, cellWidth);
-            drawPixel(canvas, x + x0, -y + y0, cellWidth);
-            drawPixel(canvas, y + x0, -x + y0, cellWidth);
-            y+=cellWidth;
-
-            if (radiusError < 0) {
-                radiusError += 2 * y + 1;
-            }
-            else {
-                x-=cellWidth;
-                radiusError+= 2 * (y - x + 1);
-            }
-        }
-    }
-
-    private static function drawPixel(canvas :Canvas, x :Int, y :Int, cellWidth :Int) {
-        canvas.drawRect(x, y, cellWidth, cellWidth);
-    }
-
-    private static function val(input :Int, change :Int) :Int
+    private static function val(input :Int, change :Int, x :Int, y :Int, simplex :Simplex) :Int
     {
         var min = input - change;
-        return Math.floor(min + (change/2) + (change * Math.random()));
+        var p = simplex.get(x, y) + 1 / 2;
+        return Math.floor(min + (change/2) + (change * p));
     }
 }

@@ -38,6 +38,7 @@ import game.CollisionSystem;
 import game.CanvasTools;
 import js.Browser;
 
+import engine.util.Simplex;
 import engine.sound.theory.Scale;
 import engine.sound.theory.Scale.ScaleType;
 import engine.sound.theory.Note.Root;
@@ -61,23 +62,23 @@ class Main {
 
 	static inline function startGame(engine :Engine) : Void
 	{
-		var background = CanvasTools.createGradient(255,200,30,80,1900,GAME_HEIGHT,10);
-		var character = CanvasTools.createGradient(10,40,100,200,TILE_WIDTH,TILE_WIDTH,10);
-		var ball = CanvasTools.createGradient(220,220,220,200,10,10,1);
+		var simplex = new Simplex(938470);
+		var background = CanvasTools.createGradient(255,200,30,80,1900,GAME_HEIGHT,10, simplex);
+		var character = CanvasTools.createGradient(10,40,100,200,TILE_WIDTH,TILE_WIDTH,10, simplex);
+		var ball = CanvasTools.createGradient(220,220,220,200,10,10,1, simplex);
 		var c = new Entity();
 		engine.root.addChild(c);
 		engine.root.add(new SoundComp());
 		c.add(new ImageSprite(background));
 		c.add(new Stage());
 
-		var x :TileMap = TileMap.encode("./src/game/tiles.dsmap");
+		var x :TileMap = TileMap.parse("./src/game/tiles.dsmap");
 		x.populate(function(x :Int, y :Int, type :TileType, width :Int) {
 			switch type {
 				case FLOOR: {
 					c.addChild(new Entity()
 						.add(new Collider())
-						.add(new ImageSprite(CanvasTools.createGradient(140,40,40,50,TILE_WIDTH*width,TILE_WIDTH,3))
-							.centerAnchor()
+						.add(new ImageSprite(CanvasTools.createGradient(140,40,40,50,TILE_WIDTH*width,TILE_WIDTH,3, simplex))
 							.setBlendmode(HARD_LIGHT)
 							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
 				}

@@ -50,19 +50,26 @@ using StringTools;
         }
     }
 
-    public static macro function encode(filePath :String):ExprOf<TileMap>
+    public static macro function parse(filePath :String):ExprOf<TileMap>
     {
         if (FileSystem.exists(filePath)) {
             var fileContent:String = File.getContent(filePath);
-            var lines = fileContent.split("\n");
-            var content :Array<Int> = [];
+            var parser = new MapParser(fileContent);
+
+            var x = 0;
             var y = 0;
-            for(line in lines) {
-                var i = 0;
-                var x = 0;
-                var last = -1;
-                while(i < line.length) {
-                    var char = line.charAt(i);
+            var last = -1;
+            var content :Array<Int> = [];
+
+            while(parser.hasNext()) {
+                parser.consumeWhile(str -> str == " ");
+                var char = parser.nextChar();
+                if(char == "\n") {
+                    last = -1;
+                    x = 0;
+                    y++;
+                }
+                else {
                     var cur :Int = Std.parseInt(char);
                     switch [cur != null, last == cur] {
                         case [true, false]: {
@@ -79,10 +86,8 @@ using StringTools;
                             last = -1;
                         }
                     }
-                    i += 3;
                     x++;
                 }
-                y++;
             }
             return Context.parse('new TileMap(${content})', Context.currentPos());
         }  else {
@@ -90,4 +95,36 @@ using StringTools;
             return Context.parse('new TileMap(${[]})', Context.currentPos());
         }
     }
+}
+
+private class MapParser
+{
+    public function new(content :String) : Void
+    {
+        _content = content;
+        _charIndex = 0;
+    }
+
+    public function hasNext() : Bool
+    {
+        return _charIndex < _content.length;
+    }
+
+    public function consumeWhile(fn :String -> Bool) : Void
+    {
+        while(fn(peek())) nextChar();
+    }
+
+    public function nextChar() : String
+    {
+        return _content.charAt(_charIndex++);
+    }
+
+    public function peek() : String
+    {
+        return _content.charAt(_charIndex);
+    }
+
+    private var _content :String;
+    private var _charIndex :Int;
 }
