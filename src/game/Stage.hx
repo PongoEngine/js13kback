@@ -24,10 +24,14 @@
 package game;
 
 import engine.Component;
+import engine.display.Sprite;
 
 class Stage implements Component
 {
-    public function new() : Void
+    public var parallaxItems (default, null):Array<Sprite>;
+
+    public function new(parallaxItems :Array<Sprite>) : Void
     {
+        this.parallaxItems = parallaxItems;
     }
 }

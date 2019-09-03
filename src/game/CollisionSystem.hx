@@ -67,7 +67,10 @@ class CollisionSystem implements System
                         e.get(Player).velocityY = 0;
                         e.get(Player).isOnGround = true;
                     }
-                    if(collidedWithBottom(e.get(Sprite), other.get(Sprite))) {
+                    if(collidedWithBottom(e.get(Sprite), other.get(Sprite)) && other.get(Collider).type == WALL) {
+                        var offsetY = other.get(Sprite).bottom() - e.get(Sprite).top();
+                        e.get(Sprite).y += Math.ceil(offsetY);
+                        e.get(Player).velocityY = 0;
                     }
                 }
                 return hasHit;

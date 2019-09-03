@@ -111,9 +111,9 @@ class Simplex
     private var _gradP : Array<Grad>;
 
     private var _grad3 = [
-        new Grad(1,1,0),new Grad(-1,1,0),new Grad(1,-1,0),new Grad(-1,-1,0),
-        new Grad(1,0,1),new Grad(-1,0,1),new Grad(1,0,-1),new Grad(-1,0,-1),
-        new Grad(0,1,1),new Grad(0,-1,1),new Grad(0,1,-1),new Grad(0,-1,-1)
+        new Grad(1,1),new Grad(-1,1),new Grad(1,-1),new Grad(-1,-1),
+        new Grad(1,0),new Grad(-1,0),new Grad(1,0),new Grad(-1,0),
+        new Grad(0,1),new Grad(0,-1),new Grad(0,1),new Grad(0,-1)
     ];
 
     private var _p = [151,160,137,91,90,15,
@@ -135,20 +135,14 @@ class Simplex
     private static var G2 = (3-Math.sqrt(3))/6;
 }
 
-private class Grad
+extern abstract Grad({x:Int,y:Int})
 {
-    public var x :Int;
-    public var y :Int;
-    public var z :Int;
-
-    public function new(x :Int, y :Int, z :Int) : Void
+    public inline function new(x :Int, y :Int) : Void
     {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this = {x:x,y:y};
     }
 
-    public function dot2(x :Float, y :Float) : Float
+    public inline function dot2(x :Float, y :Float) : Float
     {
         return this.x*x + this.y*y;
     };

@@ -27,7 +27,9 @@ import engine.Component;
 
 class Collider implements Component
 {
-    public function new() : Void
+    public var type (default, null):TileType;
+    public function new(type :TileType) : Void
     {
+        this.type = type;
     }
 }

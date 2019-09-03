@@ -32,8 +32,6 @@ import sys.FileSystem;
 import sys.io.File;
 #end
 
-using StringTools;
-
 @:extern abstract TileMap(Array<Int>)
 {
     public inline function new(content :Array<Int>) : Void
