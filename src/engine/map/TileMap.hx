@@ -93,14 +93,68 @@ import sys.io.File;
             return Context.parse('new TileMap(${[]})', Context.currentPos());
         }
     }
+
+    public static macro function parse2(filePath :String):ExprOf<TileMap>
+    {
+        if (FileSystem.exists(filePath)) {
+            var fileContent:String = File.getContent(filePath);
+            return Context.parse('
+                {
+                    var parser = new engine.map.TileMap.MapParser("${fileContent}");
+                    parser.parse();
+                }
+            ', Context.currentPos());
+        }  else {
+            Context.warning('${filePath}: is not valid', Context.currentPos());
+            return Context.parse('new TileMap(${[]})', Context.currentPos());
+        }
+    }
 }
 
-private class MapParser
+class MapParser
 {
     public function new(content :String) : Void
     {
         _content = content;
         _charIndex = 0;
+    }
+
+    public function parse() : TileMap
+    {
+        var x = 0;
+        var y = 0;
+        var last = -1;
+        var content :Array<Int> = [];
+
+        while(this.hasNext()) {
+            this.consumeWhile(str -> str == " ");
+            var char = this.nextChar();
+            if(char == "\n") {
+                last = -1;
+                x = 0;
+                y++;
+            }
+            else {
+                var cur :Int = Std.parseInt(char);
+                switch [cur != null, last == cur] {
+                    case [true, false]: {
+                        content.push(x);
+                        content.push(y);
+                        content.push(cur);
+                        content.push(1);
+                        last = cur;
+                    }
+                    case [true, true]: {
+                        content[content.length-1] += 1;
+                    }
+                    case [false, _]: {
+                        last = -1;
+                    }
+                }
+                x++;
+            }
+        }
+        return new TileMap(content);
     }
 
     public function hasNext() : Bool
