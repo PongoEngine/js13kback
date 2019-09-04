@@ -24,29 +24,34 @@
 package engine.display;
 
 import js.html.ImageElement;
+import js.lib.Promise;
 
 class ImageSprite extends Sprite
 {
-    public var image :ImageElement;
+    public var image :ImageElement = null;
 
-    public function new(image :ImageElement) : Void
+    public function new(image :Promise<ImageElement>) : Void
     {
         super();
-        this.image = image;
+        image.then(img -> {
+            this.image = img;
+        });
     }
 
     override function draw(canvas:Canvas) : Void
     {
-        canvas.drawCanvas(image, 0, 0);
+        if(this.image != null) {
+            canvas.drawCanvas(image, 0, 0);
+        }
     }
 
     override public function naturalWidth() : Float
     {
-        return image.width;
+        return this.image == null ? 0 : image.width;
     }
 
     override public function naturalHeight() : Float
     {
-        return image.height;
+        return this.image == null ? 0 : image.height;
     }
 }

@@ -9,7 +9,7 @@
     "terser": "^4.1.4"
   },
   "scripts": {
-    "start": "npx parcel src/index.html -p 4321",
+    "start": "npx parcel src/index.html -p 4321 --no-cache",
     "compress": "npx terser --compress --mangle-props --mangle -o .cache/haxe.js -- .cache/haxe.js"
   }
 }

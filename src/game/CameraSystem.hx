@@ -44,14 +44,11 @@ class CameraSystem implements System
         var players = engine.getGroup(e -> e.has(Player) && e.has(Sprite));
         var p = players[0];
         var stageSprite = e.get(Sprite);
-        var parallaxItems = e.get(Stage).parallaxItems;
 
         if(p != null) {
             var pSprite = p.get(Sprite);
             stageSprite.x = getVal(Main.GAME_WIDTH/2, pSprite.x + pSprite.naturalWidth()/2, stageSprite.x, _hasStarted);
             stageSprite.y = getVal(Main.GAME_HEIGHT/2, pSprite.y + pSprite.naturalHeight()/2, stageSprite.y, _hasStarted);
-            parallaxItems[0].x = stageSprite.x * 1.05;
-            parallaxItems[0].y = stageSprite.y * 1.05;
             _hasStarted = true;
         }
     }

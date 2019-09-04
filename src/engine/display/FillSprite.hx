@@ -28,11 +28,11 @@ class FillSprite extends Sprite
     public var r :Int;
     public var g :Int;
     public var b :Int;
-    public var a :Int;
+    public var a :Float;
     public var width :Float;
     public var height :Float;
 
-    public function new(r :Int, g :Int, b :Int, a :Int, width :Float, height :Float) : Void
+    public function new(r :Int, g :Int, b :Int, a :Float, width :Float, height :Float) : Void
     {
         super();
         this.r = r;

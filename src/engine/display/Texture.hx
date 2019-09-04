@@ -26,10 +26,11 @@ package engine.display;
 import js.html.ImageElement;
 import js.html.CanvasElement;
 import js.Browser;
+import js.lib.Promise;
 
 class Texture
 {
-    public static function create(width :Int, height :Int, draw :Canvas -> Void) : ImageElement
+    public static function create(width :Int, height :Int, draw :Canvas -> Void) : Promise<ImageElement>
     {
         var canvas = Browser.document.createCanvasElement();
         canvas.width = width;
@@ -42,6 +43,11 @@ class Texture
         img.width = width;
         img.height = height;
 
-        return img;
+        return new Promise((resolve, reject) -> {
+            img.onload = image -> {
+                resolve(image.target);
+            };
+            img.onerror = error -> reject(error);
+        });
     }
 }

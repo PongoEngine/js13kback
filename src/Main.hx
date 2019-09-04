@@ -21,6 +21,7 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import engine.display.FillSprite;
 import engine.display.Sprite;
 import engine.display.ImageSprite;
 import engine.Entity;
@@ -66,14 +67,16 @@ class Main {
 		var tileMap :TileMap = TileMap.parse("./src/game/tiles.dsmap");
 		var simplex = new Simplex(4730);
 		var backgroundSquare2 = CanvasTools.createGradient(90,10,30,100,TILE_WIDTH,TILE_WIDTH,1, simplex);
-		var backbackground = new Entity()
-			.add(new ImageSprite(CanvasTools.createGradient(90,10,30,100,2200,1200,10, simplex)));
 		var background = new Entity()
 			.add(new ImageSprite(CanvasTools.createTileThing(backgroundSquare2, tileMap, 2200,1200, simplex, 20, 0.01)))
-			.add(new Stage([backbackground.get(Sprite)]));
+			.add(new Stage())
+			.addChild(new Entity()
+				.add(new FillSprite(0,0,0,1,3000,3000)
+					.setBlendmode(SOFT_LIGHT)));
 
 		engine.root
-			.addChild(backbackground)
+			.addChild(new Entity()
+				.add(new ImageSprite(CanvasTools.createGradient(90,10,30,100,2200,1200,10, simplex))))
 			.addChild(background);
 		engine.root.add(new SoundComp());
 
@@ -82,22 +85,21 @@ class Main {
 				case FLOOR: {
 					background.addChild(new Entity()
 						.add(new Collider(type))
-						.add(new ImageSprite(CanvasTools.createGradient(140,40,40,50,TILE_WIDTH*width,TILE_WIDTH,3, simplex))
-							.setBlendmode(OVERLAY)
+						.add(new ImageSprite(CanvasTools.createGradient(140,140,140,50,TILE_WIDTH*width,TILE_WIDTH,3, simplex))
+							.setBlendmode(HUE)
 							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
 				}
 				case WALL: {
 					background.addChild(new Entity()
 						.add(new Collider(type))
 						.add(new ImageSprite(CanvasTools.createGradient(100,90,0,50,TILE_WIDTH*width,TILE_WIDTH,3, simplex))
-							.setBlendmode(OVERLAY)
+							.setBlendmode(HUE)
 							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
 				}
 				case PLAYER: {
 					background.addChild(new Entity()
 						.add(new ImageSprite(CanvasTools.createGradient(13,10,10,50,TILE_WIDTH,TILE_WIDTH,10, simplex))
 							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)
-							// .setBlendmode(HARD_LIGHT)
 							.centerAnchor())
 						.add(new Player())
 						.add(new Collider(type))

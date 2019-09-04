@@ -28,10 +28,7 @@ import engine.display.Sprite;
 
 class Stage implements Component
 {
-    public var parallaxItems (default, null):Array<Sprite>;
-
-    public function new(parallaxItems :Array<Sprite>) : Void
+    public function new() : Void
     {
-        this.parallaxItems = parallaxItems;
     }
 }

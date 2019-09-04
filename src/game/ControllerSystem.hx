@@ -52,7 +52,7 @@ class ControllerSystem implements System
         var sprite :Sprite = e.get(Sprite);
         var player :Player = e.get(Player);
         if(_isUp && player.isOnGround) {
-            e.get(Player).velocityY = -14;
+            e.get(Player).velocityY = -24;
             player.isOnGround = false;
             _isUp = false;
         }

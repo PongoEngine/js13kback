@@ -44,7 +44,7 @@ class CollisionSystem implements System
     {
         if(e.has(Player)) {
             if(!e.get(Player).isOnGround) {
-                e.get(Player).velocityY += 29.81 *dt;
+                e.get(Player).velocityY += 100 *dt;
                 e.get(Sprite).y += e.get(Player).velocityY;
             }
             
