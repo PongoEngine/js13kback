@@ -28,8 +28,14 @@ import engine.Component;
 class Player implements Component
 {
     public var val :Int = 0;
+    public var velocityX :Float = 0;
     public var velocityY :Float = 0;
-    public var isOnGround :Bool = false;
+    public var isOnGround :Bool = true;
+    public var isLeft :Bool = false;
+    public var isRight :Bool = false;
+    public var isUp :Bool = false;
+    public var isDown :Bool = false;
+    public var isShiftedLeft :Bool = false;
 
     public function new() : Void
     {

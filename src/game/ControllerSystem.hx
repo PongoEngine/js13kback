@@ -31,11 +31,6 @@ import engine.display.Sprite;
 
 class ControllerSystem implements System
 {
-    private var _isUp :Bool = false;
-    private var _isDown :Bool = false;
-    private var _isLeft :Bool = false;
-    private var _isRight :Bool = false;
-
     public function new() : Void
     {
         Browser.window.onkeydown = (e) -> _keyChange(true, e.keyCode);
@@ -49,39 +44,47 @@ class ControllerSystem implements System
 
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
-        var sprite :Sprite = e.get(Sprite);
-        var player :Player = e.get(Player);
-        if(_isUp && player.isOnGround) {
-            e.get(Player).velocityY = -24;
-            player.isOnGround = false;
-            _isUp = false;
-        }
-        if(_isLeft) sprite.x -= dt * VELOCITY;
-        if(_isRight) sprite.x += dt * VELOCITY;
-        if(_isLeft || _isRight) {
-            player.isOnGround = false;
+        if(_player == null) {
+            _player = e.get(Player);
         }
     }
 
     private function _keyChange(isKeyDown :Bool, keyCode :String) : Void
     {
-        if (keyCode == '38') {
-            _isUp = isKeyDown;
-            if(_isUp) _isDown = false;
-        }
-        else if (keyCode == '40') {
-            _isDown = isKeyDown;
-            if(_isDown) _isUp = false;
-        }
-        else if (keyCode == '37') {
-            _isLeft = isKeyDown;
-            if(_isLeft) _isRight = false;
-        }
-        else if (keyCode == '39') {
-            _isRight = isKeyDown;
-            if(_isRight) _isLeft = false;
+        if(_player != null) {
+            if (keyCode == '38') {
+                _player.isUp = isKeyDown;
+                if(_player.isUp && _player.isDown) {
+                    _player.isDown = false;
+                }
+            }
+            else if (keyCode == '40') {
+                _player.isDown = isKeyDown;
+                if(_player.isDown && _player.isUp) {
+                    _player.isUp = false;
+                }
+            }
+            else if (keyCode == '37') {
+                _player.isLeft = isKeyDown;
+                if(_player.isLeft && _player.isRight) {
+                    _player.isRight = false;
+                    _player.velocityX = 0;
+                }
+                if(_player.velocityX > 0) {
+                    _player.velocityX = 0;
+                }
+            }
+            else if (keyCode == '39') {
+                _player.isRight = isKeyDown;
+                if(_player.isRight && _player.isLeft) {
+                    _player.isLeft = false;
+                }
+                if(_player.velocityX < 0) {
+                    _player.velocityX = 0;
+                }
+            }
         }
     }
 
-    private static inline var VELOCITY = 500;
+    private var _player :Player = null;
 }

@@ -35,6 +35,7 @@ class ImageSprite extends Sprite
         super();
         image.then(img -> {
             this.image = img;
+            _onLoaded(this);
         });
     }
 
@@ -43,6 +44,12 @@ class ImageSprite extends Sprite
         if(this.image != null) {
             canvas.drawCanvas(image, 0, 0);
         }
+    }
+
+    public function onLoaded(fn :ImageSprite -> Void) : ImageSprite
+    {
+        _onLoaded = fn;
+        return this;
     }
 
     override public function naturalWidth() : Float
@@ -54,4 +61,6 @@ class ImageSprite extends Sprite
     {
         return this.image == null ? 0 : image.height;
     }
+
+    private var _onLoaded : ImageSprite -> Void = img -> {};
 }

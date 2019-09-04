@@ -70,6 +70,11 @@ abstract Canvas(CanvasRenderingContext2D)
         this.translate(x, y);
     }
 
+    @:extern public inline function scale(x :Float, y :Float) : Void
+    {
+        this.scale(x, y);
+    }
+
     public function rotate(degrees :Float) : Void
     {
         this.rotate(degrees * Math.PI / 180);

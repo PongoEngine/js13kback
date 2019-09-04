@@ -47,21 +47,25 @@ class CameraSystem implements System
 
         if(p != null) {
             var pSprite = p.get(Sprite);
-            stageSprite.x = getVal(Main.GAME_WIDTH/2, pSprite.x + pSprite.naturalWidth()/2, stageSprite.x, _hasStarted);
-            stageSprite.y = getVal(Main.GAME_HEIGHT/2, pSprite.y + pSprite.naturalHeight()/2, stageSprite.y, _hasStarted);
+            var player = p.get(Player);
+            stageSprite.x = getVal(player.isShiftedLeft, true, Main.GAME_WIDTH/2, pSprite.x + pSprite.naturalWidth()/2, stageSprite.x, _hasStarted);
+            stageSprite.y = getVal(false, false, Main.GAME_HEIGHT/2, pSprite.y + pSprite.naturalHeight()/2, stageSprite.y, _hasStarted);
             _hasStarted = true;
         }
     }
 
-    private static function getVal(mid :Float, playerCur :Float, stageCur :Float, hasStarted :Bool) : Float
+    private static function getVal(isShiftedLeft :Bool, isX :Bool, mid :Float, playerCur :Float, stageCur :Float, hasStarted :Bool) : Float
     {
-        var target = -playerCur + (mid);
+        // var offset = isX ? (isShiftedLeft ? -200 : 200) : 0;
+        var offset = 0;
+        var target = -playerCur + (mid) + offset;
         var distX = target - stageCur;
-        var percentage = Math.abs(distX) / 500;
+        var percentage = Math.abs(distX) / 400;
         if(!hasStarted) {
             return stageCur += distX;
         }
-        stageCur += percentage*percentage*percentage * distX;
+
+        stageCur += isX ? percentage * distX : percentage*percentage*percentage * distX;
         return stageCur;
     }
 

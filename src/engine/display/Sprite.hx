@@ -33,6 +33,8 @@ class Sprite implements Component
     public var lastY (default, null):Float = 0;
     public var anchorX :Float = 0;
     public var anchorY :Float = 0;
+    public var scaleX :Float = 1;
+    public var scaleY :Float = 1;
     public var angle :Float = 0;
     public var blendmode :BlendMode = null;
 

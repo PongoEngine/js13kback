@@ -126,6 +126,7 @@ class Engine
 		if(sprite != null) {
 			canvas.translate(sprite.x, sprite.y);
 			canvas.rotate(sprite.angle);
+			canvas.scale(sprite.scaleX, sprite.scaleY);
 			canvas.translate(-sprite.anchorX, -sprite.anchorY);
 			canvas.setBlendMode(sprite.blendmode);
 			sprite.draw(canvas);
