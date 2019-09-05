@@ -25,11 +25,8 @@ package game;
 
 import engine.Component;
 
-class Player implements Component
+class Enemy implements Component
 {
-    public var val :Int = 0;
-    public var isShiftedLeft :Bool = false;
-
     public function new() : Void
     {
     }

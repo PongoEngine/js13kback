@@ -39,13 +39,14 @@ class ControllerSystem implements System
 
     public function shouldUpdate(e :Entity) : Bool
     {
-        return e.has(Player) && e.has(Sprite);
+        return e.has(Player) && e.has(Sprite) && e.has(Collider);
     }
 
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
         if(_player == null) {
-            _player = e.get(Player);
+            trace(e);
+            _player = e.get(Collider);
         }
     }
 
@@ -86,5 +87,5 @@ class ControllerSystem implements System
         }
     }
 
-    private var _player :Player = null;
+    private var _player :Collider = null;
 }

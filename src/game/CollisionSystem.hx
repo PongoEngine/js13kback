@@ -49,50 +49,50 @@ class CollisionSystem implements System
 
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
-        if(e.has(Player)) {
-            var player = e.get(Player);
+        var collider = e.get(Collider);
+        if(collider.isDynamic) {
             var sprite = e.get(Sprite);
-            if(player.isUp && player.isOnGround) {
-                player.velocityY = -JUMP_VELO;
-                player.isOnGround = false;
-                player.isUp = false;
+            if(collider.isUp && collider.isOnGround) {
+                collider.velocityY = -JUMP_VELO;
+                collider.isOnGround = false;
+                collider.isUp = false;
             }
-            if(player.isLeft) player.velocityX -= VELOX_ACCEL *dt;
-            if(player.isRight) player.velocityX += VELOX_ACCEL *dt;
+            if(collider.isLeft) collider.velocityX -= VELOX_ACCEL *dt;
+            if(collider.isRight) collider.velocityX += VELOX_ACCEL *dt;
 
-            if(player.velocityX > MAX_VELOX) {
-                player.velocityX  = MAX_VELOX;
+            if(collider.velocityX > MAX_VELOX) {
+                collider.velocityX  = MAX_VELOX;
             }
-            else if(player.velocityX < -MAX_VELOX) {
-                player.velocityX = -MAX_VELOX;
+            else if(collider.velocityX < -MAX_VELOX) {
+                collider.velocityX = -MAX_VELOX;
             }
-            if(player.velocityX > 0) {
+            if(collider.velocityX > 0) {
                 sprite.scaleX = -1;
             }
-            else if(player.velocityX < 0) {
+            else if(collider.velocityX < 0) {
                 sprite.scaleX = 1;
             }
 
-            if(!player.isLeft && !player.isRight) {
-                if(Math.abs(player.velocityX) < VELOX_MIN) {
-                    player.velocityX = 0;
+            if(!collider.isLeft && !collider.isRight) {
+                if(Math.abs(collider.velocityX) < VELOX_MIN) {
+                    collider.velocityX = 0;
                 }
                 else {
-                    player.velocityX *= VELOX_DECEL;
+                    collider.velocityX *= VELOX_DECEL;
                 }
             }
 
-            if(player.velocityX != 0) {
-                player.isOnGround = false;
+            if(collider.velocityX != 0) {
+                collider.isOnGround = false;
             }
 
-            sprite.x += player.velocityX;
-            if(!player.isOnGround) {
-                player.velocityY += GRAVITY * dt;
-                if(player.velocityY > MAX_VELOY) {
-                    player.velocityY = MAX_VELOY;
+            sprite.x += collider.velocityX;
+            if(!collider.isOnGround) {
+                collider.velocityY += GRAVITY * dt;
+                if(collider.velocityY > MAX_VELOY) {
+                    collider.velocityY = MAX_VELOY;
                 }
-                sprite.y += player.velocityY;
+                sprite.y += collider.velocityY;
             }
 
             engine.iterate(other -> {
@@ -103,23 +103,23 @@ class CollisionSystem implements System
                     if(collidedWithLeft(sprite, other.get(Sprite))) {
                         var offsetX = sprite.right() - other.get(Sprite).left();
                         sprite.x -= offsetX;
-                        player.velocityX = 0;
+                        collider.velocityX = 0;
                     }
                     else if(collidedWithRight(sprite, other.get(Sprite))) {
                         var offsetX = other.get(Sprite).right() - sprite.left();
                         sprite.x += offsetX;
-                        player.velocityX = 0;
+                        collider.velocityX = 0;
                     }
                     else if(collidedWithTop(sprite, other.get(Sprite))) {
                         var offsetY = sprite.bottom() - other.get(Sprite).top();
                         sprite.y -= offsetY;
-                        player.velocityY = 0;
-                        player.isOnGround = true;
+                        collider.velocityY = 0;
+                        collider.isOnGround = true;
                     }
                     else if(collidedWithBottom(sprite, other.get(Sprite)) && other.get(Collider).type == WALL) {
                         var offsetY = other.get(Sprite).bottom() - sprite.top();
                         sprite.y += offsetY;
-                        player.velocityY = 0;
+                        collider.velocityY = 0;
                     }
                 }
                 return hasHit;

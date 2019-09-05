@@ -22,12 +22,10 @@
  */
 
 import engine.display.FillSprite;
-import engine.display.Sprite;
 import engine.display.ImageSprite;
 import engine.Entity;
 import engine.Engine;
 import game.Player;
-import game.Orbit;
 import game.Stage;
 import game.Collider;
 import game.SoundComp;
@@ -84,14 +82,14 @@ class Main {
 			switch type {
 				case FLOOR: {
 					background.addChild(new Entity()
-						.add(new Collider(type))
+						.add(new Collider(type, false))
 						.add(new ImageSprite(CanvasTools.createGradient(140,140,140,50,TILE_WIDTH*width,TILE_WIDTH,3, simplex))
 							// .setBlendmode(HUE)
 							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
 				}
 				case WALL: {
 					background.addChild(new Entity()
-						.add(new Collider(type))
+						.add(new Collider(type, false))
 						.add(new ImageSprite(CanvasTools.createGradient(100,90,0,50,TILE_WIDTH*width,TILE_WIDTH,3, simplex))
 							// .setBlendmode(HUE)
 							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
@@ -104,7 +102,7 @@ class Main {
 									.centerAnchor();
 							}).setXY(x*TILE_WIDTH, y*TILE_WIDTH))
 						.add(new Player())
-						.add(new Collider(type))
+						.add(new Collider(type, true))
 						.addChild(new Entity()
 							.add(new ImageSprite(CanvasTools.createGradient(220,220,220,40,15,15,5, simplex))
 								.onLoaded(img -> {

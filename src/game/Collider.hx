@@ -28,8 +28,18 @@ import engine.Component;
 class Collider implements Component
 {
     public var type (default, null):TileType;
-    public function new(type :TileType) : Void
+    public var velocityX :Float = 0;
+    public var velocityY :Float = 0;
+    public var isOnGround :Bool = true;
+    public var isLeft :Bool = false;
+    public var isRight :Bool = false;
+    public var isUp :Bool = false;
+    public var isDown :Bool = false;
+    public var isDynamic :Bool;
+
+    public function new(type :TileType, isDynamic :Bool) : Void
     {
         this.type = type;
+        this.isDynamic = isDynamic;
     }
 }
