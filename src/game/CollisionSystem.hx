@@ -33,7 +33,7 @@ class CollisionSystem implements System
     private static inline var MAX_VELOX = 10;
     private static inline var MAX_VELOY = 16;
     private static inline var VELOX_ACCEL = 40;
-    private static inline var VELOX_DECEL = 0.8;
+    private static inline var VELOX_DECEL = 0.7;
     private static inline var VELOX_MIN = 0.1;
     private static inline var JUMP_VELO = 24;
     private static inline var GRAVITY = 90;
@@ -74,7 +74,7 @@ class CollisionSystem implements System
             }
 
             if(!player.isLeft && !player.isRight) {
-                if(player.velocityX < VELOX_MIN) {
+                if(Math.abs(player.velocityX) < VELOX_MIN) {
                     player.velocityX = 0;
                 }
                 else {
