@@ -26,6 +26,8 @@ import engine.display.ImageSprite;
 import engine.Entity;
 import engine.Engine;
 import game.Player;
+import game.Enemy;
+import game.EnemySystem;
 import game.Stage;
 import game.Collider;
 import game.SoundComp;
@@ -80,29 +82,56 @@ class Main {
 
 		tileMap.populate(function(x :Int, y :Int, type :TileType, width :Int) {
 			switch type {
+				case WATERFALL: {
+					background.addChild(new Entity()
+						.add(new ImageSprite(CanvasTools.createGradient(30,30,140,10,TILE_WIDTH*width,TILE_WIDTH,3, simplex))
+							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
+				}
 				case FLOOR: {
 					background.addChild(new Entity()
-						.add(new Collider(type, false))
+						.add(new Collider(type, false, 0))
 						.add(new ImageSprite(CanvasTools.createGradient(140,140,140,50,TILE_WIDTH*width,TILE_WIDTH,3, simplex))
 							// .setBlendmode(HUE)
 							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
 				}
 				case WALL: {
 					background.addChild(new Entity()
-						.add(new Collider(type, false))
+						.add(new Collider(type, false, 0))
 						.add(new ImageSprite(CanvasTools.createGradient(100,90,0,50,TILE_WIDTH*width,TILE_WIDTH,3, simplex))
 							// .setBlendmode(HUE)
 							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
+				}
+				case ENEMY: {
+					background.addChild(new Entity()
+						.add(new ImageSprite(CanvasTools.createGradient(30,100,110,50,TILE_WIDTH,TILE_WIDTH,10, simplex))
+							.onLoaded(img -> {
+								img.centerAnchor();
+							}).setXY(x*TILE_WIDTH, y*TILE_WIDTH))
+						.add(new Enemy())
+						.add(new Collider(type, true, 10))
+						.addChild(new Entity()
+							.add(new ImageSprite(CanvasTools.createGradient(220,220,220,40,15,15,5, simplex))
+								.onLoaded(img -> {
+									img
+										.setXY(2, 15)
+										.centerAnchor();
+								})))
+						.addChild(new Entity()
+							.add(new ImageSprite(CanvasTools.createGradient(220,220,220,40,15,15,5, simplex))
+								.onLoaded(img -> {
+									img
+										.setXY(20, 15)
+										.centerAnchor();
+								}))));
 				}
 				case PLAYER: {
 					background.addChild(new Entity()
 						.add(new ImageSprite(CanvasTools.createGradient(130,100,10,50,TILE_WIDTH,TILE_WIDTH,10, simplex))
 							.onLoaded(img -> {
-								img
-									.centerAnchor();
+								img.centerAnchor();
 							}).setXY(x*TILE_WIDTH, y*TILE_WIDTH))
 						.add(new Player())
-						.add(new Collider(type, true))
+						.add(new Collider(type, true, 40))
 						.addChild(new Entity()
 							.add(new ImageSprite(CanvasTools.createGradient(220,220,220,40,15,15,5, simplex))
 								.onLoaded(img -> {
@@ -122,6 +151,7 @@ class Main {
 		});
 
 		engine.addSystem(new ControllerSystem());
+		engine.addSystem(new EnemySystem());
 		engine.addSystem(new CameraSystem());
 		engine.addSystem(new OrbitSystem());
 		engine.addSystem(new CollisionSystem());

@@ -27,7 +27,15 @@ import engine.Component;
 
 class Enemy implements Component
 {
+    public var timeout :Float;
+    public var elapsed :Float;
+
     public function new() : Void
     {
+        timeout = Math.random() * (MAX - MIN) + MIN;
+        elapsed = Math.random() * timeout;
     }
+
+    private static inline var MIN = 0.2;
+    private static inline var MAX = 1;
 }

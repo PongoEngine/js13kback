@@ -45,7 +45,6 @@ class ControllerSystem implements System
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
         if(_player == null) {
-            trace(e);
             _player = e.get(Collider);
         }
     }

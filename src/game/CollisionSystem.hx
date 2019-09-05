@@ -32,8 +32,8 @@ class CollisionSystem implements System
 {
     private static inline var MAX_VELOX = 10;
     private static inline var MAX_VELOY = 16;
-    private static inline var VELOX_ACCEL = 40;
-    private static inline var VELOX_DECEL = 0.7;
+    // private static inline var VELOX_ACCEL = 40;
+    private static inline var VELOX_DECEL = 0.8;
     private static inline var VELOX_MIN = 0.1;
     private static inline var JUMP_VELO = 24;
     private static inline var GRAVITY = 90;
@@ -57,8 +57,8 @@ class CollisionSystem implements System
                 collider.isOnGround = false;
                 collider.isUp = false;
             }
-            if(collider.isLeft) collider.velocityX -= VELOX_ACCEL *dt;
-            if(collider.isRight) collider.velocityX += VELOX_ACCEL *dt;
+            if(collider.isLeft) collider.velocityX -= collider.acceleration *dt;
+            if(collider.isRight) collider.velocityX += collider.acceleration *dt;
 
             if(collider.velocityX > MAX_VELOX) {
                 collider.velocityX  = MAX_VELOX;
