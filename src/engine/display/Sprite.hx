@@ -42,7 +42,7 @@ class Sprite implements Component
     {
     }
 
-    public function draw(canvas :Canvas) : Void
+    public function draw(canvas :Canvas, dt :Float) : Void
     {
 
     }

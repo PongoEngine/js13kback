@@ -43,7 +43,8 @@ class FillSprite extends Sprite
         this.height = height;
     }
 
-    override function draw(canvas:Canvas) {
+    override function draw(canvas:Canvas, dt :Float) :Void
+    {
         canvas.setColor(r,g,b,a);
         canvas.drawRect(0, 0, width, height);
     }

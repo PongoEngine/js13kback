@@ -129,7 +129,7 @@ class Engine
 			canvas.scale(sprite.scaleX, sprite.scaleY);
 			canvas.translate(-sprite.anchorX, -sprite.anchorY);
 			canvas.setBlendMode(sprite.blendmode);
-			sprite.draw(canvas);
+			sprite.draw(canvas, dt);
 		}
 		for(c in entity.children()) {
 			update(engine, c, canvas, dt, systems);

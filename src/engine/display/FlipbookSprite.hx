@@ -26,17 +26,19 @@ package engine.display;
 import js.html.ImageElement;
 import js.lib.Promise;
 
-class ImageSprite extends Sprite
+class FlipbookSprite extends Sprite
 {
     public var image :ImageElement = null;
 
-    public function new(image :Promise<ImageElement>) : Void
+    public function new(image :Promise<ImageElement>, width :Float, height :Float) : Void
     {
         super();
         image.then(img -> {
             this.image = img;
             _onLoaded(this);
         });
+        _width = width;
+        _height = height;
     }
 
     override function draw(canvas:Canvas, dt :Float) : Void
@@ -46,7 +48,7 @@ class ImageSprite extends Sprite
         }
     }
 
-    public function onLoaded(fn :ImageSprite -> Void) : ImageSprite
+    public function onLoaded(fn :FlipbookSprite -> Void) : FlipbookSprite
     {
         _onLoaded = fn;
         return this;
@@ -54,13 +56,15 @@ class ImageSprite extends Sprite
 
     override public function naturalWidth() : Float
     {
-        return this.image == null ? 0 : image.width;
+        return _width;
     }
 
     override public function naturalHeight() : Float
     {
-        return this.image == null ? 0 : image.height;
+        return _height;
     }
 
-    private var _onLoaded : ImageSprite -> Void = img -> {};
+    private var _onLoaded : FlipbookSprite -> Void = img -> {};
+    private var _width :Float;
+    private var _height :Float;
 }

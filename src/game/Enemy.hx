@@ -37,5 +37,5 @@ class Enemy implements Component
     }
 
     private static inline var MIN = 0.2;
-    private static inline var MAX = 1;
+    private static inline var MAX = 0.5;
 }
