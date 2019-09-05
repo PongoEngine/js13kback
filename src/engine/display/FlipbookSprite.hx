@@ -29,12 +29,16 @@ import js.lib.Promise;
 class FlipbookSprite extends Sprite
 {
     public var image :ImageElement = null;
+    public var tiles :Int = 0;
+    private var _y = 0;
 
     public function new(image :Promise<ImageElement>, width :Float, height :Float) : Void
     {
         super();
         image.then(img -> {
             this.image = img;
+            tiles = Math.floor(this.image.width / width) * Math.floor(this.image.height / height);
+            trace(tiles);
             _onLoaded(this);
         });
         _width = width;
@@ -44,7 +48,15 @@ class FlipbookSprite extends Sprite
     override function draw(canvas:Canvas, dt :Float) : Void
     {
         if(this.image != null) {
-            canvas.drawCanvas(image, 0, 0);
+            canvas.drawSubimage(image, 0, 0, 0, _y*(image.height/3), image.width, image.height/3);
+        }
+        _elapsed += dt;
+        if(_elapsed > 0.2) {
+            _y--;
+            _elapsed = 0;
+        }
+        if(_y < 0) {
+            _y = 2;
         }
     }
 
@@ -67,4 +79,5 @@ class FlipbookSprite extends Sprite
     private var _onLoaded : FlipbookSprite -> Void = img -> {};
     private var _width :Float;
     private var _height :Float;
+    private var _elapsed :Float = 0;
 }

@@ -60,9 +60,14 @@ abstract Canvas(CanvasRenderingContext2D)
         this.fillRect(x,y,width,height);
     }
 
-    @:extern public inline function drawCanvas(image :ImageElement, x :Float, y :Float) : Void
+    @:extern public inline function drawImage(image :ImageElement, dx :Float, dy :Float) : Void
     {
-        this.drawImage(image, x, y);
+        this.drawImage(image, dx, dy);
+    }
+
+    @:extern public inline function drawSubimage(image :ImageElement, dx :Float, dy :Float, sx :Float, sy :Float, dWidth :Float, dHeight :Float) : Void
+    {
+        this.drawImage(image, sx, sy, dWidth, dHeight, dx, dy, dWidth, dHeight);
     }
 
     @:extern public inline function translate(x :Float, y :Float) : Void

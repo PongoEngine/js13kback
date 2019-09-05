@@ -28,6 +28,7 @@ import engine.Entity;
 import engine.System;
 import engine.Engine;
 import engine.display.Sprite;
+import game.collision.Collider;
 
 class ControllerSystem implements System
 {

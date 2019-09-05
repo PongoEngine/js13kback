@@ -21,25 +21,27 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package game;
+package game.collision;
 
 import engine.Entity;
 import engine.System;
 import engine.Engine;
 import engine.display.Sprite;
+import game.collision.SpatialHash;
 
 class CollisionSystem implements System
 {
     private static inline var MAX_VELOX = 10;
     private static inline var MAX_VELOY = 16;
-    // private static inline var VELOX_ACCEL = 40;
     private static inline var VELOX_DECEL = 0.8;
     private static inline var VELOX_MIN = 0.1;
     private static inline var JUMP_VELO = 24;
     private static inline var GRAVITY = 90;
+    private var _hash :SpatialHash;
 
-    public function new() : Void
+    public function new(hash :SpatialHash) : Void
     {
+        _hash = hash;
     }
 
     public function shouldUpdate(e :Entity) : Bool
@@ -95,35 +97,37 @@ class CollisionSystem implements System
                 sprite.y += collider.velocityY;
             }
 
-            engine.iterate(other -> {
-                return other.has(Collider) && other.has(Sprite) && other != e;
-            }, other -> {
-                var hasHit = checkCollision(sprite, other.get(Sprite));
-                if(hasHit) {
-                    if(collidedWithLeft(sprite, other.get(Sprite))) {
-                        var offsetX = sprite.right() - other.get(Sprite).left();
-                        sprite.x -= offsetX;
-                        collider.velocityX = 0;
-                    }
-                    else if(collidedWithRight(sprite, other.get(Sprite))) {
-                        var offsetX = other.get(Sprite).right() - sprite.left();
-                        sprite.x += offsetX;
-                        collider.velocityX = 0;
-                    }
-                    else if(collidedWithTop(sprite, other.get(Sprite))) {
-                        var offsetY = sprite.bottom() - other.get(Sprite).top();
-                        sprite.y -= offsetY;
-                        collider.velocityY = 0;
-                        collider.isOnGround = true;
-                    }
-                    else if(collidedWithBottom(sprite, other.get(Sprite)) && other.get(Collider).type == WALL) {
-                        var offsetY = other.get(Sprite).bottom() - sprite.top();
-                        sprite.y += offsetY;
-                        collider.velocityY = 0;
+            _hash.update(e);
+
+            for(other in _hash.retrieve(e)) {
+                if(other != e) {
+                    var hasHit = checkCollision(sprite, other.get(Sprite));
+                    if(hasHit) {
+                        if(collidedWithLeft(sprite, other.get(Sprite))) {
+                            var offsetX = sprite.right() - other.get(Sprite).left();
+                            sprite.x -= offsetX;
+                            collider.velocityX = 0;
+                        }
+                        else if(collidedWithRight(sprite, other.get(Sprite))) {
+                            var offsetX = other.get(Sprite).right() - sprite.left();
+                            sprite.x += offsetX;
+                            collider.velocityX = 0;
+                        }
+                        else if(collidedWithTop(sprite, other.get(Sprite))) {
+                            var offsetY = sprite.bottom() - other.get(Sprite).top();
+                            sprite.y -= offsetY;
+                            collider.velocityY = 0;
+                            collider.isOnGround = true;
+                        }
+                        else if(collidedWithBottom(sprite, other.get(Sprite)) && other.get(Collider).type == WALL) {
+                            var offsetY = other.get(Sprite).bottom() - sprite.top();
+                            sprite.y += offsetY;
+                            collider.velocityY = 0;
+                        }
+                        // break;
                     }
                 }
-                return hasHit;
-            });
+            }
         }   
     }
 

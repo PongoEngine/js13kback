@@ -28,6 +28,7 @@ import engine.System;
 import engine.Engine;
 import engine.display.Sprite;
 import engine.util.EMath;
+import game.collision.Collider;
 
 class EnemySystem implements System
 {

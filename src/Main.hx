@@ -23,19 +23,22 @@
 
 import engine.display.FillSprite;
 import engine.display.ImageSprite;
+import engine.display.Sprite;
+import engine.display.FlipbookSprite;
 import engine.Entity;
 import engine.Engine;
 import game.Player;
 import game.Enemy;
 import game.EnemySystem;
 import game.Stage;
-import game.Collider;
+import game.collision.Collider;
 import game.SoundComp;
 import game.ControllerSystem;
 import game.OrbitSystem;
 import game.CameraSystem;
 import game.SoundSystem;
-import game.CollisionSystem;
+import game.collision.CollisionSystem;
+import game.collision.SpatialHash;
 import game.CanvasTools;
 import game.TileType;
 import js.Browser;
@@ -64,6 +67,7 @@ class Main {
 
 	static inline function startGame(engine :Engine) : Void
 	{
+		var spatialHash = new SpatialHash();
 		var tileMap :TileMap = TileMap.parse("./src/game/tiles.dsmap");
 		var simplex = new Simplex(4730);
 		var backgroundSquare2 = CanvasTools.createGradient(90,10,30,100,TILE_WIDTH,TILE_WIDTH,1, simplex);
@@ -84,7 +88,8 @@ class Main {
 			switch type {
 				case WATERFALL: {
 					background.addChild(new Entity()
-						.add(new ImageSprite(CanvasTools.createGradient(30,30,140,10,TILE_WIDTH*width,TILE_WIDTH,3, simplex))
+						.add(new FlipbookSprite(CanvasTools.createGradient(30,30,140,10,TILE_WIDTH*width,TILE_WIDTH*3,3, simplex), 10, 10)
+							.setBlendmode(LIGHTEN)
 							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
 				}
 				case FLOOR: {
@@ -150,12 +155,20 @@ class Main {
 			}
 		});
 
-		engine.addSystem(new ControllerSystem());
-		engine.addSystem(new EnemySystem());
-		engine.addSystem(new CameraSystem());
-		engine.addSystem(new OrbitSystem());
-		engine.addSystem(new CollisionSystem());
-		var scale = new Scale(Root.D, ScaleType.NATURAL_MINOR);
-		engine.addSystem(new SoundSystem(new Sequencer(TrackA.a, scale)));
+		haxe.Timer.delay(() -> {
+			engine.iterate(e -> e.has(Collider) && e.has(Sprite), e -> {
+				var isFat = e.get(Sprite).naturalWidth() > TILE_WIDTH;
+				spatialHash.insert(e, isFat);
+				return true;
+			});
+
+			engine.addSystem(new ControllerSystem());
+			engine.addSystem(new EnemySystem());
+			engine.addSystem(new CameraSystem());
+			engine.addSystem(new OrbitSystem());
+			engine.addSystem(new CollisionSystem(spatialHash));
+			var scale = new Scale(Root.D, ScaleType.NATURAL_MINOR);
+			engine.addSystem(new SoundSystem(new Sequencer(TrackA.a, scale)));
+		}, 4);
 	}
 }

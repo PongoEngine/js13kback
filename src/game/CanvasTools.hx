@@ -57,7 +57,7 @@ class CanvasTools
                 for(y in 0...heightLength) {
                     for(x in 0...widthLength) {
                         if(simplex.get(x+offset,y+offset) > probability) {
-                            canvas.drawCanvas(img, x*img.width, y*img.height);
+                            canvas.drawImage(img, x*img.width, y*img.height);
                         }
                     }
                 }
@@ -65,7 +65,7 @@ class CanvasTools
                 if(tilemap != null) {
                     tilemap.populate((x,y,tile,width) -> {
                         for(_x in x...(x+width))
-                        canvas.drawCanvas(img, _x*img.width, y*img.height);
+                        canvas.drawImage(img, _x*img.width, y*img.height);
                     });
                 }
             }); 

@@ -42,7 +42,7 @@ class ImageSprite extends Sprite
     override function draw(canvas:Canvas, dt :Float) : Void
     {
         if(this.image != null) {
-            canvas.drawCanvas(image, 0, 0);
+            canvas.drawImage(image, 0, 0);
         }
     }
 
