@@ -69,7 +69,7 @@ class Main {
 	static inline function startGame(engine :Engine) : Void
 	{
 		var spatialHash = new SpatialHash();
-		SoundFile.parse("./src/game/tsrack.dstrack");
+		SoundFile.parse("./src/game/track.dstrack");
 		var tileMap :TileMap = TileMap.parse("./src/game/tiles.dsmap");
 		var simplex = new Simplex(4730);
 		var backgroundSquare2 = CanvasTools.createGradient(90,10,30,100,TILE_WIDTH,TILE_WIDTH,1, simplex);
@@ -90,7 +90,7 @@ class Main {
 			switch type {
 				case WATERFALL: {
 					background.addChild(new Entity()
-						.add(new FlipbookSprite(CanvasTools.createGradient(30,30,140,10,TILE_WIDTH*width,TILE_WIDTH*3,3, simplex), 10, 10)
+						.add(new FlipbookSprite(CanvasTools.createGradient(30,30,140,10,TILE_WIDTH*width,TILE_WIDTH*3,10, simplex), 10, 10)
 							.setBlendmode(LIGHTEN)
 							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
 				}

@@ -29,3 +29,33 @@ class SoundFile
         }
     }
 }
+
+typedef Envelope =
+{
+    var attackDur :Float;
+    var attackAmp :Float;
+    var decayDur :Float;
+    var sustainDur :Float;
+    var sustainAmp :Float;
+    var releaseDur :Float;
+}
+
+typedef Sound =
+{
+    volume :Float, 
+    randomness :Float,
+    length :Float,
+    attack :Float,
+    slide :Float,
+    noise :Float,
+    modulation :Float,
+    modulationPhase :Float
+}
+
+abstract Note(Array<Int>)
+{
+    public function new(vals :Array<Int>) : Void
+    {
+        this = vals;
+    } 
+}
