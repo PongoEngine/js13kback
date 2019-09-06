@@ -29,20 +29,23 @@
 */
 
 package engine.sound;
+import js.html.audio.AudioContext;
+import js.html.audio.AudioBufferSourceNode;
 
 @:native("zzfx")
 extern class ZZFX
 {
     @:selfCall
     public static function make(
+        ctx :AudioContext,
         volume :Float, 
         randomness :Float,
         frequency :Float, 
-        length :Float = 1,
-        attack :Float =.1,
-        slide :Float = 0,
-        noise :Float = 0,
-        modulation :Float = 0,
-        modulationPhase :Float = 0
-    ) : Void;
+        length :Float,
+        attack :Float,
+        slide :Float,
+        noise :Float,
+        modulation :Float,
+        modulationPhase :Float
+    ) : AudioBufferSourceNode;
 }

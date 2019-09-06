@@ -29,7 +29,7 @@ class TrackA
 
             ],
             adsr: {
-                attackDur: 0.1,
+                attackDur: 0,
                 attackAmp: 0.5,
                 decayDur: 0.1,
                 sustainDur: 0.5,
