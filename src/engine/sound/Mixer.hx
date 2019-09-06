@@ -23,6 +23,7 @@
 
 package engine.sound;
 
+import engine.sound.Track.ZZFXSettings;
 import engine.sound.Track.ADSR;
 import js.html.audio.OscillatorType;
 import engine.sound.theory.Duration;
@@ -51,9 +52,9 @@ class Mixer
         _synth.resume();
     }
 
-    public function play(key :Int, start:Pulse, duration :Duration, type :OscillatorType, adsr :ADSR) : Void
+    public function play(key :Int, start:Pulse, duration :Duration, settings :ZZFXSettings, adsr :ADSR) : Void
     {
-        _synth.play(key, start, duration, type, adsr);
+        _synth.play(key, start, duration, settings, adsr);
     }
 
     public function checkNotes(cur :Pulse) : Void

@@ -54,7 +54,7 @@ class Sequencer
             for(info in _track.infos) {
                 if(info.notes.exists(_curPulse)) {
                     for(note in info.notes.get(_curPulse)) {
-                        mixer.play(note.note.toInt(), note.start, note.duration, note.type, info.adsr);
+                        mixer.play(note.note.toInt(), note.start, note.duration, note.settings, info.adsr);
                     }
                 }
             } 
@@ -77,9 +77,9 @@ class Sequencer
         }
     }
 
-    private static function createNotes(info :TrackInfo, scale :Scale) : Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, type :OscillatorType}>>
+    private static function createNotes(info :TrackInfo, scale :Scale) : Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, settings :ZZFXSettings}>>
     {
-        var notes = new Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, type :OscillatorType}>>();
+        var notes = new Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, settings :ZZFXSettings}>>();
         var laneIndex = 0;
         for(lane in info.lanes) {
             var str = (lane + "").replace("|", "");
@@ -96,7 +96,7 @@ class Sequencer
                         note: scale.getNote(new Step(laneIndex) + info.offset, info.octave),
                         duration: duration,
                         start: start,
-                        type: info.type
+                        settings: info.settings
                     });
                 }
                 start += info.noteLength;

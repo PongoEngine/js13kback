@@ -26,6 +26,7 @@ import engine.display.ImageSprite;
 import engine.display.Sprite;
 import engine.display.FlipbookSprite;
 import engine.Entity;
+import engine.sound.SoundFile;
 import engine.Engine;
 import game.Player;
 import game.Enemy;
@@ -68,6 +69,7 @@ class Main {
 	static inline function startGame(engine :Engine) : Void
 	{
 		var spatialHash = new SpatialHash();
+		SoundFile.parse("./src/game/tsrack.dstrack");
 		var tileMap :TileMap = TileMap.parse("./src/game/tiles.dsmap");
 		var simplex = new Simplex(4730);
 		var backgroundSquare2 = CanvasTools.createGradient(90,10,30,100,TILE_WIDTH,TILE_WIDTH,1, simplex);

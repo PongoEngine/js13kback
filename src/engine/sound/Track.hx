@@ -28,7 +28,6 @@ import engine.sound.theory.Note;
 import engine.sound.theory.Step;
 import engine.sound.theory.Octave;
 import engine.sound.theory.Duration;
-import js.html.audio.OscillatorType;
 
 typedef Track =
 {
@@ -37,13 +36,25 @@ typedef Track =
     infos: Array<TrackInfo>
 }
 
+typedef ZZFXSettings =
+{
+    volume :Float, 
+    randomness :Float,
+    length :Float,
+    attack :Float,
+    slide :Float,
+    noise :Float,
+    modulation :Float,
+    modulationPhase :Float
+}
+
 typedef TrackInfo = {
-    type:OscillatorType,
+    settings:ZZFXSettings,
     noteLength: Pulse,
     octave: Octave,
     offset: Step,
     lanes: Array<String>,
-    ?notes: Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, type :OscillatorType}>>,
+    ?notes: Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, settings :ZZFXSettings}>>,
     adsr: ADSR
 }
 

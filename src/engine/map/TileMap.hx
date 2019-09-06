@@ -32,6 +32,8 @@ import sys.FileSystem;
 import sys.io.File;
 #end
 
+import engine.util.Parser;
+
 @:extern abstract TileMap(Array<Int>)
 {
     public inline function new(content :Array<Int>) : Void
@@ -39,7 +41,7 @@ import sys.io.File;
         this = content;
     }
 
-    public inline function populate(fn :(x :Int, y :Int, tile :Int, width :Int) -> Void) : Void
+    public function populate(fn :(x :Int, y :Int, tile :Int, width :Int) -> Void) : Void
     {
         var i = 0;
         while(i < this.length) {
@@ -52,7 +54,7 @@ import sys.io.File;
     {
         if (FileSystem.exists(filePath)) {
             var fileContent:String = File.getContent(filePath);
-            var parser = new MapParser(fileContent);
+            var parser = new Parser(fileContent);
 
             var x = 0;
             var y = 0;
@@ -93,90 +95,4 @@ import sys.io.File;
             return Context.parse('new TileMap(${[]})', Context.currentPos());
         }
     }
-
-    public static macro function parse2(filePath :String):ExprOf<TileMap>
-    {
-        if (FileSystem.exists(filePath)) {
-            var fileContent:String = File.getContent(filePath);
-            return Context.parse('
-                {
-                    var parser = new engine.map.TileMap.MapParser("${fileContent}");
-                    parser.parse();
-                }
-            ', Context.currentPos());
-        }  else {
-            Context.warning('${filePath}: is not valid', Context.currentPos());
-            return Context.parse('new TileMap(${[]})', Context.currentPos());
-        }
-    }
-}
-
-class MapParser
-{
-    public function new(content :String) : Void
-    {
-        _content = content;
-        _charIndex = 0;
-    }
-
-    public function parse() : TileMap
-    {
-        var x = 0;
-        var y = 0;
-        var last = -1;
-        var content :Array<Int> = [];
-
-        while(this.hasNext()) {
-            this.consumeWhile(str -> str == " ");
-            var char = this.nextChar();
-            if(char == "\n") {
-                last = -1;
-                x = 0;
-                y++;
-            }
-            else {
-                var cur :Int = Std.parseInt(char);
-                switch [cur != null, last == cur] {
-                    case [true, false]: {
-                        content.push(x);
-                        content.push(y);
-                        content.push(cur);
-                        content.push(1);
-                        last = cur;
-                    }
-                    case [true, true]: {
-                        content[content.length-1] += 1;
-                    }
-                    case [false, _]: {
-                        last = -1;
-                    }
-                }
-                x++;
-            }
-        }
-        return new TileMap(content);
-    }
-
-    public function hasNext() : Bool
-    {
-        return _charIndex < _content.length;
-    }
-
-    public function consumeWhile(fn :String -> Bool) : Void
-    {
-        while(fn(peek())) nextChar();
-    }
-
-    public function nextChar() : String
-    {
-        return _content.charAt(_charIndex++);
-    }
-
-    public function peek() : String
-    {
-        return _content.charAt(_charIndex);
-    }
-
-    private var _content :String;
-    private var _charIndex :Int;
 }

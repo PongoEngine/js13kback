@@ -23,6 +23,7 @@
 
 package engine.sound.synth;
 
+import engine.sound.Track.ZZFXSettings;
 import js.html.audio.OscillatorNode;
 import js.html.audio.AudioBufferSourceNode;
 import js.html.audio.GainNode;
@@ -39,15 +40,14 @@ class Oscillator
         _buffer = null;
     }
 
-    public function play(freq :Float, ctx :AudioContext, audio :AudioNode, type :OscillatorType, adsr :ADSR) : Void
+    public function play(freq :Float, ctx :AudioContext, audio :AudioNode, settings :ZZFXSettings, adsr :ADSR) : Void
     {
         if(_buffer == null) {
             _gain = ctx.createGain();
-            _buffer = ZZFX.make(ctx, 1,.1,freq,1,.63,3.8,4.5,.2,.52);
+            _buffer = ZZFX.make(ctx, settings.volume,settings.randomness,freq,settings.length,settings.attack,settings.slide,settings.noise,settings.modulation,settings.modulationPhase);
             _buffer.connect(_gain);
             _gain.connect(audio);
             _buffer.start();
-
             var ct = ctx.currentTime;
 
             _gain.gain.setValueAtTime(0,ct);
@@ -58,7 +58,7 @@ class Oscillator
         }
         else {
             this.stop();
-            this.play(freq, ctx, audio, type, adsr);
+            this.play(freq, ctx, audio, settings, adsr);
         }
     }
 

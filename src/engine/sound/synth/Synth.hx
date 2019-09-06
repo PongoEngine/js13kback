@@ -23,6 +23,7 @@
 
 package engine.sound.synth;
 
+import engine.sound.Track.ZZFXSettings;
 import engine.sound.Track.ADSR;
 import js.html.audio.AudioContext;
 import js.html.audio.BiquadFilterNode;
@@ -79,12 +80,12 @@ class Synth
         this._audioContext.resume();
     }
 
-    public function play(key :Int, start:Pulse, duration :Duration, type :OscillatorType, adsr :ADSR) : Void
+    public function play(key :Int, start:Pulse, duration :Duration, settings :ZZFXSettings, adsr :ADSR) : Void
     {
         var osc = _oscPool.length > 0 ? _oscPool.pop() : new Oscillator();
         // osc.play(_frequencies.get(key), _audioContext, _equalizerNode, type, adsr);
         // osc.play(_frequencies.get(key), _audioContext, _waveShaper, type, adsr);
-        osc.play(_frequencies.get(key), _audioContext, _masterGainNode, type, adsr);
+        osc.play(_frequencies.get(key), _audioContext, _masterGainNode, settings, adsr);
         _oscActive.push({osc:osc,duration:duration,start:start,elapsed:new Pulse(0)});
     }
 
