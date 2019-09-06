@@ -29,6 +29,7 @@ import js.html.audio.AudioContext;
 import js.html.audio.OscillatorType;
 import js.html.audio.AudioNode;
 import engine.sound.Track.ADSR;
+import engine.sound.ZZFX;
 
 class Oscillator
 {

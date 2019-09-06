@@ -10,6 +10,7 @@
   },
   "scripts": {
     "start": "npx parcel src/index.html -p 4321 --no-cache",
+    "build": "npx parcel build --no-source-maps src/index.html;",
     "compress": "npx terser --compress --mangle-props --mangle -o .cache/haxe.js -- .cache/haxe.js"
   }
 }

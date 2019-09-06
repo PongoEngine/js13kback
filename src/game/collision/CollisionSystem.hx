@@ -98,36 +98,33 @@ class CollisionSystem implements System
             }
 
             _hash.update(e);
-
-            for(other in _hash.retrieve(e)) {
-                if(other != e) {
-                    var hasHit = checkCollision(sprite, other.get(Sprite));
-                    if(hasHit) {
-                        if(collidedWithLeft(sprite, other.get(Sprite))) {
-                            var offsetX = sprite.right() - other.get(Sprite).left();
-                            sprite.x -= offsetX;
-                            collider.velocityX = 0;
-                        }
-                        else if(collidedWithRight(sprite, other.get(Sprite))) {
-                            var offsetX = other.get(Sprite).right() - sprite.left();
-                            sprite.x += offsetX;
-                            collider.velocityX = 0;
-                        }
-                        else if(collidedWithTop(sprite, other.get(Sprite))) {
-                            var offsetY = sprite.bottom() - other.get(Sprite).top();
-                            sprite.y -= offsetY;
-                            collider.velocityY = 0;
-                            collider.isOnGround = true;
-                        }
-                        else if(collidedWithBottom(sprite, other.get(Sprite)) && other.get(Collider).type == WALL) {
-                            var offsetY = other.get(Sprite).bottom() - sprite.top();
-                            sprite.y += offsetY;
-                            collider.velocityY = 0;
-                        }
-                        // break;
+            _hash.iterate(e, function(other) {
+                var hasHit = checkCollision(sprite, other.get(Sprite));
+                if(hasHit) {
+                    if(collidedWithLeft(sprite, other.get(Sprite))) {
+                        var offsetX = sprite.right() - other.get(Sprite).left();
+                        sprite.x -= offsetX;
+                        collider.velocityX = 0;
+                    }
+                    else if(collidedWithRight(sprite, other.get(Sprite))) {
+                        var offsetX = other.get(Sprite).right() - sprite.left();
+                        sprite.x += offsetX;
+                        collider.velocityX = 0;
+                    }
+                    else if(collidedWithTop(sprite, other.get(Sprite))) {
+                        var offsetY = sprite.bottom() - other.get(Sprite).top();
+                        sprite.y -= offsetY;
+                        collider.velocityY = 0;
+                        collider.isOnGround = true;
+                    }
+                    else if(collidedWithBottom(sprite, other.get(Sprite)) && other.get(Collider).type == WALL) {
+                        var offsetY = other.get(Sprite).bottom() - sprite.top();
+                        sprite.y += offsetY;
+                        collider.velocityY = 0;
                     }
                 }
-            }
+            });
+
         }   
     }
 

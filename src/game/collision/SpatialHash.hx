@@ -34,15 +34,17 @@ only argument to the constructor.
 
 package game.collision;
 
+import js.Syntax;
 import engine.display.Sprite;
 import engine.Entity;
+import haxe.ds.List;
 
 class SpatialHash
 {
-    public function new (power_of_two :Int = 7) : Void
+    public function new (power_of_two :Int = 10) : Void
     {
-        _getKeys = makeKeysFn(power_of_two);
-        _hash = new Map<String, Map<{},Entity>>();
+        _iterateKeys = makeKeysFn(power_of_two);
+        _hash = new FastMap();
         _fatTiles = cast new Map<{},Entity>();
     }
 
@@ -52,16 +54,12 @@ class SpatialHash
             _fatTiles.set(obj,obj);
         }
         else {
-            var keys = _getKeys(obj);
-            var key;
-            for (i in 0...keys.length) {
-                key = keys[i];
-                if (_hash.exists(key)) {
-                    _hash.get(key).set(cast obj,obj);
-                } else {
-                    _hash.set(key, [(cast obj) => obj]);
+            _iterateKeys(obj, key -> {
+                if(!_hash.exists(key)) {
+                    _hash.set(key, new List<Entity>());
                 }
-            }
+                _hash.get(key).push(obj);
+            });
         }
     }
 
@@ -71,14 +69,14 @@ class SpatialHash
             _fatTiles.remove(obj);
         }
         else {
-            var keys = _getKeys(obj);
-            var key;
-            for (i in 0...keys.length) {
-                key = keys[i];
+            _iterateKeys(obj, key -> {
                 if (_hash.exists(key)) {
-                    _hash.get(key).remove(cast obj);
+                    _hash.get(key).remove(obj);
+                    if(_hash.get(key).length == 0) {
+                        _hash.delete(key);
+                    }
                 }
-            }
+            });
         }
     }
 
@@ -88,50 +86,72 @@ class SpatialHash
         this.insert(obj, isFat);
     }
 
-    public function retrieve(obj :Entity) : Array<Entity>
+    public function iterate(obj :Entity, fn :Entity -> Void) : Void
     {
         if (obj == null) {
-            return [];
+            return;
         }
 
-        var keys :Array<String>;
-        var key :String;
-        keys = _getKeys(obj);
-        _scratchRet.resize(0);
-        for (i in 0...keys.length) {
-            key = keys[i];
+        _iterateKeys(obj, key -> {
             if (_hash.exists(key)) {
-                for(item in _hash[key]) {
-                    _scratchRet.push(item);
+                for(item in _hash.get(key)) {
+                    if(item != obj) {
+                        fn(item);
+                    }
                 }
             }
-        }
+        });
         for(fatTile in _fatTiles) {
-            _scratchRet.push(fatTile);
+            if(fatTile != obj) {
+                fn(fatTile);
+            }
         }
-        return _scratchRet;
     }
 
     private static function makeKeysFn(shift :Int) {
-        return function(ent :Entity) :Array<String> {
+        return function(ent :Entity, fnKey :String -> Void) : Void {
             var obj = ent.get(Sprite);
             var sx = Std.int(obj.x) >> shift;
             var sy = Std.int(obj.y) >> shift;
             var ex = Std.int(obj.x + obj.naturalWidth()) >> shift;
             var ey = Std.int(obj.y + obj.naturalHeight()) >> shift;
-            _scratchKeys.resize(0);
             for(y in sy...ey+1) {
                 for(x in sx...ex+1) {
-                    _scratchKeys.push("" + x + ":" + y);
+                    fnKey("" + x + ":" + y);
                 }
             }
-            return _scratchKeys;
         };
     }  
 
-    private var _getKeys :Entity -> Array<String>;
-    private var _hash :Map<String, Map<{},Entity>>;
+    private var _iterateKeys :Entity -> (String -> Void) -> Void;
+    private var _hash :FastMap;
     private var _fatTiles :Map<Entity,Entity>;
-    private static var _scratchKeys :Array<String> = [];
-    private static var _scratchRet :Array<Entity> = [];
+}
+
+extern abstract FastMap({})
+{
+    public inline function new() : Void
+    {
+        this = {};
+    }
+
+    public inline function exists(key :String) : Bool
+    {
+        return untyped this[key];
+    }
+
+    public inline function get(key :String) : List<Entity>
+    {
+        return untyped this[key];
+    }
+
+    public inline function set(key :String, entities :List<Entity>) : Void
+    {
+        untyped this[key] = entities;
+    }
+
+    public inline function delete(key :String) : Void
+    {
+        untyped __js__('delete {0}[{1}]', this, key);
+    }
 }
