@@ -9,43 +9,12 @@ import haxe.macro.Type;
 import sys.FileSystem;
 import sys.io.File;
 import engine.util.Parser;
+import engine.sound.Track;
 #end
-
-extern abstract Envelope(Array<Float>)
-{
-    public inline function new(arra :Array<Float>) : Void
-    {
-        this = arra;
-    }
-
-    public inline function attackDur() :Float return this[0];
-    public inline function attackAmp() :Float return this[1];
-    public inline function decayDur() :Float return this[2];
-    public inline function sustainDur() :Float return this[3];
-    public inline function sustainAmp() :Float return this[4];
-    public inline function releaseDur() :Float return this[5];
-}
-
-extern abstract Sound(Array<Float>)
-{
-    public inline function new(arra :Array<Float>) : Void
-    {
-        this = arra;
-    }
-
-    public inline function volume() :Float return this[0];
-    public inline function randomness() :Float return this[1];
-    public inline function length() :Float return this[2];
-    public inline function attack() :Float return this[3];
-    public inline function slide() :Float return this[4];
-    public inline function noise() :Float return this[5];
-    public inline function modulation() :Float return this[6];
-    public inline function modulationPhase() :Float return this[7];
-}
 
 class SoundFile
 {
-    public static macro function parse(filePath :String):ExprOf<String>
+    public static macro function parse(filePath :String):ExprOf<{tracks: Dynamic, envelopes: Dynamic, sounds: Dynamic, loops: Dynamic}>
     {
         if (FileSystem.exists(filePath)) {
             var fileContent:String = File.getContent(filePath);

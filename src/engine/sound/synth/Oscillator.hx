@@ -23,14 +23,14 @@
 
 package engine.sound.synth;
 
-import engine.sound.Track.ZZFXSettings;
+import engine.sound.Track.Sound;
+import engine.sound.Track.Envelope;
 import js.html.audio.OscillatorNode;
 import js.html.audio.AudioBufferSourceNode;
 import js.html.audio.GainNode;
 import js.html.audio.AudioContext;
 import js.html.audio.OscillatorType;
 import js.html.audio.AudioNode;
-import engine.sound.Track.ADSR;
 import engine.sound.ZZFX;
 
 class Oscillator
@@ -40,25 +40,25 @@ class Oscillator
         _buffer = null;
     }
 
-    public function play(freq :Float, ctx :AudioContext, audio :AudioNode, settings :ZZFXSettings, adsr :ADSR) : Void
+    public function play(freq :Float, ctx :AudioContext, audio :AudioNode, sound :Sound, envelope :Envelope) : Void
     {
         if(_buffer == null) {
             _gain = ctx.createGain();
-            _buffer = ZZFX.make(ctx, settings.volume,settings.randomness,freq,settings.length,settings.attack,settings.slide,settings.noise,settings.modulation,settings.modulationPhase);
+            _buffer = ZZFX.make(ctx, sound.volume(),sound.randomness(),freq,sound.length(),sound.attack(),sound.slide(),sound.noise(),sound.modulation(),sound.modulationPhase());
             _buffer.connect(_gain);
             _gain.connect(audio);
             _buffer.start();
             var ct = ctx.currentTime;
 
             _gain.gain.setValueAtTime(0,ct);
-            _gain.gain.linearRampToValueAtTime(adsr.attackAmp ,ct+adsr.attackDur);
-            _gain.gain.linearRampToValueAtTime(adsr.sustainAmp,ct+adsr.attackDur+adsr.decayDur);
-            _gain.gain.linearRampToValueAtTime(adsr.sustainAmp,ct+adsr.attackDur+adsr.decayDur+adsr.sustainDur);
-            _gain.gain.linearRampToValueAtTime(0,ct+adsr.attackDur+adsr.decayDur+adsr.sustainDur+adsr.releaseDur);
+            _gain.gain.linearRampToValueAtTime(envelope.attackAmp() ,ct+envelope.attackDur());
+            _gain.gain.linearRampToValueAtTime(envelope.sustainAmp(),ct+envelope.attackDur()+envelope.decayDur());
+            _gain.gain.linearRampToValueAtTime(envelope.sustainAmp(),ct+envelope.attackDur()+envelope.decayDur()+envelope.sustainDur());
+            _gain.gain.linearRampToValueAtTime(0,ct+envelope.attackDur()+envelope.decayDur()+envelope.sustainDur()+envelope.releaseDur());
         }
         else {
             this.stop();
-            this.play(freq, ctx, audio, settings, adsr);
+            this.play(freq, ctx, audio, sound, envelope);
         }
     }
 

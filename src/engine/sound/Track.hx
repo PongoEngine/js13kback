@@ -1,68 +1,47 @@
-/*
- * MIT License
- *
- * Copyright (c) 2019 Jeremy Meltingtallow
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
- * Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
- * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
- * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package engine.sound;
 
 import engine.sound.theory.Pulse;
 import engine.sound.theory.Note;
-import engine.sound.theory.Step;
-import engine.sound.theory.Octave;
 import engine.sound.theory.Duration;
 
-typedef Track =
+typedef Track = Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, sound :Sound, envelope :Envelope}>>;
+
+typedef TrackData =
 {
-    bpm:Int,
-    duration: Duration,
-    infos: Array<TrackInfo>
+    tracks: Dynamic,
+    envelopes: Dynamic,
+    sounds: Dynamic,
+    loops: Dynamic
 }
 
-typedef ZZFXSettings =
+extern abstract Envelope(Array<Float>)
 {
-    volume :Float, 
-    randomness :Float,
-    length :Float,
-    attack :Float,
-    slide :Float,
-    noise :Float,
-    modulation :Float,
-    modulationPhase :Float
+    public inline function new(arra :Array<Float>) : Void
+    {
+        this = arra;
+    }
+
+    public inline function attackDur() :Float return this[0];
+    public inline function attackAmp() :Float return this[1];
+    public inline function decayDur() :Float return this[2];
+    public inline function sustainDur() :Float return this[3];
+    public inline function sustainAmp() :Float return this[4];
+    public inline function releaseDur() :Float return this[5];
 }
 
-typedef TrackInfo = {
-    settings:ZZFXSettings,
-    noteLength: Pulse,
-    octave: Octave,
-    offset: Step,
-    lanes: Array<String>,
-    ?notes: Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, settings :ZZFXSettings}>>,
-    adsr: ADSR
-}
+extern abstract Sound(Array<Float>)
+{
+    public inline function new(arra :Array<Float>) : Void
+    {
+        this = arra;
+    }
 
-typedef ADSR = {
-    var attackDur :Float;
-    var attackAmp :Float;
-    var decayDur :Float;
-    var sustainDur :Float;
-    var sustainAmp :Float;
-    var releaseDur :Float;
+    public inline function volume() :Float return this[0];
+    public inline function randomness() :Float return this[1];
+    public inline function length() :Float return this[2];
+    public inline function attack() :Float return this[3];
+    public inline function slide() :Float return this[4];
+    public inline function noise() :Float return this[5];
+    public inline function modulation() :Float return this[6];
+    public inline function modulationPhase() :Float return this[7];
 }

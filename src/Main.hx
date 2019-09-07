@@ -49,7 +49,6 @@ import engine.sound.theory.Scale;
 import engine.sound.theory.Scale.ScaleType;
 import engine.sound.theory.Note.Root;
 import engine.sound.Sequencer;
-import game.TrackA;
 import engine.map.TileMap;
 
 class Main {
@@ -171,7 +170,7 @@ class Main {
 			engine.addSystem(new OrbitSystem());
 			engine.addSystem(new CollisionSystem(spatialHash));
 			var scale = new Scale(Root.D, ScaleType.NATURAL_MINOR);
-			engine.addSystem(new SoundSystem(new Sequencer(TrackA.a, scale)));
+			// engine.addSystem(new SoundSystem(new Sequencer(TrackA.a, scale)));
 		}, 4);
 	}
 }
