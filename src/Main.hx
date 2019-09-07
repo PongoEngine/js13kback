@@ -21,6 +21,7 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import engine.sound.Track.TrackData;
 import engine.display.FillSprite;
 import engine.display.ImageSprite;
 import engine.display.Sprite;
@@ -168,7 +169,7 @@ class Main {
 			engine.addSystem(new OrbitSystem());
 			engine.addSystem(new CollisionSystem(spatialHash));
 			var scale = new Scale(Root.D, ScaleType.NATURAL_MINOR);
-			var trackData = SoundFile.parse("./src/game/track.dstrack");
+			var trackData :TrackData = cast SoundFile.parse("./src/game/track.dstrack");
 			engine.addSystem(new SoundSystem(Sequencer.create("introSong", trackData, 130, scale)));
 		}, 4);
 	}

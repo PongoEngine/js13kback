@@ -36,25 +36,23 @@ using StringTools;
 
 class Sequencer
 {
-    public function new(tracks :Array<Track>, bpm :Int, scale :Scale) : Void
+    public function new(track :Track, bpm :Int, scale :Scale) : Void
     {
         _elapsed = 0;
         _duration = (60 / bpm) / Pulse.PPQN;
         _lastPulse = new Pulse(-1);
         _curPulse = new Pulse(0);
-        _tracks = tracks;
+        _track = track;
     }
 
     public function update(mixer :Mixer, dt :Float) : Void
     {
         if(_curPulse != _lastPulse) {
-            for(track in _tracks) {
-                if(track.exists(_curPulse)) {
-                    for(note in track.get(_curPulse)) {
-                        mixer.play(note.note.toInt(), note.start, note.duration, note.sound, note.envelope);
-                    }
+            if(_track.exists(_curPulse)) {
+                for(note in _track.get(_curPulse)) {
+                    mixer.play(note.note.toInt(), note.start, note.duration, note.sound, note.envelope);
                 }
-            } 
+            }
 
             mixer.checkNotes(_curPulse);
             _lastPulse = _curPulse;
@@ -77,6 +75,10 @@ class Sequencer
 
     public static function create(name :String, data :TrackData, bpm :Int, scale :Scale) : Sequencer
     {
+        var trackInfo = data.tracks.get(name);
+        var track = new Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, sound :Sound, envelope :Envelope}>>();
+        for(section in trackInfo) {
+        }
         // var notes = new Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, sound :Sound}>>();
         // var laneIndex = 0;
         // for(lane in info.lanes) {
@@ -103,10 +105,10 @@ class Sequencer
         //     laneIndex++;
         // }
         // return notes;
-        return new Sequencer([], 100, scale);
+        return new Sequencer(track, 100, scale);
     }
 
-    private var _tracks :Array<Track>;
+    private var _track :Track;
     private var _lastPulse :Pulse;
     private var _curPulse :Pulse;
     private var _elapsed :Float;

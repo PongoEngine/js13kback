@@ -8,10 +8,10 @@ typedef Track = Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, sound
 
 typedef TrackData =
 {
-    tracks: Dynamic,
-    envelopes: Dynamic,
-    sounds: Dynamic,
-    loops: Dynamic
+    tracks: TrackMap<Array<{sound:String,envelope:String,loops:Array<String>}>>,
+    envelopes: TrackMap<Envelope>,
+    sounds: TrackMap<Sound>,
+    loops: TrackMap<Array<String>>
 }
 
 extern abstract Envelope(Array<Float>)
@@ -44,4 +44,22 @@ extern abstract Sound(Array<Float>)
     public inline function noise() :Float return this[5];
     public inline function modulation() :Float return this[6];
     public inline function modulationPhase() :Float return this[7];
+}
+
+abstract TrackMap<T>({})
+{
+    public inline function new(val :{}) : Void
+    {
+        this = val;
+    }
+
+    public inline function get(name :String) : T
+    {
+        return untyped this[name];
+    }
+
+    public inline function exists(name :String) : T
+    {
+        return untyped this[name] != null;
+    }
 }

@@ -38,7 +38,6 @@ class FlipbookSprite extends Sprite
         image.then(img -> {
             this.image = img;
             tiles = Math.floor(this.image.width / width) * Math.floor(this.image.height / height);
-            trace(tiles);
             _onLoaded(this);
         });
         _width = width;

@@ -253,11 +253,17 @@ class SoundFile
     {
         var notes = [];
         while(parser.hasNext()) {
-            parser.consumeWhile(str -> parser.isWhitespace(str) || (!parser.isNumber(str) && str != "~") && parser.hasNext());
+            var garbage = parser.consumeWhile(str -> parser.isWhitespace(str) || (!parser.isNumber(str) && str != "~") && parser.hasNext());
+            var restCount = 0;
+            for(i in 0...garbage.length) {
+                if(garbage.charAt(i) == "-") {
+                    restCount++;
+                }
+            }
             if(parser.hasNext()) {
                 var step :Int = parseInt(parser);
                 var hold = parser.consumeWhile(str -> str == "~" && parser.hasNext());
-                notes.push(step + "|" + (hold.length + 1));
+                notes.push('${restCount}|${step}|${(hold.length + 1)}');
             }
         }
         return notes;
