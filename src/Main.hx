@@ -68,8 +68,6 @@ class Main {
 	static inline function startGame(engine :Engine) : Void
 	{
 		var spatialHash = new SpatialHash();
-		var track = SoundFile.parse("./src/game/track.dstrack");
-		trace(track);
 		var tileMap :TileMap = TileMap.parse("./src/game/tiles.dsmap");
 		var simplex = new Simplex(4730);
 		var backgroundSquare2 = CanvasTools.createGradient(90,10,30,100,TILE_WIDTH,TILE_WIDTH,1, simplex);
@@ -170,7 +168,8 @@ class Main {
 			engine.addSystem(new OrbitSystem());
 			engine.addSystem(new CollisionSystem(spatialHash));
 			var scale = new Scale(Root.D, ScaleType.NATURAL_MINOR);
-			// engine.addSystem(new SoundSystem(new Sequencer(TrackA.a, scale)));
+			var trackData = SoundFile.parse("./src/game/track.dstrack");
+			engine.addSystem(new SoundSystem(Sequencer.create("introSong", trackData, 130, scale)));
 		}, 4);
 	}
 }

@@ -75,7 +75,7 @@ class Sequencer
         }
     }
 
-    public static function createSequencer(name :String, data :TrackData, scale :Scale) : Sequencer
+    public static function create(name :String, data :TrackData, bpm :Int, scale :Scale) : Sequencer
     {
         // var notes = new Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, sound :Sound}>>();
         // var laneIndex = 0;
@@ -103,7 +103,7 @@ class Sequencer
         //     laneIndex++;
         // }
         // return notes;
-        return null;
+        return new Sequencer([], 100, scale);
     }
 
     private var _tracks :Array<Track>;

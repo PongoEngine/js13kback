@@ -14,7 +14,7 @@ import engine.sound.Track;
 
 class SoundFile
 {
-    public static macro function parse(filePath :String):ExprOf<{tracks: Dynamic, envelopes: Dynamic, sounds: Dynamic, loops: Dynamic}>
+    public static macro function parse(filePath :String):ExprOf<engine.sound.Track.TrackData>
     {
         if (FileSystem.exists(filePath)) {
             var fileContent:String = File.getContent(filePath);
