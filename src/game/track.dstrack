@@ -1,55 +1,54 @@
-# envelopes
-    - woah
-        attackDur 0
-        attackAmp 0.5
-        decayDur 0.1
-        sustainDur 0.5
-        sustainAmp 0.1
-        releaseDur 0.3
-    - woah2
-        attackDur 0
-        attackAmp 0.5
-        decayDur 0.1
-        sustainDur 0.5
-        sustainAmp 0.1
-        releaseDur 0.3
-    - woah3
-        attackDur 0
-        attackAmp 0.5
-        decayDur 0.1
-        sustainDur 0.5
-        sustainAmp 0.1
-        releaseDur 0.3
-# sounds
-    - clam
-        volume 1 
-        randomness 0.01
-        length 0.2
-        attack 0
-        slide 0
-        noise 1
-        modulation 0
-        modulationPhase 0
-    - clam2
-        volume 1 
-        randomness 0.01
-        length 0.2
-        attack 0
-        slide 0
-        noise 1
-        modulation 0
-        modulationPhase 0
-# loops
-    - starfish
-        0~~~|--2~|-2~2|2~~-/
-        0~~~|--2~|-2~2|2~~-/
-    - cream
-        3~-0|----|-4~-|5~~-/
-track
-    tracka 140
-        clam woah
-            starfish starfish starfish starfish/
-            starfish starfish starfish starfish/
-        clam2 woah3
-            cream cream cream cream/
-            cream cream cream starfish/
+envelope zachß
+    attackDur 0
+    attackAmp 0.5
+    decayDur 0.1
+    sustainDur 0.5
+    sustainAmp 0.1
+    releaseDur 0.3;
+    
+sound clam
+    volume 1 
+    randomness 0.01
+    length 0.2
+    attack 0
+    slide 0
+    noise 1
+    modulation 0
+    modulationPhase 0;
+
+envelope woah2
+    attackDur 0
+    attackAmp 0.5
+    decayDur 0.1
+    sustainDur 0.5
+    sustainAmp 0.1
+    releaseDur 0.3;
+envelope woah3
+    attackDur 0
+    attackAmp 0.5
+    decayDur 0.1
+    sustainDur 0.5
+    sustainAmp 0.1
+    releaseDur 0.3;   
+
+sound clam2
+    volume 1 
+    randomness 0.01
+    length 0.2
+    attack 0
+    slide 0
+    noise 1
+    modulation 0
+    modulationPhase 0;
+loop starfish
+    0~~~|--2~|-2~2|2~~-
+    0~~~|--2~|-2~2|2~~-;
+loop cream
+    3~-0|----|-4~-|5~~-;
+
+track tracka clam woah
+    starfish starfish starfish starfish
+    starfish starfish starfish starfish;
+track tracka clam2 woah3
+    cream cream cream cream
+    cream cream cream starfish;
