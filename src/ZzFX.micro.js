@@ -47,12 +47,12 @@ window.zzfx = function zzfx                  // play a sound
     volume, 
     randomness,
     frequency, 
-    length=1,
-    attack=.1,
-    slide=0,
-    noise=0,
-    modulation=0,
-    modulationPhase=0
+    length,
+    attack,
+    slide,
+    noise,
+    modulation,
+    modulationPhase
 )
 {
     let sampleRate = 44100;
@@ -83,7 +83,5 @@ window.zzfx = function zzfx                  // play a sound
     let S = ctx.createBufferSource();
     B.getChannelData(0).set(b);
     S.buffer = B;
-    // S.connect(zzfx_x.destination);
-    // S.start();
     return S;
 }

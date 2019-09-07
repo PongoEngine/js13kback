@@ -4,16 +4,26 @@ sound simpleSnare
     length 0.2
     attack 0
     slide 0
-    noise 1
-    modulation 0
+    noise 2
+    modulation 0.1
+    modulationPhase 0;
+
+sound simpleSub
+    volume 1 
+    randomness 0.01
+    length 0.2
+    attack 0
+    slide 0
+    noise 0
+    modulation 0.1
     modulationPhase 0;
 
 envelope smoothEnvelope
-    attackDur 0.4
-    attackAmp 0.5
-    decayDur 0.1
+    attackDur 0.1
+    attackAmp 1
+    decayDur 0.3
     sustainDur 0.5
-    sustainAmp 0.1
+    sustainAmp 0.4
     releaseDur 0.3;
 envelope sharpEnvelope
     attackDur 0
@@ -25,22 +35,23 @@ envelope sharpEnvelope
 
 sound deepBase
     volume 1 
-    randomness 0.01
+    randomness 0
     length 0.2
     attack 0
     slide 0
-    noise 1
+    noise 0.1
     modulation 0
     modulationPhase 0;
 loop heaveRiff
-    0~~~|--2~|-2~2|2~~-
-    0~~~|--2~|-2~2|2~~-;
-loop SimplePattern
-    3~-0|----|-4~-|5~~-;
+    0~12|1~12|2~12|3~12;
+loop snarePattern
+    --0-|--0-|--0-|--0-;
+loop subPattern
+    0---|0---|0---|0---;
 
-track introSong deepBase smoothEnvelope
-    heaveRiff heaveRiff heaveRiff heaveRiff
-    heaveRiff heaveRiff heaveRiff heaveRiff;
-track bossSong simpleSnare sharpEnvelope
-    SimplePattern SimplePattern SimplePattern SimplePattern
-    SimplePattern SimplePattern SimplePattern heaveRiff;
+track introSong deepBase smoothEnvelope 4
+    heaveRiff;
+track introSong simpleSnare sharpEnvelope 3
+    snarePattern;
+track introSong simpleSub sharpEnvelope 1
+    subPattern;

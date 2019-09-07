@@ -1,4 +1,4 @@
-package engine.sound;
+package engine.sound.util;
 
 import haxe.Json;
 #if macro
@@ -22,8 +22,8 @@ class SoundFile
             var envelopes :Map<String, Envelope> = new Map<String, Envelope>();
             var sounds :Map<String, Sound> = new Map<String, Sound>();
             var loops :Map<String, Array<String>> = new Map<String, Array<String>>();
-            var tracks :Map<String, Array<{sound:String,envelope:String,loops:Array<String>}>> 
-                = new Map<String, Array<{sound:String,envelope:String,loops:Array<String>}>>();
+            var tracks :Map<String, Array<{sound:String,envelope:String, octave :Int,loops:Array<String>}>> 
+                = new Map<String, Array<{sound:String,envelope:String, octave :Int,loops:Array<String>}>>();
 
             while(parser.hasNext()) {
                 consumeWhitespace(parser);
@@ -44,7 +44,7 @@ class SoundFile
                             if(!tracks.exists(t.name)) {
                                 tracks.set(t.name, []);
                             }
-                            tracks.get(t.name).push({sound:t.sound,envelope:t.envelope,loops:t.loops});
+                            tracks.get(t.name).push({sound:t.sound,envelope:t.envelope,octave:t.octave,loops:t.loops});
                         case _: Context.error('Error while parsing. Recieved: ${keyword}', Context.currentPos());
                     }
                     parser.nextChar();
@@ -261,7 +261,7 @@ class SoundFile
                 }
             }
             if(parser.hasNext()) {
-                var step :Int = parseInt(parser);
+                var step :Int = parseInt(parser, true);
                 var hold = parser.consumeWhile(str -> str == "~" && parser.hasNext());
                 notes.push('${restCount}|${step}|${(hold.length + 1)}');
             }
@@ -269,7 +269,7 @@ class SoundFile
         return notes;
     }
 
-    private static function parseTrack(parser :Parser) : {name:String,sound:String,envelope:String,loops :Array<String>}
+    private static function parseTrack(parser :Parser) : {name:String,sound:String,envelope:String, octave:Int,loops :Array<String>}
     {
         consumeWhitespace(parser);
         var trackName = consumeWord(parser);
@@ -277,6 +277,8 @@ class SoundFile
         var soundName = consumeWord(parser);
         consumeWhitespace(parser);
         var envelopeName = consumeWord(parser);
+        consumeWhitespace(parser);
+        var octave = parseInt(parser, true);
         var loops = [];
 
         while(parser.peek() != ";" && parser.hasNext()) {
@@ -284,7 +286,7 @@ class SoundFile
             loops.push(consumeWord(parser));
         }
 
-        return {name:trackName, sound:soundName, envelope: envelopeName, loops: loops};
+        return {name:trackName, sound:soundName, envelope: envelopeName, octave: octave, loops: loops};
     }
 
     private static function parseFloat(parser :Parser) : Float
@@ -298,10 +300,12 @@ class SoundFile
         return num;
     }
 
-    private static function parseInt(parser :Parser) : Int
+    private static function parseInt(parser :Parser, onlyFirst :Bool) : Int
     {
         consumeWhitespace(parser);
-        var numberStr = parser.consumeWhile(str -> parser.isNumber(str));
+        var numberStr = onlyFirst
+            ? parser.nextChar()
+            : parser.consumeWhile(str -> parser.isNumber(str));
         var num = Std.parseInt(numberStr);
         if(num == null) {
             Context.error('Error while parsing Int. Recieved: ${numberStr}', Context.currentPos());

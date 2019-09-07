@@ -2,3 +2,4 @@
 -D analyzer-optimize
 -main Main
 -dce full
+-D no_macro_cache

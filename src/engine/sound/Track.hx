@@ -8,7 +8,7 @@ typedef Track = Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, sound
 
 typedef TrackData =
 {
-    tracks: TrackMap<Array<{sound:String,envelope:String,loops:Array<String>}>>,
+    tracks: TrackMap<Array<{snd:String,env:String,octave:Int,loops:Array<String>}>>,
     envelopes: TrackMap<Envelope>,
     sounds: TrackMap<Sound>,
     loops: TrackMap<Array<String>>

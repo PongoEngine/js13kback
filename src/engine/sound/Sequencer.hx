@@ -27,22 +27,21 @@ import engine.sound.Track;
 import engine.sound.theory.Pulse;
 import engine.sound.theory.Note;
 import engine.sound.theory.Step;
+import engine.sound.theory.Octave;
 import engine.sound.theory.Duration;
-import js.html.audio.OscillatorType;
 import engine.sound.theory.Scale;
 import engine.sound.Mixer;
 
-using StringTools;
-
 class Sequencer
 {
-    public function new(track :Track, bpm :Int, scale :Scale) : Void
+    public function new(track :Track, trackLength :Duration, bpm :Int, scale :Scale) : Void
     {
         _elapsed = 0;
         _duration = (60 / bpm) / Pulse.PPQN;
         _lastPulse = new Pulse(-1);
         _curPulse = new Pulse(0);
         _track = track;
+        _trackLength = trackLength;
     }
 
     public function update(mixer :Mixer, dt :Float) : Void
@@ -66,8 +65,7 @@ class Sequencer
             }
             _curPulse++;
         }
-        // if(_curPulse > _track.duration) {
-        if(_curPulse > new Duration(300)) {
+        if(_curPulse > _trackLength) {
             _curPulse = new Pulse(0);
             _lastPulse = new Pulse(-1);
         }
@@ -76,36 +74,34 @@ class Sequencer
     public static function create(name :String, data :TrackData, bpm :Int, scale :Scale) : Sequencer
     {
         var trackInfo = data.tracks.get(name);
+        var noteLength = new Duration(16);
         var track = new Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, sound :Sound, envelope :Envelope}>>();
+        var duration = new Duration(0);
         for(section in trackInfo) {
+            var env = data.envelopes.get(section.env);
+            var snd = data.sounds.get(section.snd);
+            var octave = new Octave(section.octave);
+            var pulse = new Pulse(0);
+            for(loop in section.loops) {
+                for(note in data.loops.get(loop)) {
+                    var noteData = note.split("|");
+                    var offset = new Pulse(Std.parseInt(noteData[0])) * noteLength;
+                    pulse += offset;
+                    var step = Std.parseInt(noteData[1]);
+                    var duration = new Duration(Std.parseInt(noteData[2])) * noteLength;
+                    var note = scale.getNote(new Step(step), octave);
+                    if(!track.exists(pulse)) {
+                        track.set(pulse, []);
+                    }
+                    track.get(pulse).push({note:note,duration:duration,start:pulse,sound:snd,envelope:env});
+                    pulse += duration;
+                }
+            }
+            if(duration < pulse) {
+                duration = new Duration(pulse.toInt());
+            }
         }
-        // var notes = new Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, sound :Sound}>>();
-        // var laneIndex = 0;
-        // for(lane in info.lanes) {
-        //     var str = (lane + "").replace("|", "");
-        //     var curChar = 0;
-        //     var start = new Pulse(0);
-        //     while(curChar < str.length) {
-        //         if(str.charAt(curChar) != "-") {
-        //             if(!notes.exists(start)) {
-        //                 notes.set(start, []);
-        //             }
-
-        //             var duration = new Duration(Std.parseInt(str.charAt(curChar)) * info.noteLength.toInt());
-        //             notes.get(start).push({
-        //                 note: scale.getNote(new Step(laneIndex) + info.offset, info.octave),
-        //                 duration: duration,
-        //                 start: start,
-        //                 settings: info.settings
-        //             });
-        //         }
-        //         start += info.noteLength;
-        //         curChar++;
-        //     }
-        //     laneIndex++;
-        // }
-        // return notes;
-        return new Sequencer(track, 100, scale);
+        return new Sequencer(track, duration, bpm, scale);
     }
 
     private var _track :Track;
@@ -113,4 +109,5 @@ class Sequencer
     private var _curPulse :Pulse;
     private var _elapsed :Float;
     private var _duration :Float;
+    private var _trackLength :Duration;
 }

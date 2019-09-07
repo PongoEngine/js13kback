@@ -21,13 +21,14 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import engine.sound.theory.Octave;
 import engine.sound.Track.TrackData;
 import engine.display.FillSprite;
 import engine.display.ImageSprite;
 import engine.display.Sprite;
 import engine.display.FlipbookSprite;
 import engine.Entity;
-import engine.sound.SoundFile;
+import engine.sound.util.SoundFile;
 import engine.Engine;
 import game.Player;
 import game.Enemy;
