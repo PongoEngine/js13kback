@@ -69,7 +69,8 @@ class Main {
 	static inline function startGame(engine :Engine) : Void
 	{
 		var spatialHash = new SpatialHash();
-		SoundFile.parse("./src/game/track.dstrack");
+		var track = SoundFile.parse("./src/game/track.dstrack");
+		trace(track);
 		var tileMap :TileMap = TileMap.parse("./src/game/tiles.dsmap");
 		var simplex = new Simplex(4730);
 		var backgroundSquare2 = CanvasTools.createGradient(90,10,30,100,TILE_WIDTH,TILE_WIDTH,1, simplex);

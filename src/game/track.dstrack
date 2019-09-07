@@ -1,12 +1,4 @@
-envelope zachß
-    attackDur 0
-    attackAmp 0.5
-    decayDur 0.1
-    sustainDur 0.5
-    sustainAmp 0.1
-    releaseDur 0.3;
-    
-sound clam
+sound simpleSnare
     volume 1 
     randomness 0.01
     length 0.2
@@ -16,14 +8,14 @@ sound clam
     modulation 0
     modulationPhase 0;
 
-envelope woah2
-    attackDur 0
+envelope smoothEnvelope
+    attackDur 0.4
     attackAmp 0.5
     decayDur 0.1
     sustainDur 0.5
     sustainAmp 0.1
     releaseDur 0.3;
-envelope woah3
+envelope sharpEnvelope
     attackDur 0
     attackAmp 0.5
     decayDur 0.1
@@ -31,7 +23,7 @@ envelope woah3
     sustainAmp 0.1
     releaseDur 0.3;   
 
-sound clam2
+sound deepBase
     volume 1 
     randomness 0.01
     length 0.2
@@ -40,15 +32,15 @@ sound clam2
     noise 1
     modulation 0
     modulationPhase 0;
-loop starfish
+loop heaveRiff
     0~~~|--2~|-2~2|2~~-
     0~~~|--2~|-2~2|2~~-;
-loop cream
+loop SimplePattern
     3~-0|----|-4~-|5~~-;
 
-track tracka clam woah
-    starfish starfish starfish starfish
-    starfish starfish starfish starfish;
-track tracka clam2 woah3
-    cream cream cream cream
-    cream cream cream starfish;
+track introSong deepBase smoothEnvelope
+    heaveRiff heaveRiff heaveRiff heaveRiff
+    heaveRiff heaveRiff heaveRiff heaveRiff;
+track bossSong simpleSnare sharpEnvelope
+    SimplePattern SimplePattern SimplePattern SimplePattern
+    SimplePattern SimplePattern SimplePattern heaveRiff;

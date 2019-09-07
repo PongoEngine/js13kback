@@ -2,5 +2,5 @@
 -D analyzer-optimize
 -main Main
 -dce full
--js index.js
---no-output
+-js ref_index.js
+# --no-output

@@ -1,5 +1,6 @@
 package engine.sound;
 
+import haxe.Json;
 #if macro
 import haxe.io.Path;
 import haxe.macro.Context;
@@ -12,12 +13,7 @@ import engine.util.Parser;
 
 class SoundFile
 {
-    public function new(envelopes :Map<String, Envelope>, sounds :Map<String, Sound>) : Void
-    {
-
-    }
-
-    public static macro function parse(filePath :String):ExprOf<Dynamic>
+    public static macro function parse(filePath :String):ExprOf<String>
     {
         if (FileSystem.exists(filePath)) {
             var fileContent:String = File.getContent(filePath);
@@ -25,31 +21,47 @@ class SoundFile
             var envelopes :Map<String, Envelope> = new Map<String, Envelope>();
             var sounds :Map<String, Sound> = new Map<String, Sound>();
             var loops :Map<String, Array<String>> = new Map<String, Array<String>>();
-            var tracks :Map<String, {sound:String,envelope:String,loops :Array<String>}> 
-                = new Map<String, {sound:String,envelope:String,loops :Array<String>}>();
+            var tracks :Map<String, Array<{sound:String,envelope:String,loops:Array<String>}>> 
+                = new Map<String, Array<{sound:String,envelope:String,loops:Array<String>}>>();
 
             while(parser.hasNext()) {
                 consumeWhitespace(parser);
-                var keyword :BaseKeyword = consumeWord(parser);
-                switch keyword {
-                    case ENVELOPE:
-                        var e = parseEnvelope(parser);
-                        envelopes.set(e.name, e.envelope);
-                    case SOUND: 
-                        var s = parseSound(parser);
-                        sounds.set(s.name, s.sound);
-                    case LOOP: 
-                        var l = parseLoop(parser);
-                        loops.set(l.name, l.notes);
-                    case TRACK: 
-                        var t = parseTrack(parser);
-                        tracks.set(t.name, {sound:t.sound,envelope:t.envelope,loops:t.loops});
-                    case _: Context.error('Error while parsing. Recieved: ${keyword}', Context.currentPos());
+                if(parser.hasNext()) {
+                    var keyword :BaseKeyword = consumeWord(parser);
+                    switch keyword {
+                        case ENVELOPE:
+                            var e = parseEnvelope(parser);
+                            envelopes.set(e.name, e.envelope);
+                        case SOUND: 
+                            var s = parseSound(parser);
+                            sounds.set(s.name, s.sound);
+                        case LOOP: 
+                            var l = parseLoop(parser);
+                            loops.set(l.name, l.notes);
+                        case TRACK: 
+                            var t = parseTrack(parser);
+                            if(!tracks.exists(t.name)) {
+                                tracks.set(t.name, []);
+                            }
+                            tracks.get(t.name).push({sound:t.sound,envelope:t.envelope,loops:t.loops});
+                        case _: Context.error('Error while parsing. Recieved: ${keyword}', Context.currentPos());
+                    }
+                    parser.nextChar();
                 }
-                parser.nextChar();
             }
 
-            return Context.parse('null', Context.currentPos());
+            checkReferences(tracks.iterator(), envelopes, sounds, loops);
+            var trackCode = writeTracks(tracks);
+            var envCode = writeEnvelopes(envelopes);
+            var soundCode = writeSounds(sounds);
+            var loopCode = writeLoops(loops);
+            var code = '{
+                tracks: ${trackCode},
+                envelopes: ${envCode},
+                sounds: ${soundCode},
+                loops: ${loopCode}
+            }';
+            return Context.parse(code, Context.currentPos());
         }  else {
             Context.warning('${filePath}: is not valid', Context.currentPos());
             return Context.parse('null', Context.currentPos());
@@ -57,6 +69,86 @@ class SoundFile
     }
 
 #if macro
+    private static function checkReferences(
+        tracks :Iterator<Array<{sound:String,envelope:String,loops :Array<String>}>>,
+        envelopes :Map<String, Envelope>,
+        sounds :Map<String, Sound>,
+        loops :Map<String, Array<String>>
+    ) : Void
+    {
+        for(track in tracks) {
+            for(section in track) {
+                if(!envelopes.exists(section.envelope)) {
+                    Context.error('Envelope: ${section.envelope} is missing', Context.currentPos());
+                }
+                if(!sounds.exists(section.sound)) {
+                    Context.error('Sound: ${section.sound} is missing', Context.currentPos());
+                }
+                for(loop in section.loops) {
+                    if(!loops.exists(loop)) {
+                        Context.error('Loop: ${loop} is missing', Context.currentPos());
+                    }
+                }
+            }
+        }
+    }
+
+    private static function writeTracks(tracks :Map<String, Array<{sound:String,envelope:String,loops:Array<String>}>>) : String
+    {
+        var t = "{";
+        for(track in tracks.keyValueIterator()) {
+            t+= '"${track.key}":[';
+            for(section in track.value) {
+                t+='{';
+                t+='snd:"${section.sound}",';
+                t+='env:"${section.envelope}",';
+                t+='loops:[';
+                for(loop in section.loops) {
+                    t+='"${loop}",';
+                }
+                t+='],';
+                t+='},';
+            }
+            t+= '],';
+        }
+        t += "}";
+        return t;
+    }
+
+    private static function writeEnvelopes(envelopes :Map<String, Envelope>) : String
+    {
+        var e = "{";
+        for(env in envelopes.keyValueIterator()) {
+            e+= '"${env.key}":${env.value},';
+        }
+        e += "}";
+        return e;
+    }
+
+    private static function writeSounds(sounds :Map<String, Sound>) : String
+    {
+        var s = "{";
+        for(sound in sounds.keyValueIterator()) {
+            s+= '"${sound.key}":${sound.value},';
+        }
+        s += "}";
+        return s;
+    }
+
+    private static function writeLoops(loops :Map<String, Array<String>>) : String
+    {
+        var l = "{";
+        for(loop in loops.keyValueIterator()) {
+            l+='"${loop.key}":[';
+            for(note in loop.value) {
+                l+= '"${note}",';
+            }
+            l+='],';
+        }
+        l += "}";
+        return l;
+    }
+
     private static function parseEnvelope(parser :Parser) : {name :String, envelope :Envelope}
     {
         consumeWhitespace(parser);
