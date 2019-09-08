@@ -35,7 +35,7 @@ class CollisionSystem implements System
     private static inline var MAX_VELOY = 16;
     private static inline var VELOX_DECEL = 0.8;
     private static inline var VELOX_MIN = 0.1;
-    private static inline var JUMP_VELO = 24;
+    private static inline var JUMP_VELO = 30;
     private static inline var GRAVITY = 90;
     private var _hash :SpatialHash;
     private var _lastCheck = 0;

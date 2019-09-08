@@ -80,9 +80,9 @@ abstract Canvas(CanvasRenderingContext2D)
         this.scale(x, y);
     }
 
-    public function rotate(degrees :Float) : Void
+    public function rotate(radians :Float) : Void
     {
-        this.rotate(degrees * Math.PI / 180);
+        this.rotate(radians);
     }
 
     public function setBlendMode(blendmode :BlendMode) : Void

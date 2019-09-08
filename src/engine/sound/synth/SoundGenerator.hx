@@ -25,9 +25,10 @@ package engine.sound.synth;
 
 import engine.sound.track.Sound;
 import engine.sound.track.Envelope;
+import js.lib.Float32Array;
 
 typedef SoundGenerator = (
     samplingRate :Int, freq :Float, sound :Sound, 
-    envelope :Envelope, data :Array<Float>, sampleNumber :Int,
+    envelope :Envelope, data :Float32Array, sampleNumber :Int,
     attackLength: Float, decayLength: Float, sustainLength: Float, releaseLength: Float
 ) -> Void;

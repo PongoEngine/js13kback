@@ -53,6 +53,13 @@ class Sprite implements Component
         return this;
     }
 
+    public function setAnchor(anchorX :Float, anchorY :Float) : Sprite
+    {
+        this.anchorX = anchorX;
+        this.anchorY = anchorY;
+        return this;
+    }
+
     public function setXY(x :Float, y :Float) : Sprite
     {
         this.x = x;

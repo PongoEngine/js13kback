@@ -29,6 +29,7 @@ import engine.sound.track.Envelope;
 import js.html.audio.AudioBufferSourceNode;
 import js.html.audio.AudioContext;
 import js.html.audio.AudioNode;
+import js.lib.Float32Array;
 
 class Oscillator
 {
@@ -42,7 +43,6 @@ class Oscillator
 
     private static function createSound(ctx :AudioContext, samplingRate :Int, freq :Float, length :Float, sound :Sound, envelope :Envelope, generateAudio :SoundGenerator) : AudioBufferSourceNode
     {
-        var data = [];
         var attackLength = samplingRate * envelope.attackDur();
         var decayLength = samplingRate * envelope.decayDur();
         var sustainLength = samplingRate * envelope.sustainDur();
@@ -51,6 +51,8 @@ class Oscillator
         var noteLength = Math.ceil(length * samplingRate);
 
         var dataLength = envLength < noteLength ? envLength : noteLength;
+        var data = new Float32Array(dataLength);
+
         for (i in 0...dataLength - 1) {
             generateAudio(samplingRate, freq, sound, envelope, data, i, attackLength, decayLength, sustainLength, releaseLength);
         }
@@ -63,7 +65,7 @@ class Oscillator
 
     private static function generateSound(
         samplingRate :Int, freq :Float, sound :Sound, 
-        envelope :Envelope, data :Array<Float>, sampleNumber :Int,
+        envelope :Envelope, data :Float32Array, sampleNumber :Int,
         attackLength: Float, decayLength: Float, sustainLength: Float, releaseLength: Float
     ) : Void
     {

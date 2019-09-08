@@ -32,6 +32,8 @@ import engine.Engine;
 import game.Player;
 import game.Enemy;
 import game.EnemySystem;
+import game.Boid;
+import game.BoidSystem;
 import game.Stage;
 import game.collision.Collider;
 import game.SoundComp;
@@ -42,7 +44,7 @@ import game.collision.CollisionSystem;
 import game.collision.SpatialHash;
 import game.CanvasTools;
 import game.TileType;
-import game.Boids;
+// import game.Boids;
 import js.Browser;
 
 import engine.util.Simplex;
@@ -84,6 +86,14 @@ class Main {
 				.add(new ImageSprite(CanvasTools.createGradient(90,10,30,100,2200,1200,10, simplex))))
 			.addChild(background);
 		engine.root.add(new SoundComp());
+
+		for(i in 0...30) {
+			background.addChild(new Entity()
+				.add(new FillSprite(200,200,200,1,20,10)
+					.setAnchor(10,5))
+				// .add(new Collider(FLOOR, true, 0))
+				.add(new Boid(-100, -100)));
+		}
 
 		tileMap.populate(function(x :Int, y :Int, type :TileType, width :Int) {
 			switch type {
@@ -131,8 +141,7 @@ class Main {
 								}))));
 				}
 				case PLAYER: {
-					var player :Entity;
-					background.addChild(player = new Entity()
+					background.addChild(new Entity()
 						.add(new ImageSprite(CanvasTools.createGradient(130,100,10,50,TILE_WIDTH,TILE_WIDTH,10, simplex))
 							.onLoaded(img -> {
 								img.centerAnchor();
@@ -153,7 +162,6 @@ class Main {
 										.setXY(20, 15)
 										.centerAnchor();
 								}))));
-					background.addChild(new Entity().add(new Boids(player.get(Sprite), simplex)));
 				}
 			}
 		});
@@ -168,6 +176,7 @@ class Main {
 			engine.addSystem(new ControllerSystem());
 			engine.addSystem(new EnemySystem());
 			engine.addSystem(new CameraSystem());
+			engine.addSystem(new BoidSystem());
 			engine.addSystem(new CollisionSystem(spatialHash));
 			var scale = new Scale(Root.G_SHARP, ScaleType.NATURAL_MINOR);
 			var trackData :TrackData = cast TrackParser.parse("./src/game/track.dstrack");

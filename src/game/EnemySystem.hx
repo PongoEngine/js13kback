@@ -49,9 +49,11 @@ class EnemySystem implements System
         enemy.elapsed += dt;
         if(enemy.elapsed > enemy.timeout && collider.isOnGround) {
             engine.iterate(other -> {other.has(Player) && other.has(Sprite);}, other -> {
-                var distance = EMath.distance(other.get(Sprite), e.get(Sprite));
+                var thatSprite = other.get(Sprite);
+                var thisSprite = e.get(Sprite);
+                var distance = EMath.distance(thatSprite.x, thatSprite.y, thisSprite.x, thisSprite.y);
                 if(distance < 800) {
-                    var angle = EMath.angle(other.get(Sprite), e.get(Sprite));
+                    var angle = EMath.angle(thatSprite.x, thatSprite.y, thisSprite.x, thisSprite.y);
                     if(angle < middle) {
                         collider.isLeft = true;
                         collider.isRight = false;

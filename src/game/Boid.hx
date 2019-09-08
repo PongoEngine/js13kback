@@ -21,31 +21,24 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package engine.util;
+package game;
 
-import engine.display.Sprite;
+import engine.Component;
 
-class EMath
+class Boid implements Component
 {
-    public static function angle(x1 :Float, y1 :Float, x2 :Float, y2 :Float) : Float
-    {
-        return Math.atan2(y2 - y1, x2 - x1);
-    }
+    public var x :Float;
+    public var y :Float;
+    public var angle :Float;
+    public var veloX :Float;
+    public var veloY :Float;
 
-    public static function distance(x1 :Float, y1 :Float, x2 :Float, y2 :Float) : Float
+    public function new(x :Float, y :Float) : Void
     {
-        var a = x1 - x2;
-        var b = y1 - y2;
-        return Math.sqrt( a*a + b*b );
-    }
-
-    public static function sign(number :Float) : Int
-    {
-        if (number < 0) {
-            return -1;
-        } else if (number > 0) {
-            return 1;
-        }
-        return 0;
+        this.x = x;
+        this.y = y;
+        this.angle = 0;
+        this.veloX = 0;
+        this.veloY = 0;
     }
 }
