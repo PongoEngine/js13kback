@@ -33,7 +33,7 @@ import engine.sound.theory.Step;
 import engine.sound.theory.Octave;
 import engine.sound.theory.Duration;
 import engine.sound.theory.Scale;
-import engine.sound.Mixer;
+import engine.sound.synth.Synth;
 
 class Sequencer
 {
@@ -47,16 +47,14 @@ class Sequencer
         _trackLength = trackLength;
     }
 
-    public function update(mixer :Mixer, dt :Float) : Void
+    public function update(synth :Synth, dt :Float) : Void
     {
         if(_curPulse != _lastPulse) {
             if(_track.exists(_curPulse)) {
                 for(note in _track.get(_curPulse)) {
-                    mixer.play(note.note.toInt(), _duration, note.start, note.duration, note.sound, note.envelope);
+                    synth.play(note.note.toInt(), _duration, note.start, note.duration, note.sound, note.envelope);
                 }
             }
-
-            mixer.checkNotes(_curPulse);
             _lastPulse = _curPulse;
         }
 

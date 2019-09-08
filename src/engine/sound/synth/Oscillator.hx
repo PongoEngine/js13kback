@@ -27,48 +27,32 @@ import engine.util.EMath;
 import engine.sound.track.Sound;
 import engine.sound.track.Envelope;
 import js.html.audio.AudioBufferSourceNode;
-// import js.html.audio.GainNode;
 import js.html.audio.AudioContext;
 import js.html.audio.AudioNode;
 
 class Oscillator
 {
-    public function new() : Void
+    public static function play(length :Float, freq :Float, samplingRate :Int, ctx :AudioContext, audio :AudioNode, sound :Sound, envelope :Envelope) : Void
     {
-        _buffer = null;
-    }
-
-    public function play(length :Float, freq :Float, samplingRate :Int, ctx :AudioContext, audio :AudioNode, sound :Sound, envelope :Envelope) : Void
-    {
-        if(_buffer == null) {
-            var angularFreq = freq * 2 * Math.PI;
-            _buffer = createSound(ctx, samplingRate, angularFreq, length, sound, envelope, generateSound);
-            _buffer.connect(audio);
-            _buffer.start();
-        }
-        else {
-            this.stop();
-            this.play(length, freq, samplingRate, ctx, audio, sound, envelope);
-        }
-    }
-
-    public function stop() : Void
-    {
-        if(_buffer != null) {
-            _buffer.disconnect();
-            // _gain.disconnect();
-            _buffer.stop();
-            _buffer = null;
-            // _gain = null;
-        }
+        var angularFreq = freq * 2 * Math.PI;
+        var buffer = createSound(ctx, samplingRate, angularFreq, length, sound, envelope, generateSound);
+        buffer.connect(audio);
+        buffer.start();
     }
 
     private static function createSound(ctx :AudioContext, samplingRate :Int, freq :Float, length :Float, sound :Sound, envelope :Envelope, generateAudio :SoundGenerator) : AudioBufferSourceNode
     {
         var data = [];
-        var dataLength = Math.ceil(length * samplingRate);
+        var attackLength = samplingRate * envelope.attackDur();
+        var decayLength = samplingRate * envelope.decayDur();
+        var sustainLength = samplingRate * envelope.sustainDur();
+        var releaseLength = samplingRate * envelope.releaseDur();
+        var envLength = Math.ceil(attackLength + decayLength + sustainLength + releaseLength);
+        var noteLength = Math.ceil(length * samplingRate);
+
+        var dataLength = envLength < noteLength ? envLength : noteLength;
         for (i in 0...dataLength - 1) {
-            generateAudio(samplingRate, freq, sound, envelope, data, i);
+            generateAudio(samplingRate, freq, sound, envelope, data, i, attackLength, decayLength, sustainLength, releaseLength);
         }
         var buffer = ctx.createBuffer(1, dataLength, samplingRate);
         var bufferSouce = ctx.createBufferSource();
@@ -77,7 +61,11 @@ class Oscillator
         return bufferSouce;
     }
 
-    private static function generateSound(samplingRate :Int, freq :Float, sound :Sound, envelope :Envelope, data :Array<Float>, sampleNumber :Int) : Void
+    private static function generateSound(
+        samplingRate :Int, freq :Float, sound :Sound, 
+        envelope :Envelope, data :Array<Float>, sampleNumber :Int,
+        attackLength: Float, decayLength: Float, sustainLength: Float, releaseLength: Float
+    ) : Void
     {
         var sampleTime = sampleNumber / samplingRate;
         var sampleAngle = sampleTime * freq;
@@ -85,8 +73,7 @@ class Oscillator
         var squareVal :Float = EMath.sign(Math.sin(sampleAngle)) * sound.square();
         var noiseVal = (Math.random() * 2 - 1) * sound.noise();
 
-        var attackLength = samplingRate * envelope.attackDur();
-        var decayLength = samplingRate * envelope.decayDur();
+        
         var adsr :Float = 0;
         
         if(sampleNumber < attackLength) {
@@ -97,8 +84,12 @@ class Oscillator
             var percent = (sampleNumber - attackLength) / decayLength;
             adsr = tween(envelope.attackAmp(), envelope.sustainAmp(), percent);
         }
-        else {
+        else if((sampleNumber - (attackLength+decayLength)) < sustainLength) {
             adsr = envelope.sustainAmp();
+        }
+        else {
+            var percent = (sampleNumber - (attackLength+decayLength+sustainLength)) / releaseLength;
+            adsr = tween(envelope.sustainAmp(), 0, percent);
         }
 
 
@@ -109,7 +100,4 @@ class Oscillator
     {
         return start + (percent * (end-start));
     }
-
-    private var _buffer :AudioBufferSourceNode;
-    // private var _gain :GainNode;
 }

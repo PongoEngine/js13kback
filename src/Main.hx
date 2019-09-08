@@ -169,7 +169,7 @@ class Main {
 			engine.addSystem(new EnemySystem());
 			engine.addSystem(new CameraSystem());
 			engine.addSystem(new CollisionSystem(spatialHash));
-			var scale = new Scale(Root.A, ScaleType.HARMONIC_MINOR);
+			var scale = new Scale(Root.G_SHARP, ScaleType.NATURAL_MINOR);
 			var trackData :TrackData = cast TrackParser.parse("./src/game/track.dstrack");
 			engine.addSystem(new SoundSystem(Sequencer.create("introSong", trackData, 130, scale)));
 		}, 4);

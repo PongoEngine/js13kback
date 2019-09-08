@@ -28,25 +28,25 @@ import engine.display.Sprite;
 import engine.Entity;
 import engine.display.Canvas;
 import engine.System;
-import engine.sound.Mixer;
+import engine.sound.synth.Synth;
 import js.Browser;
 
 class Engine 
 {
     public var root (default, null) :Entity;
-    public var mixer (default, null) :Mixer;
+    public var synth (default, null) :Synth;
 
     public function new(canvas :CanvasElement) : Void
     {
         this.root = new Entity();
         this._systems = [];
 		var hasTouched = false;
-		this.mixer = new Mixer();
+		this.synth = new Synth();
 
 		canvas.onclick = function() {
 			if(!hasTouched) {
 				hasTouched = true;
-				this.mixer.resume();
+				this.synth.resume();
 			}
 		}
 
@@ -55,10 +55,10 @@ class Engine
 
 		Browser.document.addEventListener("visibilitychange", function(e) {
 			if(Browser.document.hidden) {
-				this.mixer.mute();
+				this.synth.mute();
 			}
 			else {
-				this.mixer.unmute();
+				this.synth.unmute();
 			}
 		});
 

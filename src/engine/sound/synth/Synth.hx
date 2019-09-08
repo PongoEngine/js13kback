@@ -53,8 +53,6 @@ class Synth
 
         _masterGainNode.gain.setValueAtTime(GAME_VOLUME, _audioContext.currentTime);
         _frequencies = new Frequencies();
-        _oscPool = [];
-        _oscActive = [];
     }
 
     public inline function mute() : Void
@@ -74,21 +72,8 @@ class Synth
 
     public function play(key :Int, pulseLength :Float, start:Pulse, duration :Duration, sound :Sound, envelope :Envelope) : Void
     {
-        var osc = _oscPool.length > 0 ? _oscPool.pop() : new Oscillator();
         var length :Float = duration.toInt() * pulseLength;
-        osc.play(length, _frequencies.get(key), 44100, _audioContext, _equalizerNode, sound, envelope);
-        _oscActive.push({osc:osc,duration:duration,start:start,elapsed:new Pulse(0)});
-    }
-
-    public function checkActive(currentPulse :Pulse) : Void
-    {
-        for(active in _oscActive) {
-            if(currentPulse >= active.start+active.duration) {
-                active.osc.stop();
-                _oscActive.remove(active);
-                _oscPool.push(active.osc);
-            }
-        }
+        Oscillator.play(length, _frequencies.get(key), 44100, _audioContext, _masterGainNode, sound, envelope);
     }
 
     private function impulseResponse(duration :Float, decay :Float, reverse :Bool ) : AudioBuffer
@@ -107,8 +92,6 @@ class Synth
         return impulse;
     }
 
-    private var _oscPool : Array<Oscillator>;
-    private var _oscActive : Array<{osc:Oscillator,duration:Duration,start:Pulse,elapsed:Pulse}>;
     private var _audioContext : AudioContext;
     private var _masterGainNode : GainNode;
     private var _reverbNode :ConvolverNode;

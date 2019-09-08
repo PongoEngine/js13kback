@@ -45,7 +45,7 @@ class SoundSystem implements System
 
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
-        _sequence.update(engine.mixer, dt);
+        _sequence.update(engine.synth, dt);
     }
 
     private var _elapsed :Float;

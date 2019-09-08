@@ -1,5 +1,5 @@
 sound noiseSound
-    volume 0.3
+    volume 0.9
     noise 0.8
     sine 0.1
     square 0.1;
@@ -7,7 +7,7 @@ sound squareish
     volume 0.8
     noise 0.3333
     sine 1.8
-    square 4.3333;
+    square 400.3333;
 sound sineish
     volume 1 
     noise 0.1
@@ -30,18 +30,18 @@ envelope sharpEnvelope
 loop heaveRiff
     0~------|0~----4~|3~------|3~--2~1~;
 loop softMelody
-    --5~--5~|--5~3~~-|----4~--|--------;
+    --5~--5-|--5-3---|----4~--|--------;
 loop snarePattern
     ----0---|----0---|----0---|----0---;
 loop subPattern
     0-------|0-----0-|0-------|0-0---0-;
 
-track introSong sineish smoothEnvelope 2
+track introSong sineish smoothEnvelope 1
     heaveRiff;
-track introSong squareish sharpEnvelope 3
+track introSong squareish sharpEnvelope 2
     softMelody;
 
 track introSong noiseSound sharpEnvelope 3
     snarePattern;
-track introSong noiseSound sharpEnvelope 1
+track ote noiseSound sharpEnvelope 1
     subPattern;

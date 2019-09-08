@@ -178,11 +178,12 @@ class TrackParser
         consumeWhitespace(parser);
         var envelopName = consumeWord(parser);
 
-        var attackDur :Float = 0;
-        var attackAmp :Float = 0;
-        var decayDur :Float = 0;
-        var sustainAmp :Float = 0;
-        var releaseDur :Float = 0;
+        var attackDur :Float = 1;
+        var attackAmp :Float = 1;
+        var decayDur :Float = 0.1;
+        var sustainDur :Float = 0.1;
+        var sustainAmp :Float = 0.6;
+        var releaseDur :Float = 0.2;
 
         while(true) {
             consumeWhitespace(parser);
@@ -194,6 +195,8 @@ class TrackParser
                     attackAmp = parseFloat(parser);
                 case DECAY_DUR: 
                     decayDur = parseFloat(parser);
+                case SUSTAIN_DUR: 
+                    sustainDur = parseFloat(parser);
                 case SUSTAIN_AMP: 
                     sustainAmp = parseFloat(parser);
                 case RELEASE_DUR: 
@@ -208,6 +211,7 @@ class TrackParser
             attackDur, 
             attackAmp,
             decayDur,
+            sustainDur,
             sustainAmp,
             releaseDur
         ])};
@@ -358,6 +362,7 @@ class TrackParser
     var ATTACK_DUR = "attackDur";
     var ATTACK_AMP = "attackAmp";
     var DECAY_DUR = "decayDur";
+    var SUSTAIN_DUR = "sustainDur";
     var SUSTAIN_AMP = "sustainAmp";
     var RELEASE_DUR = "releaseDur";
     var SEMI = ";";
