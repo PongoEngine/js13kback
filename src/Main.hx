@@ -153,7 +153,7 @@ class Main {
 										.setXY(20, 15)
 										.centerAnchor();
 								}))));
-					background.addChild(new Entity().add(new Boids([player.get(Sprite)])));
+					background.addChild(new Entity().add(new Boids(player.get(Sprite), simplex)));
 				}
 			}
 		});
