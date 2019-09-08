@@ -35,7 +35,7 @@ class CollisionSystem implements System
     private static inline var MAX_VELOY = 24;
     private static inline var VELOX_DECEL = 0.8;
     private static inline var VELOX_MIN = 0.1;
-    private static inline var JUMP_VELO = 20;
+    private static inline var JUMP_VELO = 14;
     private static inline var GRAVITY = 30;
     // private var _hash :SpatialHash;
 
@@ -112,7 +112,7 @@ class CollisionSystem implements System
                         }
                     case [true, COLLIDER_BOID]:
                         if(collidedWithTop(sprite, other.get(Sprite))) {
-                            handleWithTop(sprite, collider, other, true);
+                            handleWithTop(sprite, collider, other, 2);
                         }
                     case [true, COLLIDER_WALL]: {
                         if(collidedWithLeft(sprite, other.get(Sprite))) {
@@ -127,6 +127,9 @@ class CollisionSystem implements System
                         else if(collidedWithBottom(sprite, other.get(Sprite))) {
                             handleWithBottom(sprite, collider, other);
                         }
+                        else {
+                            handleWithBottom(sprite, collider, other, 2);
+                        }
                     }
                     case [false, _]:
                 }
@@ -135,32 +138,28 @@ class CollisionSystem implements System
         }   
     }
 
-    private static function handleWithLeft(sprite :Sprite, collider :Collider, other :Entity) : Void
+    private static function handleWithLeft(sprite :Sprite, collider :Collider, other :Entity, offset :Float = 0) : Void
     {
-        var offsetX = sprite.right() - other.get(Sprite).left();
-        sprite.x -= offsetX;
+        sprite.x -= sprite.right() - other.get(Sprite).left() + offset;
         collider.velocityX = 0;
     }
 
-    private static function handleWithRight(sprite :Sprite, collider :Collider, other :Entity) : Void
+    private static function handleWithRight(sprite :Sprite, collider :Collider, other :Entity, offset :Float = 0) : Void
     {
-        var offsetX = other.get(Sprite).right() - sprite.left();
-        sprite.x += offsetX;
+        sprite.x += other.get(Sprite).right() - sprite.left() + offset;
         collider.velocityX = 0;
     }
 
-    private static function handleWithTop(sprite :Sprite, collider :Collider, other :Entity, ciel :Bool = false) : Void
+    private static function handleWithTop(sprite :Sprite, collider :Collider, other :Entity, offset :Float = 0) : Void
     {
-        var offsetY = sprite.bottom() - other.get(Sprite).top();
-        sprite.y -= ciel ? Math.ceil(offsetY) : offsetY;
+        sprite.y -= sprite.bottom() - other.get(Sprite).top() + offset;
         collider.velocityY = 0;
         collider.isOnGround = true;
     }
 
-    private static function handleWithBottom(sprite :Sprite, collider :Collider, other :Entity) : Void
+    private static function handleWithBottom(sprite :Sprite, collider :Collider, other :Entity, offset :Float = 0) : Void
     {
-        var offsetY = other.get(Sprite).bottom() - sprite.top();
-        sprite.y += offsetY;
+        sprite.y += other.get(Sprite).bottom() - sprite.top() + offset;
         collider.velocityY = 0;
     }
 

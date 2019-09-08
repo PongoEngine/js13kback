@@ -50,7 +50,7 @@ class Boid implements Component
     private function get_target() : {x:Float, y:Float}
     {
         _target.x = _attractor.x;
-        _target.y = _attractor.y + _attractor.naturalHeight();
+        _target.y = _attractor.y + _attractor.naturalHeight() + 20;
         return _target;
     }
 

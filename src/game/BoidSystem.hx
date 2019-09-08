@@ -34,10 +34,10 @@ class BoidSystem implements System
     public function new() : Void
     {
         _settings = {
-            avoidance: 300,
+            avoidance: 400,
             avoidanceDistance: 5,
             flockCentre: 1,
-            targetPosition: 200
+            targetPosition: 100
         }
         _flock = [];
         _targets = [];
@@ -69,7 +69,6 @@ class BoidSystem implements System
     private var _settings : Settings;
     private var _flock : Array<Entity>;
     private var _targets : Array<Entity>;
-    // private var _scratchTargetCenter :Vector = {x:0,y:0};
     private var _scratchFlockCenter : Vector = {x:0,y:0};
 
     private static function moveTowards (boid :Boid, dt :Float, position :Vector, speed :Float) : Void

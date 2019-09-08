@@ -52,7 +52,7 @@ class EnemySystem implements System
                 var thatSprite = other.get(Sprite);
                 var thisSprite = e.get(Sprite);
                 var distance = EMath.distance(thatSprite.x, thatSprite.y, thisSprite.x, thisSprite.y);
-                if(distance < 800) {
+                if(distance < 1800) {
                     var angle = EMath.angle(thatSprite.x, thatSprite.y, thisSprite.x, thisSprite.y);
                     if(angle < middle) {
                         collider.isLeft = true;
