@@ -24,7 +24,6 @@
 package engine.display;
 
 import js.html.ImageElement;
-import js.html.CanvasElement;
 import js.Browser;
 import js.lib.Promise;
 

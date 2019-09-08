@@ -28,7 +28,7 @@ import engine.Component;
 class Collider implements Component
 {
     public var type (default, null):BodyType;
-    public var acceleration :Float = 30;
+    public var acceleration :Float = 10;
     public var velocityX :Float = 0;
     public var velocityY :Float = 0;
     public var isOnGround :Bool = true;

@@ -39,6 +39,11 @@ class EMath
         return Math.sqrt( a*a + b*b );
     }
 
+    public static function clamp<T:Float>(val :T, min :T, max :T) : T
+    {
+        return cast Math.min(Math.max(val, min), max);
+    }
+
     public static function sign(number :Float) : Int
     {
         if (number < 0) {

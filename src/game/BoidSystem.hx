@@ -26,7 +26,7 @@ package game;
 import engine.Entity;
 import engine.System;
 import engine.Engine;
-import engine.display.Sprite;
+import engine.display.FillSprite;
 import engine.util.EMath;
 
 class BoidSystem implements System
@@ -45,7 +45,7 @@ class BoidSystem implements System
 
     public function shouldUpdate(e :Entity) : Bool
     {
-        return e.has(Boid) && e.has(Sprite);
+        return e.has(Boid) && e.has(FillSprite);
     }
 
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
@@ -59,11 +59,15 @@ class BoidSystem implements System
         calculateFlockCentre(_flock, _scratchFlockCenter);
 
         var b = e.get(Boid);
-        var s = e.get(Sprite);
+        var s = e.get(FillSprite);
         updateBoid(b, dt * 60, _scratchFlockCenter, _flock, _settings);
         s.x = b.x;
         s.y = b.y;
         s.angle = b.angle;
+        var colorVelo = Std.int(EMath.clamp(Math.abs(b.veloX) * 20, 0, 255));
+        s.r = colorVelo;
+        s.g = colorVelo;
+        s.b = colorVelo;
     }
 
     private var _settings : Settings;
@@ -97,8 +101,8 @@ class BoidSystem implements System
         var sumX :Float = 0;
         var sumY :Float = 0;
         for(boid in entities) {
-            sumX += boid.get(Sprite).x;
-            sumY += boid.get(Sprite).y;
+            sumX += boid.get(FillSprite).x;
+            sumY += boid.get(FillSprite).y;
         }
         scratch.x = sumX / entities.length;
         scratch.y = sumY / entities.length;

@@ -57,6 +57,7 @@ import engine.sound.theory.Scale.ScaleType;
 import engine.sound.theory.Note.Root;
 import engine.sound.Sequencer;
 import engine.map.TileMap;
+import engine.Assets;
 
 class Main {
 	public static var GAME_WIDTH :Int = 800;
@@ -143,13 +144,11 @@ class Main {
 
 	private static function createThing(comp :Component, mainTexture :Promise<ImageElement>, simplex :Simplex, x :Int, y :Int, type :TileType) : Entity
 	{
-		// var texture = CanvasTools.createGradient(30,230,220,50,TILE_WIDTH,Std.int(TILE_WIDTH*0.8),10, simplex);
 		return new Entity()
 			.add(new ImageSprite(mainTexture)
 				.onLoaded(img -> {
 					img.centerAnchor();
 				})
-				// .setBlendmode(COLOR_BURN)
 				.setXY(x*TILE_WIDTH, y*TILE_WIDTH))
 			.add(comp)
 			.add(new Collider(COLLIDER_CHARACTER))
@@ -159,7 +158,6 @@ class Main {
 						img
 							.setXY(6, 15)
 							.centerAnchor();
-							// .setBlendmode(MULTIPLY);
 					})))
 			.addChild(new Entity()
 				.add(new ImageSprite(CanvasTools.createGradient(0,0,0,40,5,5,5, simplex))
@@ -167,7 +165,6 @@ class Main {
 						img
 							.setXY(15, 15)
 							.centerAnchor();
-							// .setBlendmode(MULTIPLY);
 					})));
 	}
 }

@@ -112,7 +112,7 @@ class CollisionSystem implements System
                         }
                     case [true, COLLIDER_BOID]:
                         if(collidedWithTop(sprite, other.get(Sprite))) {
-                            handleWithTop(sprite, collider, other, 2);
+                            handleWithTop(sprite, collider, other, 1);
                         }
                     case [true, COLLIDER_WALL]: {
                         if(collidedWithLeft(sprite, other.get(Sprite))) {
