@@ -53,6 +53,8 @@ import engine.sound.theory.Scale.ScaleType;
 import engine.sound.theory.Note.Root;
 import engine.sound.Sequencer;
 import engine.map.TileMap;
+import engine.phys.ecs.Phys;
+import engine.phys.ecs.PhysicsSystem;
 
 class Main {
 	public static var GAME_WIDTH :Int = 800;
@@ -177,7 +179,8 @@ class Main {
 			engine.addSystem(new EnemySystem());
 			engine.addSystem(new CameraSystem());
 			engine.addSystem(new BoidSystem());
-			engine.addSystem(new CollisionSystem(spatialHash));
+			// engine.addSystem(new CollisionSystem(spatialHash));
+			engine.addSystem(new PhysicsSystem());
 			var scale = new Scale(Root.G_SHARP, ScaleType.NATURAL_MINOR);
 			var trackData :TrackData = cast TrackParser.parse("./src/game/track.dstrack");
 			engine.addSystem(new SoundSystem(Sequencer.create("introSong", trackData, 130, scale)));
