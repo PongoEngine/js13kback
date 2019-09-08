@@ -36,7 +36,6 @@ import game.Stage;
 import game.collision.Collider;
 import game.SoundComp;
 import game.ControllerSystem;
-import game.OrbitSystem;
 import game.CameraSystem;
 import game.SoundSystem;
 import game.collision.CollisionSystem;
@@ -169,7 +168,6 @@ class Main {
 			engine.addSystem(new ControllerSystem());
 			engine.addSystem(new EnemySystem());
 			engine.addSystem(new CameraSystem());
-			engine.addSystem(new OrbitSystem());
 			engine.addSystem(new CollisionSystem(spatialHash));
 			var scale = new Scale(Root.A, ScaleType.HARMONIC_MINOR);
 			var trackData :TrackData = cast TrackParser.parse("./src/game/track.dstrack");

@@ -1,5 +1,3 @@
-//https://github.com/hughsk/boids/blob/master/index.js
-
 package game;
 
 import engine.display.Sprite;
