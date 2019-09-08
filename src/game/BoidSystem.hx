@@ -34,9 +34,9 @@ class BoidSystem implements System
     public function new() : Void
     {
         _settings = {
-            avoidance: 40,
-            avoidanceDistance: 20,
-            flockCentre: 10,
+            avoidance: 300,
+            avoidanceDistance: 5,
+            flockCentre: 1,
             targetPosition: 200
         }
         _flock = [];
@@ -56,16 +56,11 @@ class BoidSystem implements System
             _flock.push(e);
             return false;
         });
-        engine.iterate(e -> e.has(Player) && e.has(Sprite), e -> {
-            _targets.push(e);
-            return true;
-        });
         calculateFlockCentre(_flock, _scratchFlockCenter);
-        calculateFlockCentre(_targets, _scratchTargetCenter);
 
         var b = e.get(Boid);
         var s = e.get(Sprite);
-        updateBoid(b, dt * 60, _scratchTargetCenter, _scratchFlockCenter, _flock, _settings);
+        updateBoid(b, dt * 60, _scratchFlockCenter, _flock, _settings);
         s.x = b.x;
         s.y = b.y;
         s.angle = b.angle;
@@ -74,7 +69,7 @@ class BoidSystem implements System
     private var _settings : Settings;
     private var _flock : Array<Entity>;
     private var _targets : Array<Entity>;
-    private var _scratchTargetCenter :Vector = {x:0,y:0};
+    // private var _scratchTargetCenter :Vector = {x:0,y:0};
     private var _scratchFlockCenter : Vector = {x:0,y:0};
 
     private static function moveTowards (boid :Boid, dt :Float, position :Vector, speed :Float) : Void
@@ -129,12 +124,12 @@ class BoidSystem implements System
         };
     }
 
-    private static function updateBoid(boid :Boid, dt :Float, targetPosition :Vector, flockCentre :Vector, flock :Array<Entity>, settings :Settings) : Boid
+    private static function updateBoid(boid :Boid, dt :Float, flockCentre :Vector, flock :Array<Entity>, settings :Settings) : Boid
     {
         moveTowards(
             boid,
             dt,
-            targetPosition,
+            boid.target,
             settings.targetPosition / 100
         );
 

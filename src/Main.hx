@@ -74,60 +74,59 @@ class Main {
 
 	static inline function startGame(engine :Engine) : Void
 	{
-		// var spatialHash = new SpatialHash();
+		var MEGA_HEIGHT = 2200;
+		var MEGA_WIDTH= 1600;
 		var tileMap :TileMap = TileMap.parse("./src/game/tiles.dsmap");
 		var simplex = new Simplex(4730);
-		var backgroundSquare2 = CanvasTools.createGradient(90,10,30,100,TILE_WIDTH,TILE_WIDTH,1, simplex);
+		var backgroundSquare2 = CanvasTools.createGradient(60,10,130,100,TILE_WIDTH,TILE_WIDTH,1, simplex);
 		var background = new Entity()
-			.add(new ImageSprite(CanvasTools.createTileThing(backgroundSquare2, tileMap, 2200,1200, simplex, 20, 0.01)))
+			.add(new ImageSprite(CanvasTools.createTileThing(backgroundSquare2, tileMap, MEGA_WIDTH,MEGA_HEIGHT, simplex, 20, 0.01)))
 			.add(new Stage())
 			.addChild(new Entity()
-				.add(new FillSprite(0,0,0,1,3000,3000)
+				.add(new FillSprite(0,0,0,1,MEGA_WIDTH,MEGA_HEIGHT)
 					.setBlendmode(SOFT_LIGHT)));
 
 		engine.root
 			.addChild(new Entity()
-				.add(new ImageSprite(CanvasTools.createGradient(90,10,30,100,2200,1200,10, simplex))))
+				.add(new ImageSprite(CanvasTools.createGradient(10,10,30,40,MEGA_WIDTH,MEGA_HEIGHT,10, simplex))))
 			.addChild(background);
 		engine.root.add(new SoundComp());
 
 		tileMap.populate(function(x :Int, y :Int, type :TileType, width :Int) {
 			switch type {
-				case WATERFALL: {
+				case TILE_WALL: {
 					background.addChild(new Entity()
-						.add(new FlipbookSprite(CanvasTools.createGradient(30,30,140,10,TILE_WIDTH*width,TILE_WIDTH*3,10, simplex), 10, 10)
-							.setBlendmode(LIGHTEN)
-							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
-				}
-				case FLOOR: {
-					background.addChild(new Entity()
-						.add(new Collider(type, false, 0))
-						.add(new ImageSprite(CanvasTools.createGradient(140,140,140,50,TILE_WIDTH*width,TILE_WIDTH,3, simplex))
+						.add(new Collider(COLLIDER_WALL))
+						.add(new ImageSprite(CanvasTools.createGradient(0,0,0,50,TILE_WIDTH*width,TILE_WIDTH,3, simplex))
 							// .setBlendmode(HUE)
 							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
 				}
-				case WALL: {
-					background.addChild(new Entity()
-						.add(new Collider(type, false, 0))
-						.add(new ImageSprite(CanvasTools.createGradient(100,90,0,50,TILE_WIDTH*width,TILE_WIDTH,3, simplex))
-							// .setBlendmode(HUE)
-							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
+				case TILE_ENEMY: {
+					var texture = CanvasTools.createGradient(255,200,210,50,TILE_WIDTH,TILE_WIDTH,10, simplex);
+					var enemy = createThing(new Enemy(), texture, simplex, x, y, type);
+					background.addChild(enemy);
+
+					for(i in 0...30) {
+						background.addChild(new Entity()
+							.add(new FillSprite(200,200,200,1,20,10)
+								.setBlendmode(OVERLAY)
+								.setAnchor(10,5))
+							.add(new Collider(COLLIDER_BOID))
+							.add(new Boid(enemy.get(Sprite))));
+					}
 				}
-				case ENEMY: {
-					var texture = CanvasTools.createGradient(30,100,110,50,TILE_WIDTH,TILE_WIDTH,10, simplex);
-					background.addChild(createThing(new Enemy(), texture, simplex, x, y, type));
-				}
-				case PLAYER: {
-					var texture = CanvasTools.createGradient(130,100,10,50,TILE_WIDTH,TILE_WIDTH,10, simplex);
+				case TILE_PLAYER: {
+					var texture = CanvasTools.createGradient(230,230,220,50,TILE_WIDTH,Std.int(TILE_WIDTH*0.8),10, simplex);
 					var player = createThing(new Player(), texture, simplex, x, y, type);
 					background.addChild(player);
 
 					for(i in 0...30) {
 						background.addChild(new Entity()
-							.add(new FillSprite(200,200,200,1,20,10)
+							.add(new FillSprite(255,255,255,1,20,10)
+								.setBlendmode(OVERLAY)
 								.setAnchor(10,5))
-							.add(new Collider(FLOOR, true, 0))
-							.add(new Boid(-100, -100, player.get(Sprite))));
+							.add(new Collider(COLLIDER_BOID))
+							.add(new Boid(player.get(Sprite))));
 					}
 				}
 			}
@@ -147,26 +146,31 @@ class Main {
 
 	private static function createThing(comp :Component, mainTexture :Promise<ImageElement>, simplex :Simplex, x :Int, y :Int, type :TileType) : Entity
 	{
+		// var texture = CanvasTools.createGradient(30,230,220,50,TILE_WIDTH,Std.int(TILE_WIDTH*0.8),10, simplex);
 		return new Entity()
 			.add(new ImageSprite(mainTexture)
 				.onLoaded(img -> {
 					img.centerAnchor();
-				}).setXY(x*TILE_WIDTH, y*TILE_WIDTH))
+				})
+				.setBlendmode(COLOR_DODGE)
+				.setXY(x*TILE_WIDTH, y*TILE_WIDTH))
 			.add(comp)
-			.add(new Collider(type, true, 40))
+			.add(new Collider(COLLIDER_CHARACTER))
 			.addChild(new Entity()
-				.add(new ImageSprite(CanvasTools.createGradient(220,220,220,40,15,15,5, simplex))
+				.add(new ImageSprite(CanvasTools.createGradient(0,0,0,40,5,5,5, simplex))
 					.onLoaded(img -> {
 						img
-							.setXY(2, 15)
-							.centerAnchor();
+							.setXY(6, 15)
+							.centerAnchor()
+							.setBlendmode(MULTIPLY);
 					})))
 			.addChild(new Entity()
-				.add(new ImageSprite(CanvasTools.createGradient(220,220,220,40,15,15,5, simplex))
+				.add(new ImageSprite(CanvasTools.createGradient(0,0,0,40,5,5,5, simplex))
 					.onLoaded(img -> {
 						img
-							.setXY(20, 15)
-							.centerAnchor();
+							.setXY(15, 15)
+							.centerAnchor()
+							.setBlendmode(MULTIPLY);
 					})));
 	}
 }

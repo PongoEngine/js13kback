@@ -34,15 +34,27 @@ class Boid implements Component
     public var angle :Float;
     public var veloX :Float;
     public var veloY :Float;
-    public var attractor :Sprite;
+    public var target (get, null):{x:Float, y:Float};
 
-    public function new(x :Float, y :Float, attractor :Sprite) : Void
+    public function new(attractor :Sprite) : Void
     {
-        this.x = x;
-        this.y = y;
+        _attractor = attractor;
+        this.x = attractor.x + attractor.anchorX;
+        this.y = attractor.y + attractor.anchorY;
         this.angle = 0;
         this.veloX = 0;
         this.veloY = 0;
-        this.attractor = attractor;
+        _target = {x:this.x,y:this.y};
     }
+
+    private function get_target() : {x:Float, y:Float}
+    {
+        _target.x = _attractor.x;
+        _target.y = _attractor.y + _attractor.naturalHeight();
+        return _target;
+    }
+
+    private var _attractor :Sprite;
+    private var _target :{x:Float, y:Float};
+
 }

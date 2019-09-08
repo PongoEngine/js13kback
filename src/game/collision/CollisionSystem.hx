@@ -32,7 +32,7 @@ import game.collision.SpatialHash;
 class CollisionSystem implements System
 {
     private static inline var MAX_VELOX = 10;
-    private static inline var MAX_VELOY = 16;
+    private static inline var MAX_VELOY = 24;
     private static inline var VELOX_DECEL = 0.8;
     private static inline var VELOX_MIN = 0.1;
     private static inline var JUMP_VELO = 20;
@@ -52,7 +52,7 @@ class CollisionSystem implements System
     public function logic(engine :Engine, e :Entity, dt :Float) : Void
     {
         var collider = e.get(Collider);
-        if(collider.isDynamic) {
+        if(collider.type == COLLIDER_CHARACTER) {
             var sprite = e.get(Sprite);
             if(collider.isUp && collider.isOnGround) {
                 collider.velocityY = -JUMP_VELO;
@@ -84,49 +84,84 @@ class CollisionSystem implements System
                 }
             }
 
-            if(collider.velocityX != 0) {
-                collider.isOnGround = false;
-            }
-
             sprite.x += collider.velocityX;
-            // if(!collider.isOnGround) {
-                collider.velocityY += GRAVITY * dt;
-                if(collider.velocityY > MAX_VELOY) {
-                    collider.velocityY = MAX_VELOY;
-                }
-                sprite.y += collider.velocityY;
-            // }
+            collider.velocityY += GRAVITY * dt;
+            if(collider.velocityY > MAX_VELOY) {
+                collider.velocityY = MAX_VELOY;
+            }
+            sprite.y += collider.velocityY;
 
             // _hash.update(e);
             // _hash.iterate(e, function(other) {
             engine.iterate(other -> other.has(Collider) && other.has(Sprite) && other != e, other -> {
                 var hasHit = checkCollision(sprite, other.get(Sprite));
-                if(hasHit) {
-                    if(collidedWithLeft(sprite, other.get(Sprite))) {
-                        var offsetX = sprite.right() - other.get(Sprite).left();
-                        sprite.x -= offsetX;
-                        collider.velocityX = 0;
+                var otherType = other.get(Collider).type;
+                switch [hasHit, otherType] {
+                    case [true, COLLIDER_CHARACTER]:
+                        if(collidedWithLeft(sprite, other.get(Sprite))) {
+                            handleWithLeft(sprite, collider, other);
+                        }
+                        else if(collidedWithRight(sprite, other.get(Sprite))) {
+                            handleWithRight(sprite, collider, other);
+                        }
+                        else if(collidedWithTop(sprite, other.get(Sprite))) {
+                            handleWithTop(sprite, collider, other);
+                        }
+                        else if(collidedWithBottom(sprite, other.get(Sprite))) {
+                            handleWithBottom(sprite, collider, other);
+                        }
+                    case [true, COLLIDER_BOID]:
+                        if(collidedWithTop(sprite, other.get(Sprite))) {
+                            handleWithTop(sprite, collider, other, true);
+                        }
+                    case [true, COLLIDER_WALL]: {
+                        if(collidedWithLeft(sprite, other.get(Sprite))) {
+                            handleWithLeft(sprite, collider, other);
+                        }
+                        else if(collidedWithRight(sprite, other.get(Sprite))) {
+                            handleWithRight(sprite, collider, other);
+                        }
+                        else if(collidedWithTop(sprite, other.get(Sprite))) {
+                            handleWithTop(sprite, collider, other);
+                        }
+                        else if(collidedWithBottom(sprite, other.get(Sprite))) {
+                            handleWithBottom(sprite, collider, other);
+                        }
                     }
-                    else if(collidedWithRight(sprite, other.get(Sprite))) {
-                        var offsetX = other.get(Sprite).right() - sprite.left();
-                        sprite.x += offsetX;
-                        collider.velocityX = 0;
-                    }
-                    else if(collidedWithTop(sprite, other.get(Sprite))) {
-                        var offsetY = sprite.bottom() - other.get(Sprite).top();
-                        sprite.y -= offsetY;
-                        collider.velocityY = 0;
-                        collider.isOnGround = true;
-                    }
-                    else if(collidedWithBottom(sprite, other.get(Sprite)) && other.get(Collider).type == WALL) {
-                        var offsetY = other.get(Sprite).bottom() - sprite.top();
-                        sprite.y += offsetY;
-                        collider.velocityY = 0;
-                    }
+                    case [false, _]:
                 }
                 return false;
             });
         }   
+    }
+
+    private static function handleWithLeft(sprite :Sprite, collider :Collider, other :Entity) : Void
+    {
+        var offsetX = sprite.right() - other.get(Sprite).left();
+        sprite.x -= offsetX;
+        collider.velocityX = 0;
+    }
+
+    private static function handleWithRight(sprite :Sprite, collider :Collider, other :Entity) : Void
+    {
+        var offsetX = other.get(Sprite).right() - sprite.left();
+        sprite.x += offsetX;
+        collider.velocityX = 0;
+    }
+
+    private static function handleWithTop(sprite :Sprite, collider :Collider, other :Entity, ciel :Bool = false) : Void
+    {
+        var offsetY = sprite.bottom() - other.get(Sprite).top();
+        sprite.y -= ciel ? Math.ceil(offsetY) : offsetY;
+        collider.velocityY = 0;
+        collider.isOnGround = true;
+    }
+
+    private static function handleWithBottom(sprite :Sprite, collider :Collider, other :Entity) : Void
+    {
+        var offsetY = other.get(Sprite).bottom() - sprite.top();
+        sprite.y += offsetY;
+        collider.velocityY = 0;
     }
 
     private function checkCollision(spr1 :Sprite, spr2 :Sprite) : Bool
