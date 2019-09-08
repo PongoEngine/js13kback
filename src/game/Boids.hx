@@ -29,7 +29,7 @@ class Boids extends Sprite
         _scratch.x = _attractor.x;
         _scratch.y = _attractor.y;
         update(dt * 60, _scratch);
-        canvas.setColor(30,30,50,1);
+        canvas.setColor(130,30,150,1);
         for(boid in _flock) {
             canvas.save();
             canvas.rotate(boid.angle);
@@ -61,29 +61,21 @@ class Boids extends Sprite
     {
         var distanceX = position.x - boid.x;
         var distanceY = position.y - boid.y;
+        var absoluteDistanceX = Math.abs(distanceX);
+        var absoluteDistanceY = Math.abs(distanceY);
 
-        var absoluteDistance = {
-            x: Math.abs(distanceX),
-            y: Math.abs(distanceY)
-        };
-
-        var normalizedDistance = normalizeVector(absoluteDistance);
-
-        boid.veloX += normalizedDistance.x * EMath.sign(distanceX) * speed * dt;
-        boid.veloY += normalizedDistance.y * EMath.sign(distanceY) * speed * dt;
-    }
-
-    private static function normalizeVector (vector :Vector) : Vector
-    {
-        var vectorLength = Math.abs(vector.x + vector.y);
+        var vectorLength = Math.abs(absoluteDistanceX + absoluteDistanceY);
         if (vectorLength == 0) {
-            return {x: 0, y: 0};
+            absoluteDistanceX = 0;
+            absoluteDistanceY = 0;
         }
-
-        return {
-            x: vector.x / vectorLength,
-            y: vector.y / vectorLength
+        else {
+            absoluteDistanceX /= vectorLength;
+            absoluteDistanceY /= vectorLength;
         };
+
+        boid.veloX += absoluteDistanceX * EMath.sign(distanceX) * speed * dt;
+        boid.veloY += absoluteDistanceY * EMath.sign(distanceY) * speed * dt;
     }
 
     private static function calculateFlockCentre(flock :Array<Boid>) : Vector
