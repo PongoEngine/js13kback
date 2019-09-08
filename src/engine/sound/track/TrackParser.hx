@@ -1,4 +1,4 @@
-package engine.sound.util;
+package engine.sound.track;
 
 import haxe.Json;
 #if macro
@@ -9,12 +9,14 @@ import haxe.macro.Type;
 import sys.FileSystem;
 import sys.io.File;
 import engine.util.Parser;
-import engine.sound.Track;
+import engine.sound.track.Track;
+import engine.sound.track.Envelope;
+import engine.sound.track.Sound;
 #end
 
-class SoundFile
+class TrackParser
 {
-    public static macro function parse(filePath :String):ExprOf<engine.sound.Track.TrackData>
+    public static macro function parse(filePath :String):ExprOf<engine.sound.track.TrackData>
     {
         if (FileSystem.exists(filePath)) {
             var fileContent:String = File.getContent(filePath);
@@ -78,6 +80,7 @@ class SoundFile
                 if(!envelopes.exists(section.envelope)) {
                     Context.error('Envelope: ${section.envelope} is missing', Context.currentPos());
                 }
+                
                 if(!sounds.exists(section.sound)) {
                     Context.error('Sound: ${section.sound} is missing', Context.currentPos());
                 }
@@ -90,7 +93,7 @@ class SoundFile
         }
     }
 
-    private static function writeTracks(tracks :Map<String, Array<{sound:String,envelope:String,loops:Array<String>}>>) : String
+    private static function writeTracks(tracks :Map<String, Array<{sound:String,envelope:String,octave:Int,loops:Array<String>}>>) : String
     {
         var t = "{";
         for(track in tracks.keyValueIterator()) {
@@ -99,6 +102,7 @@ class SoundFile
                 t+='{';
                 t+='snd:"${section.sound}",';
                 t+='env:"${section.envelope}",';
+                t+='octave:"${section.octave}",';
                 t+='loops:[';
                 for(loop in section.loops) {
                     t+='"${loop}",';
@@ -194,14 +198,11 @@ class SoundFile
     {
         consumeWhitespace(parser);
         var soundName = consumeWord(parser);
-        var volume :Float = 0;
-        var randomness :Float = 0;
-        var length :Float = 0;
-        var attack :Float = 0;
-        var slide :Float = 0;
-        var noise :Float = 0;
-        var modulation :Float = 0;
-        var modulationPhase :Float = 0;
+        var volume :Float = 3;
+        var length :Float = 0.2;
+        var noise :Float = 0.3333;
+        var sine :Float = 0.3333;
+        var square :Float = 0.3333;
 
         while(true) {
             consumeWhitespace(parser);
@@ -209,35 +210,41 @@ class SoundFile
             switch keyword {
                 case VOLUME: 
                     volume = parseFloat(parser);
-                case RANDOMENESS: 
-                    randomness = parseFloat(parser);
+                    if(volume < 0) Context.error("Volume must be 0 or positive", Context.currentPos());
                 case LENGTH: 
                     length = parseFloat(parser);
-                case ATTACK: 
-                    attack = parseFloat(parser);
-                case SLIDE: 
-                    slide = parseFloat(parser);
+                    if(length < 0) Context.error("Length must be 0 or positive", Context.currentPos());
                 case NOISE: 
                     noise = parseFloat(parser);
-                case MODULATION: 
-                    modulation = parseFloat(parser);
-                case MODULATION_PHASE: 
-                    modulationPhase = parseFloat(parser);
+                    if(noise < 0) Context.error("Noise must be 0 or positive", Context.currentPos());
+                case SINE: 
+                    sine = parseFloat(parser);
+                    if(sine < 0) Context.error("Sine must be 0 or positive", Context.currentPos());
+                case SQUARE: 
+                    square = parseFloat(parser);
+                    if(square < 0) Context.error("Square must be 0 or positive", Context.currentPos());
                 case SEMI:
                     break;
                 case _: Context.error('Error while parsing sound. Recieved: ${keyword}', Context.currentPos());
             }
         }
 
+        var sum = (noise + sine + square);
+        if(sum <= 0) {
+            Context.error("Sound summation must be greater than 0", Context.currentPos());
+        }
+
+        var scale = 1 / (noise + sine + square);
+        noise = scale * noise;
+        sine = scale * sine;
+        square = scale * square;
+
         return {name:soundName, sound: new Sound([
             volume, 
-            randomness,
             length,
-            attack,
-            slide,
             noise,
-            modulation,
-            modulationPhase
+            sine,
+            square
         ])};
     }
 
@@ -345,13 +352,10 @@ class SoundFile
 
 @:enum abstract SoundKeyword(String) from String {
     var VOLUME = "volume";
-    var RANDOMENESS = "randomness";
     var LENGTH = "length";
-    var ATTACK = "attack";
-    var SLIDE = "slide";
     var NOISE = "noise";
-    var MODULATION = "modulation";
-    var MODULATION_PHASE = "modulationPhase";
+    var SINE = "sine";
+    var SQUARE = "square";
     var SEMI = ";";
 }
 #end

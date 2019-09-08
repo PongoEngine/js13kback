@@ -23,7 +23,10 @@
 
 package engine.sound;
 
-import engine.sound.Track;
+import engine.sound.track.Track;
+import engine.sound.track.Sound;
+import engine.sound.track.Envelope;
+import engine.sound.track.TrackData;
 import engine.sound.theory.Pulse;
 import engine.sound.theory.Note;
 import engine.sound.theory.Step;
@@ -74,7 +77,7 @@ class Sequencer
     public static function create(name :String, data :TrackData, bpm :Int, scale :Scale) : Sequencer
     {
         var trackInfo = data.tracks.get(name);
-        var noteLength = new Duration(16);
+        var noteLength = new Duration(8);
         var track = new Map<Pulse, Array<{note:Note,duration:Duration,start:Pulse, sound :Sound, envelope :Envelope}>>();
         var duration = new Duration(0);
         for(section in trackInfo) {

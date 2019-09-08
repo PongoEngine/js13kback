@@ -23,8 +23,8 @@
 
 package engine.sound;
 
-import engine.sound.Track.Sound;
-import engine.sound.Track.Envelope;
+import engine.sound.track.Sound;
+import engine.sound.track.Envelope;
 import engine.sound.theory.Duration;
 import engine.sound.theory.Pulse;
 import engine.sound.synth.Synth;

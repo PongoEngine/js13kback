@@ -21,14 +21,13 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import engine.sound.theory.Octave;
-import engine.sound.Track.TrackData;
+import engine.sound.track.TrackData;
 import engine.display.FillSprite;
 import engine.display.ImageSprite;
 import engine.display.Sprite;
 import engine.display.FlipbookSprite;
 import engine.Entity;
-import engine.sound.util.SoundFile;
+import engine.sound.track.TrackParser;
 import engine.Engine;
 import game.Player;
 import game.Enemy;
@@ -44,6 +43,7 @@ import game.collision.CollisionSystem;
 import game.collision.SpatialHash;
 import game.CanvasTools;
 import game.TileType;
+import game.Boids;
 import js.Browser;
 
 import engine.util.Simplex;
@@ -132,7 +132,8 @@ class Main {
 								}))));
 				}
 				case PLAYER: {
-					background.addChild(new Entity()
+					var player :Entity;
+					background.addChild(player = new Entity()
 						.add(new ImageSprite(CanvasTools.createGradient(130,100,10,50,TILE_WIDTH,TILE_WIDTH,10, simplex))
 							.onLoaded(img -> {
 								img.centerAnchor();
@@ -153,6 +154,7 @@ class Main {
 										.setXY(20, 15)
 										.centerAnchor();
 								}))));
+					background.addChild(new Entity().add(new Boids([player.get(Sprite)])));
 				}
 			}
 		});
@@ -169,8 +171,8 @@ class Main {
 			engine.addSystem(new CameraSystem());
 			engine.addSystem(new OrbitSystem());
 			engine.addSystem(new CollisionSystem(spatialHash));
-			var scale = new Scale(Root.D, ScaleType.NATURAL_MINOR);
-			var trackData :TrackData = cast SoundFile.parse("./src/game/track.dstrack");
+			var scale = new Scale(Root.A, ScaleType.HARMONIC_MINOR);
+			var trackData :TrackData = cast TrackParser.parse("./src/game/track.dstrack");
 			engine.addSystem(new SoundSystem(Sequencer.create("introSong", trackData, 130, scale)));
 		}, 4);
 	}

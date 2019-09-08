@@ -23,15 +23,13 @@
 
 package engine.sound.synth;
 
-import engine.sound.Track.Sound;
-import engine.sound.Track.Envelope;
-import js.html.audio.OscillatorNode;
+import engine.util.EMath;
+import engine.sound.track.Sound;
+import engine.sound.track.Envelope;
 import js.html.audio.AudioBufferSourceNode;
 import js.html.audio.GainNode;
 import js.html.audio.AudioContext;
-import js.html.audio.OscillatorType;
 import js.html.audio.AudioNode;
-import engine.sound.ZZFX;
 
 class Oscillator
 {
@@ -40,11 +38,20 @@ class Oscillator
         _buffer = null;
     }
 
-    public function play(freq :Float, ctx :AudioContext, audio :AudioNode, sound :Sound, envelope :Envelope) : Void
+    public function play(freq :Float, samplingFreq :Int, ctx :AudioContext, audio :AudioNode, sound :Sound, envelope :Envelope) : Void
     {
         if(_buffer == null) {
             _gain = ctx.createGain();
-            _buffer = ZZFX.make(ctx, sound.volume(),sound.randomness(),freq,sound.length(),sound.attack(),sound.slide(),sound.noise(),sound.modulation(),sound.modulationPhase());
+            var angularFreq = freq * 2 * Math.PI;
+            _buffer = createSound(ctx , angularFreq, sound.length(), samplingFreq, (sampleNumber, freq, data) -> {
+                var sampleTime = sampleNumber / samplingFreq;
+                var sampleAngle = sampleTime * freq;
+                var sineVal :Float = Math.sin(sampleAngle) * sound.sine();
+                var squareVal :Float = EMath.sign(Math.sin(sampleAngle)) * sound.square();
+                var noiseVal = (Math.random() * 2 - 1) * sound.noise();
+                data[sampleNumber] = (sineVal + squareVal + noiseVal) * sound.volume();
+
+            });
             _buffer.connect(_gain);
             _gain.connect(audio);
             _buffer.start();
@@ -58,7 +65,7 @@ class Oscillator
         }
         else {
             this.stop();
-            this.play(freq, ctx, audio, sound, envelope);
+            this.play(freq, samplingFreq, ctx, audio, sound, envelope);
         }
     }
 
@@ -71,6 +78,20 @@ class Oscillator
             _buffer = null;
             _gain = null;
         }
+    }
+
+    private static function createSound(ctx :AudioContext, freq :Float, length :Float, sampleRate :Float, generateAudio :Int -> Float -> Array<Float> -> Void) : AudioBufferSourceNode
+    {
+        var data = [];
+        var dataLength = Math.ceil(length * sampleRate);
+        for (i in 0...dataLength - 1) {
+            generateAudio(i, freq, data);
+        }
+        var bugger = ctx.createBuffer(1, dataLength, sampleRate);
+        var bufferSouce = ctx.createBufferSource();
+        bugger.getChannelData(0).set(data);
+        bufferSouce.buffer = bugger;
+        return bufferSouce;
     }
 
     private var _buffer :AudioBufferSourceNode;

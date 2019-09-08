@@ -38,6 +38,7 @@ class CollisionSystem implements System
     private static inline var JUMP_VELO = 24;
     private static inline var GRAVITY = 90;
     private var _hash :SpatialHash;
+    private var _lastCheck = 0;
 
     public function new(hash :SpatialHash) : Void
     {
@@ -98,6 +99,7 @@ class CollisionSystem implements System
             }
 
             _hash.update(e);
+            var possibles = 0;
             _hash.iterate(e, function(other) {
                 var hasHit = checkCollision(sprite, other.get(Sprite));
                 if(hasHit) {
@@ -123,7 +125,11 @@ class CollisionSystem implements System
                         collider.velocityY = 0;
                     }
                 }
+                possibles++;
             });
+            if(possibles != _lastCheck) {
+                _lastCheck = possibles;
+            }
 
         }   
     }

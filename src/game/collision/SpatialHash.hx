@@ -41,7 +41,7 @@ import haxe.ds.List;
 
 class SpatialHash
 {
-    public function new (power_of_two :Int = 10) : Void
+    public function new (power_of_two :Int = 6) : Void
     {
         _iterateKeys = makeKeysFn(power_of_two);
         _hash = new FastMap();

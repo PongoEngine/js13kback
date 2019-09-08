@@ -15,4 +15,14 @@ class EMath
         var b = p1.y - p2.y;
         return Math.sqrt( a*a + b*b );
     }
+
+    public static function sign(number :Float) : Int
+    {
+        if (number < 0) {
+            return -1;
+        } else if (number > 0) {
+            return 1;
+        }
+        return 0;
+    }
 }
