@@ -27,7 +27,7 @@ import engine.util.EMath;
 import engine.sound.track.Sound;
 import engine.sound.track.Envelope;
 import js.html.audio.AudioBufferSourceNode;
-import js.html.audio.GainNode;
+// import js.html.audio.GainNode;
 import js.html.audio.AudioContext;
 import js.html.audio.AudioNode;
 
@@ -38,34 +38,17 @@ class Oscillator
         _buffer = null;
     }
 
-    public function play(freq :Float, samplingFreq :Int, ctx :AudioContext, audio :AudioNode, sound :Sound, envelope :Envelope) : Void
+    public function play(length :Float, freq :Float, samplingRate :Int, ctx :AudioContext, audio :AudioNode, sound :Sound, envelope :Envelope) : Void
     {
         if(_buffer == null) {
-            _gain = ctx.createGain();
             var angularFreq = freq * 2 * Math.PI;
-            _buffer = createSound(ctx , angularFreq, sound.length(), samplingFreq, (sampleNumber, freq, data) -> {
-                var sampleTime = sampleNumber / samplingFreq;
-                var sampleAngle = sampleTime * freq;
-                var sineVal :Float = Math.sin(sampleAngle) * sound.sine();
-                var squareVal :Float = EMath.sign(Math.sin(sampleAngle)) * sound.square();
-                var noiseVal = (Math.random() * 2 - 1) * sound.noise();
-                data[sampleNumber] = (sineVal + squareVal + noiseVal) * sound.volume();
-
-            });
-            _buffer.connect(_gain);
-            _gain.connect(audio);
+            _buffer = createSound(ctx, samplingRate, angularFreq, length, sound, envelope, generateSound);
+            _buffer.connect(audio);
             _buffer.start();
-            var ct = ctx.currentTime;
-
-            _gain.gain.setValueAtTime(0,ct);
-            _gain.gain.linearRampToValueAtTime(envelope.attackAmp() ,ct+envelope.attackDur());
-            _gain.gain.linearRampToValueAtTime(envelope.sustainAmp(),ct+envelope.attackDur()+envelope.decayDur());
-            _gain.gain.linearRampToValueAtTime(envelope.sustainAmp(),ct+envelope.attackDur()+envelope.decayDur()+envelope.sustainDur());
-            _gain.gain.linearRampToValueAtTime(0,ct+envelope.attackDur()+envelope.decayDur()+envelope.sustainDur()+envelope.releaseDur());
         }
         else {
             this.stop();
-            this.play(freq, samplingFreq, ctx, audio, sound, envelope);
+            this.play(length, freq, samplingRate, ctx, audio, sound, envelope);
         }
     }
 
@@ -73,27 +56,60 @@ class Oscillator
     {
         if(_buffer != null) {
             _buffer.disconnect();
-            _gain.disconnect();
+            // _gain.disconnect();
             _buffer.stop();
             _buffer = null;
-            _gain = null;
+            // _gain = null;
         }
     }
 
-    private static function createSound(ctx :AudioContext, freq :Float, length :Float, sampleRate :Float, generateAudio :Int -> Float -> Array<Float> -> Void) : AudioBufferSourceNode
+    private static function createSound(ctx :AudioContext, samplingRate :Int, freq :Float, length :Float, sound :Sound, envelope :Envelope, generateAudio :SoundGenerator) : AudioBufferSourceNode
     {
         var data = [];
-        var dataLength = Math.ceil(length * sampleRate);
+        var dataLength = Math.ceil(length * samplingRate);
         for (i in 0...dataLength - 1) {
-            generateAudio(i, freq, data);
+            generateAudio(samplingRate, freq, sound, envelope, data, i);
         }
-        var bugger = ctx.createBuffer(1, dataLength, sampleRate);
+        var buffer = ctx.createBuffer(1, dataLength, samplingRate);
         var bufferSouce = ctx.createBufferSource();
-        bugger.getChannelData(0).set(data);
-        bufferSouce.buffer = bugger;
+        buffer.getChannelData(0).set(data);
+        bufferSouce.buffer = buffer;
         return bufferSouce;
     }
 
+    private static function generateSound(samplingRate :Int, freq :Float, sound :Sound, envelope :Envelope, data :Array<Float>, sampleNumber :Int) : Void
+    {
+        var sampleTime = sampleNumber / samplingRate;
+        var sampleAngle = sampleTime * freq;
+        var sineVal :Float = Math.sin(sampleAngle) * sound.sine();
+        var squareVal :Float = EMath.sign(Math.sin(sampleAngle)) * sound.square();
+        var noiseVal = (Math.random() * 2 - 1) * sound.noise();
+
+        var attackLength = samplingRate * envelope.attackDur();
+        var decayLength = samplingRate * envelope.decayDur();
+        var adsr :Float = 0;
+        
+        if(sampleNumber < attackLength) {
+            var percent = sampleNumber / attackLength;
+            adsr = percent * envelope.attackAmp();
+        }
+        else if((sampleNumber - attackLength) < decayLength) {
+            var percent = (sampleNumber - attackLength) / decayLength;
+            adsr = tween(envelope.attackAmp(), envelope.sustainAmp(), percent);
+        }
+        else {
+            adsr = envelope.sustainAmp();
+        }
+
+
+        data[sampleNumber] = (sineVal + squareVal + noiseVal) * adsr * sound.volume();
+    }
+
+    private static inline function tween(start :Float, end :Float, percent :Float) : Float
+    {
+        return start + (percent * (end-start));
+    }
+
     private var _buffer :AudioBufferSourceNode;
-    private var _gain :GainNode;
+    // private var _gain :GainNode;
 }

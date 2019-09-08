@@ -1,19 +1,16 @@
 sound noiseSound
-    volume 1 
-    length 0.2
+    volume 0.3
     noise 0.8
     sine 0.1
-    square 1.3333;
+    square 0.1;
 sound squareish
-    volume 1 
-    length 0.2
+    volume 0.8
     noise 0.3333
     sine 1.8
     square 4.3333;
 sound sineish
     volume 1 
-    length 0.2
-    noise 0.3333
+    noise 0.1
     sine 0.3333
     square 0.8;
 
@@ -21,25 +18,23 @@ envelope smoothEnvelope
     attackDur 0.1
     attackAmp 1
     decayDur 0.3
-    sustainDur 0.5
-    sustainAmp 0.4
+    sustainAmp 4
     releaseDur 0.3;
 envelope sharpEnvelope
-    attackDur 0
+    attackDur 0.1
     attackAmp 0.5
     decayDur 0.1
-    sustainDur 0.5
-    sustainAmp 0.1
+    sustainAmp 1
     releaseDur 0.3;   
 
 loop heaveRiff
-    0~~~~~~~|0~~~~~4~|3~~~~~~~|3~~~2~1~;
+    0~------|0~----4~|3~------|3~--2~1~;
 loop softMelody
-    --5---5-|--5-3---|----4---|--------;
+    --5~--5~|--5~3~~-|----4~--|--------;
 loop snarePattern
     ----0---|----0---|----0---|----0---;
 loop subPattern
-    0~~~~---|0~~~~-0~|0~~~~---|0-0---0-;
+    0-------|0-----0-|0-------|0-0---0-;
 
 track introSong sineish smoothEnvelope 2
     heaveRiff;

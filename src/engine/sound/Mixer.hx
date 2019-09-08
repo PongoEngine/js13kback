@@ -51,9 +51,9 @@ class Mixer
         _synth.resume();
     }
 
-    public function play(key :Int, start:Pulse, duration :Duration, sound :Sound, envelope :Envelope) : Void
+    public function play(key :Int, pulseLength :Float, start:Pulse, duration :Duration, sound :Sound, envelope :Envelope) : Void
     {
-        _synth.play(key, start, duration, sound, envelope);
+        _synth.play(key, pulseLength, start, duration, sound, envelope);
     }
 
     public function checkNotes(cur :Pulse) : Void

@@ -52,7 +52,7 @@ class Sequencer
         if(_curPulse != _lastPulse) {
             if(_track.exists(_curPulse)) {
                 for(note in _track.get(_curPulse)) {
-                    mixer.play(note.note.toInt(), note.start, note.duration, note.sound, note.envelope);
+                    mixer.play(note.note.toInt(), _duration, note.start, note.duration, note.sound, note.envelope);
                 }
             }
 

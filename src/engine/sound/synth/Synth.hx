@@ -72,10 +72,11 @@ class Synth
         this._audioContext.resume();
     }
 
-    public function play(key :Int, start:Pulse, duration :Duration, sound :Sound, envelope :Envelope) : Void
+    public function play(key :Int, pulseLength :Float, start:Pulse, duration :Duration, sound :Sound, envelope :Envelope) : Void
     {
         var osc = _oscPool.length > 0 ? _oscPool.pop() : new Oscillator();
-        osc.play(_frequencies.get(key), 44100, _audioContext, _equalizerNode, sound, envelope);
+        var length :Float = duration.toInt() * pulseLength;
+        osc.play(length, _frequencies.get(key), 44100, _audioContext, _equalizerNode, sound, envelope);
         _oscActive.push({osc:osc,duration:duration,start:start,elapsed:new Pulse(0)});
     }
 

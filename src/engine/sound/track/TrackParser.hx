@@ -158,7 +158,6 @@ class TrackParser
         var attackDur :Float = 0;
         var attackAmp :Float = 0;
         var decayDur :Float = 0;
-        var sustainDur :Float = 0;
         var sustainAmp :Float = 0;
         var releaseDur :Float = 0;
 
@@ -172,8 +171,6 @@ class TrackParser
                     attackAmp = parseFloat(parser);
                 case DECAY_DUR: 
                     decayDur = parseFloat(parser);
-                case SUSTAIN_DUR: 
-                    sustainDur = parseFloat(parser);
                 case SUSTAIN_AMP: 
                     sustainAmp = parseFloat(parser);
                 case RELEASE_DUR: 
@@ -188,7 +185,6 @@ class TrackParser
             attackDur, 
             attackAmp,
             decayDur,
-            sustainDur,
             sustainAmp,
             releaseDur
         ])};
@@ -199,7 +195,6 @@ class TrackParser
         consumeWhitespace(parser);
         var soundName = consumeWord(parser);
         var volume :Float = 3;
-        var length :Float = 0.2;
         var noise :Float = 0.3333;
         var sine :Float = 0.3333;
         var square :Float = 0.3333;
@@ -211,9 +206,6 @@ class TrackParser
                 case VOLUME: 
                     volume = parseFloat(parser);
                     if(volume < 0) Context.error("Volume must be 0 or positive", Context.currentPos());
-                case LENGTH: 
-                    length = parseFloat(parser);
-                    if(length < 0) Context.error("Length must be 0 or positive", Context.currentPos());
                 case NOISE: 
                     noise = parseFloat(parser);
                     if(noise < 0) Context.error("Noise must be 0 or positive", Context.currentPos());
@@ -241,7 +233,6 @@ class TrackParser
 
         return {name:soundName, sound: new Sound([
             volume, 
-            length,
             noise,
             sine,
             square
@@ -344,7 +335,6 @@ class TrackParser
     var ATTACK_DUR = "attackDur";
     var ATTACK_AMP = "attackAmp";
     var DECAY_DUR = "decayDur";
-    var SUSTAIN_DUR = "sustainDur";
     var SUSTAIN_AMP = "sustainAmp";
     var RELEASE_DUR = "releaseDur";
     var SEMI = ";";
@@ -352,7 +342,6 @@ class TrackParser
 
 @:enum abstract SoundKeyword(String) from String {
     var VOLUME = "volume";
-    var LENGTH = "length";
     var NOISE = "noise";
     var SINE = "sine";
     var SQUARE = "square";
