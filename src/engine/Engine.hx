@@ -42,6 +42,7 @@ class Engine
         this._systems = [];
 		var hasTouched = false;
 		this.synth = new Synth();
+		_canUpdate = !Browser.document.hidden;
 
 		canvas.onclick = function() {
 			if(!hasTouched) {
@@ -56,21 +57,26 @@ class Engine
 		Browser.document.addEventListener("visibilitychange", function(e) {
 			if(Browser.document.hidden) {
 				this.synth.mute();
+				_canUpdate = false;
+				_shouldUpdate = false;
 			}
 			else {
 				this.synth.unmute();
+				_canUpdate = true;
 			}
 		});
 
 		function updateFn(time :Float) {
-			canvas2d.clear(800, 600);
-			var dt = (time - lastTime) * 0.001;
-			if(dt < 0) {
-				dt = 0;
+			if(_canUpdate) {
+				canvas2d.clear(800, 600);
+				var dt = (time - lastTime) * 0.001;
+				lastTime = time;
+				if(_shouldUpdate) {
+					update(this, root, canvas2d, dt, _systems);
+				}
+				_shouldUpdate = true;
+				Browser.window.requestAnimationFrame(updateFn);
 			}
-			lastTime = time;
-			update(this, root, canvas2d, dt, _systems);
-			Browser.window.requestAnimationFrame(updateFn);
 		}
 		Browser.window.requestAnimationFrame(updateFn);
     }
@@ -93,6 +99,8 @@ class Engine
 	}
 
     private var _systems :Array<System>;
+	private var _shouldUpdate :Bool = false;
+	private var _canUpdate :Bool = false;
 
 	private static function addToGroup(entity :Entity, meetsCriteria :Entity -> Bool, group :Array<Entity>) : Void
 	{

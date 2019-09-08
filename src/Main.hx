@@ -21,6 +21,9 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import js.html.ImageElement;
+import engine.display.Texture;
+import engine.Component;
 import engine.sound.track.TrackData;
 import engine.display.FillSprite;
 import engine.display.ImageSprite;
@@ -41,11 +44,12 @@ import game.ControllerSystem;
 import game.CameraSystem;
 import game.SoundSystem;
 import game.collision.CollisionSystem;
-import game.collision.SpatialHash;
+// import game.collision.SpatialHash;
 import game.CanvasTools;
 import game.TileType;
 // import game.Boids;
 import js.Browser;
+import js.lib.Promise;
 
 import engine.util.Simplex;
 import engine.sound.theory.Scale;
@@ -53,8 +57,6 @@ import engine.sound.theory.Scale.ScaleType;
 import engine.sound.theory.Note.Root;
 import engine.sound.Sequencer;
 import engine.map.TileMap;
-import engine.phys.ecs.Phys;
-import engine.phys.ecs.PhysicsSystem;
 
 class Main {
 	public static var GAME_WIDTH :Int = 800;
@@ -72,7 +74,7 @@ class Main {
 
 	static inline function startGame(engine :Engine) : Void
 	{
-		var spatialHash = new SpatialHash();
+		// var spatialHash = new SpatialHash();
 		var tileMap :TileMap = TileMap.parse("./src/game/tiles.dsmap");
 		var simplex = new Simplex(4730);
 		var backgroundSquare2 = CanvasTools.createGradient(90,10,30,100,TILE_WIDTH,TILE_WIDTH,1, simplex);
@@ -88,14 +90,6 @@ class Main {
 				.add(new ImageSprite(CanvasTools.createGradient(90,10,30,100,2200,1200,10, simplex))))
 			.addChild(background);
 		engine.root.add(new SoundComp());
-
-		for(i in 0...30) {
-			background.addChild(new Entity()
-				.add(new FillSprite(200,200,200,1,20,10)
-					.setAnchor(10,5))
-				// .add(new Collider(FLOOR, true, 0))
-				.add(new Boid(-100, -100)));
-		}
 
 		tileMap.populate(function(x :Int, y :Int, type :TileType, width :Int) {
 			switch type {
@@ -120,70 +114,59 @@ class Main {
 							.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
 				}
 				case ENEMY: {
-					background.addChild(new Entity()
-						.add(new ImageSprite(CanvasTools.createGradient(30,100,110,50,TILE_WIDTH,TILE_WIDTH,10, simplex))
-							.onLoaded(img -> {
-								img.centerAnchor();
-							}).setXY(x*TILE_WIDTH, y*TILE_WIDTH))
-						.add(new Enemy())
-						.add(new Collider(type, true, 10))
-						.addChild(new Entity()
-							.add(new ImageSprite(CanvasTools.createGradient(220,220,220,40,15,15,5, simplex))
-								.onLoaded(img -> {
-									img
-										.setXY(2, 15)
-										.centerAnchor();
-								})))
-						.addChild(new Entity()
-							.add(new ImageSprite(CanvasTools.createGradient(220,220,220,40,15,15,5, simplex))
-								.onLoaded(img -> {
-									img
-										.setXY(20, 15)
-										.centerAnchor();
-								}))));
+					var texture = CanvasTools.createGradient(30,100,110,50,TILE_WIDTH,TILE_WIDTH,10, simplex);
+					background.addChild(createThing(new Enemy(), texture, simplex, x, y, type));
 				}
 				case PLAYER: {
-					background.addChild(new Entity()
-						.add(new ImageSprite(CanvasTools.createGradient(130,100,10,50,TILE_WIDTH,TILE_WIDTH,10, simplex))
-							.onLoaded(img -> {
-								img.centerAnchor();
-							}).setXY(x*TILE_WIDTH, y*TILE_WIDTH))
-						.add(new Player())
-						.add(new Collider(type, true, 40))
-						.addChild(new Entity()
-							.add(new ImageSprite(CanvasTools.createGradient(220,220,220,40,15,15,5, simplex))
-								.onLoaded(img -> {
-									img
-										.setXY(2, 15)
-										.centerAnchor();
-								})))
-						.addChild(new Entity()
-							.add(new ImageSprite(CanvasTools.createGradient(220,220,220,40,15,15,5, simplex))
-								.onLoaded(img -> {
-									img
-										.setXY(20, 15)
-										.centerAnchor();
-								}))));
+					var texture = CanvasTools.createGradient(130,100,10,50,TILE_WIDTH,TILE_WIDTH,10, simplex);
+					var player = createThing(new Player(), texture, simplex, x, y, type);
+					background.addChild(player);
+
+					for(i in 0...30) {
+						background.addChild(new Entity()
+							.add(new FillSprite(200,200,200,1,20,10)
+								.setAnchor(10,5))
+							.add(new Collider(FLOOR, true, 0))
+							.add(new Boid(-100, -100, player.get(Sprite))));
+					}
 				}
 			}
 		});
 
 		haxe.Timer.delay(() -> {
-			engine.iterate(e -> e.has(Collider) && e.has(Sprite), e -> {
-				var isFat = e.get(Sprite).naturalWidth() > TILE_WIDTH;
-				spatialHash.insert(e, isFat);
-				return true;
-			});
-
 			engine.addSystem(new ControllerSystem());
 			engine.addSystem(new EnemySystem());
 			engine.addSystem(new CameraSystem());
+			engine.addSystem(new CollisionSystem());
 			engine.addSystem(new BoidSystem());
-			// engine.addSystem(new CollisionSystem(spatialHash));
-			engine.addSystem(new PhysicsSystem());
 			var scale = new Scale(Root.G_SHARP, ScaleType.NATURAL_MINOR);
 			var trackData :TrackData = cast TrackParser.parse("./src/game/track.dstrack");
 			engine.addSystem(new SoundSystem(Sequencer.create("introSong", trackData, 130, scale)));
 		}, 4);
+	}
+
+	private static function createThing(comp :Component, mainTexture :Promise<ImageElement>, simplex :Simplex, x :Int, y :Int, type :TileType) : Entity
+	{
+		return new Entity()
+			.add(new ImageSprite(mainTexture)
+				.onLoaded(img -> {
+					img.centerAnchor();
+				}).setXY(x*TILE_WIDTH, y*TILE_WIDTH))
+			.add(comp)
+			.add(new Collider(type, true, 40))
+			.addChild(new Entity()
+				.add(new ImageSprite(CanvasTools.createGradient(220,220,220,40,15,15,5, simplex))
+					.onLoaded(img -> {
+						img
+							.setXY(2, 15)
+							.centerAnchor();
+					})))
+			.addChild(new Entity()
+				.add(new ImageSprite(CanvasTools.createGradient(220,220,220,40,15,15,5, simplex))
+					.onLoaded(img -> {
+						img
+							.setXY(20, 15)
+							.centerAnchor();
+					})));
 	}
 }

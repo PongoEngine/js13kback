@@ -35,18 +35,17 @@ class CollisionSystem implements System
     private static inline var MAX_VELOY = 16;
     private static inline var VELOX_DECEL = 0.8;
     private static inline var VELOX_MIN = 0.1;
-    private static inline var JUMP_VELO = 30;
-    private static inline var GRAVITY = 90;
-    private var _hash :SpatialHash;
-    private var _lastCheck = 0;
+    private static inline var JUMP_VELO = 20;
+    private static inline var GRAVITY = 30;
+    // private var _hash :SpatialHash;
 
-    public function new(hash :SpatialHash) : Void
+    public function new() : Void
     {
-        _hash = hash;
     }
 
     public function shouldUpdate(e :Entity) : Bool
     {
+
         return e.has(Collider) && e.has(Sprite);
     }
 
@@ -90,17 +89,17 @@ class CollisionSystem implements System
             }
 
             sprite.x += collider.velocityX;
-            if(!collider.isOnGround) {
+            // if(!collider.isOnGround) {
                 collider.velocityY += GRAVITY * dt;
                 if(collider.velocityY > MAX_VELOY) {
                     collider.velocityY = MAX_VELOY;
                 }
                 sprite.y += collider.velocityY;
-            }
+            // }
 
-            _hash.update(e);
-            var possibles = 0;
-            _hash.iterate(e, function(other) {
+            // _hash.update(e);
+            // _hash.iterate(e, function(other) {
+            engine.iterate(other -> other.has(Collider) && other.has(Sprite) && other != e, other -> {
                 var hasHit = checkCollision(sprite, other.get(Sprite));
                 if(hasHit) {
                     if(collidedWithLeft(sprite, other.get(Sprite))) {
@@ -125,12 +124,8 @@ class CollisionSystem implements System
                         collider.velocityY = 0;
                     }
                 }
-                possibles++;
+                return false;
             });
-            if(possibles != _lastCheck) {
-                _lastCheck = possibles;
-            }
-
         }   
     }
 

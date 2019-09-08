@@ -37,7 +37,7 @@ class BoidSystem implements System
             avoidance: 40,
             avoidanceDistance: 20,
             flockCentre: 10,
-            targetPosition: 30
+            targetPosition: 200
         }
         _flock = [];
         _targets = [];
@@ -56,14 +56,11 @@ class BoidSystem implements System
             _flock.push(e);
             return false;
         });
-        engine.iterate(e -> e.has(Player) || e.has(Enemy) && e.has(Sprite), e -> {
+        engine.iterate(e -> e.has(Player) && e.has(Sprite), e -> {
             _targets.push(e);
-            return false;
+            return true;
         });
         calculateFlockCentre(_flock, _scratchFlockCenter);
-        // var target = _targets[Math.floor(Math.random() * _targets.length)];
-        // _scratchTargetCenter.x = target.get(Sprite).x;
-        // _scratchTargetCenter.y = target.get(Sprite).y;
         calculateFlockCentre(_targets, _scratchTargetCenter);
 
         var b = e.get(Boid);

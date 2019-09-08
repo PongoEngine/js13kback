@@ -25,6 +25,8 @@ package game;
 
 import engine.Component;
 
+import engine.display.Sprite;
+
 class Boid implements Component
 {
     public var x :Float;
@@ -32,13 +34,15 @@ class Boid implements Component
     public var angle :Float;
     public var veloX :Float;
     public var veloY :Float;
+    public var attractor :Sprite;
 
-    public function new(x :Float, y :Float) : Void
+    public function new(x :Float, y :Float, attractor :Sprite) : Void
     {
         this.x = x;
         this.y = y;
         this.angle = 0;
         this.veloX = 0;
         this.veloY = 0;
+        this.attractor = attractor;
     }
 }

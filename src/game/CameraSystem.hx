@@ -44,7 +44,6 @@ class CameraSystem implements System
         var players = engine.getGroup(e -> e.has(Player) && e.has(Sprite));
         var p = players[0];
         var stageSprite = e.get(Sprite);
-
         if(p != null) {
             var pSprite = p.get(Sprite);
             var player = p.get(Player);
