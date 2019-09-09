@@ -23,8 +23,10 @@
 
 package game;
 
+import game.collision.Collider;
 import engine.Component;
 
+import engine.Entity;
 import engine.display.Sprite;
 
 class Boid implements Component
@@ -36,11 +38,12 @@ class Boid implements Component
     public var veloY :Float;
     public var target (get, null):{x:Float, y:Float};
 
-    public function new(attractor :Sprite) : Void
+    public function new(attractor :Entity) : Void
     {
         _attractor = attractor;
-        this.x = attractor.x + attractor.anchorX;
-        this.y = attractor.y + attractor.anchorY;
+        var sprite = _attractor.get(Sprite);
+        this.x = sprite.x + sprite.anchorX;
+        this.y = sprite.y + sprite.anchorY;
         this.angle = 0;
         this.veloX = 0;
         this.veloY = 0;
@@ -49,12 +52,22 @@ class Boid implements Component
 
     private function get_target() : {x:Float, y:Float}
     {
-        _target.x = _attractor.x;
-        _target.y = _attractor.y + _attractor.naturalHeight() + 20;
+        var sprite = _attractor.get(Sprite);
+        if(_attractor.has(Collider)) {
+            var collider = _attractor.get(Collider);
+            var offsetX = collider.isLeft ? -OFFSET_X : collider.isRight ? OFFSET_X : 0;
+            _target.x = sprite.x + offsetX;
+            var offsetY = collider.isUp ? 20 : collider.isDown ? OFFSET_Y : 20;
+            _target.y = sprite.y + sprite.naturalHeight() + offsetY;
+        }
+
+        
         return _target;
     }
 
-    private var _attractor :Sprite;
+    private var _attractor :Entity;
     private var _target :{x:Float, y:Float};
+    private static inline var OFFSET_X = 30;
+    private static inline var OFFSET_Y = 120;
 
 }

@@ -9,8 +9,17 @@
     "terser": "^4.1.4"
   },
   "scripts": {
-    "start": "npx parcel src/index.html -p 4321 --no-cache",
+    "start": "node index.js",
     "build": "npx parcel build --no-source-maps src/index.html;",
     "compress": "npx terser --compress --mangle-props --mangle -o .cache/haxe.js -- .cache/haxe.js"
+  },
+  "dependencies": {
+    "browser-sync": "^2.26.7",
+    "haxe": "^5.2.1",
+    "node-watch": "^0.6.3"
+  },
+  "haxeDependencies": {
+    "haxe": "4.0.0-rc.4",
+    "haxelib": "3.3.0"
   }
 }

@@ -51,31 +51,33 @@ class EnemySystem implements System
             engine.iterate(other -> {other.has(Player) && other.has(Sprite);}, other -> {
                 var thatSprite = other.get(Sprite);
                 var thisSprite = e.get(Sprite);
-                var distance = EMath.distance(thatSprite.x, thatSprite.y, thisSprite.x, thisSprite.y);
-                if(distance < 1800) {
-                    var angle = EMath.angle(thatSprite.x, thatSprite.y, thisSprite.x, thisSprite.y);
-                    if(angle < middle) {
-                        collider.isLeft = true;
-                        collider.isRight = false;
-                        if(collider.velocityX > 0) {
-                            collider.velocityX *= 0.2;
-                        }
-                    }
-                    else {
-                        collider.isLeft = false;
-                        collider.isRight = true;
-                        if(collider.velocityX < 0) {
-                            collider.velocityX *= 0.2;
-                        }
-                    }
+                var angle = EMath.angle(thisSprite.x, thisSprite.y, thatSprite.x, thatSprite.y);
 
-                    if(angle > above && angle < Math.PI - above) {
-                        collider.isUp = true;
+                var isLeft = Math.cos(angle) < 0;
+                var isUp = Math.sin(angle) < 0;
+
+                if(isLeft) {
+                    collider.isLeft = true;
+                    collider.isRight = false;
+                    if(collider.velocityX > 0) {
+                        collider.velocityX *= 0.2;
                     }
                 }
                 else {
                     collider.isLeft = false;
-                    collider.isRight = false; 
+                    collider.isRight = true;
+                    if(collider.velocityX < 0) {
+                        collider.velocityX *= 0.2;
+                    }
+                }
+
+                if(collider.isOnGround) {
+                    collider.isUp = isUp;
+                    collider.isDown = !isUp;
+                }
+                else {
+                    collider.isUp = false;
+                    collider.isDown = false;
                 }
                 return true;
             });

@@ -44,7 +44,7 @@ class Assets
         var dataUrl = canvas.toDataURL();
         var img = Browser.document.createImageElement();
         img.onload = image -> {
-            onComplete(image);
+            onComplete(image.target);
         };
         img.src = dataUrl;
         img.width = width;

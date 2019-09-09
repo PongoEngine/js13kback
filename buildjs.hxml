@@ -1,6 +1,0 @@
--cp src
--D analyzer-optimize
--main Main
--dce full
--js ref_index.js
-# --no-output

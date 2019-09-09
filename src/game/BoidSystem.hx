@@ -37,7 +37,7 @@ class BoidSystem implements System
             avoidance: 400,
             avoidanceDistance: 5,
             flockCentre: 1,
-            targetPosition: 100
+            targetPosition: 90
         }
         _flock = [];
         _targets = [];
@@ -64,10 +64,11 @@ class BoidSystem implements System
         s.x = b.x;
         s.y = b.y;
         s.angle = b.angle;
-        var colorVelo = Std.int(EMath.clamp(Math.abs(b.veloX) * 20, 0, 255));
-        s.r = colorVelo;
-        s.g = colorVelo;
-        s.b = colorVelo;
+        var colorVeloX = Std.int(EMath.clamp(Math.abs(b.veloX) * 20, 0, 255));
+        var colorVeloY = Std.int(EMath.clamp(Math.abs(b.veloY) * 20, 0, 255));
+        s.r = colorVeloX;
+        s.g = colorVeloX;
+        s.b = colorVeloX;
     }
 
     private var _settings : Settings;

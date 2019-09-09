@@ -23,11 +23,11 @@
 
 package game.collision;
 
+import engine.util.EMath;
 import engine.Entity;
 import engine.System;
 import engine.Engine;
 import engine.display.Sprite;
-import game.collision.SpatialHash;
 
 class CollisionSystem implements System
 {
@@ -37,7 +37,6 @@ class CollisionSystem implements System
     private static inline var VELOX_MIN = 0.1;
     private static inline var JUMP_VELO = 14;
     private static inline var GRAVITY = 30;
-    // private var _hash :SpatialHash;
 
     public function new() : Void
     {
@@ -90,9 +89,12 @@ class CollisionSystem implements System
                 collider.velocityY = MAX_VELOY;
             }
             sprite.y += collider.velocityY;
+            if(collider.type == COLLIDER_CHARACTER) {
+                var t = EMath.clamp(-collider.velocityY/20, 0, 1);
+                var value = EMath.cubeOut(t);
+                sprite.scaleY = 1 + 0.4*value;
+            }
 
-            // _hash.update(e);
-            // _hash.iterate(e, function(other) {
             engine.iterate(other -> other.has(Collider) && other.has(Sprite) && other != e, other -> {
                 var hasHit = checkCollision(sprite, other.get(Sprite));
                 var otherType = other.get(Collider).type;
@@ -112,7 +114,7 @@ class CollisionSystem implements System
                         }
                     case [true, COLLIDER_BOID]:
                         if(collidedWithTop(sprite, other.get(Sprite))) {
-                            handleWithTop(sprite, collider, other, 1);
+                            handleWithTop(sprite, collider, other, 2);
                         }
                     case [true, COLLIDER_WALL]: {
                         if(collidedWithLeft(sprite, other.get(Sprite))) {
@@ -128,7 +130,7 @@ class CollisionSystem implements System
                             handleWithBottom(sprite, collider, other);
                         }
                         else {
-                            handleWithBottom(sprite, collider, other, 2);
+                            handleWithBottom(sprite, collider, other, 20);
                         }
                     }
                     case [false, _]:

@@ -28,7 +28,7 @@ envelope sharpEnvelope
     releaseDur 0.3;   
 
 loop heaveRiff
-    0~------|0~----4~|3~------|3~--2~1~;
+    0~1~2~3~|0~2~1~3~|0~1~0~2~|0~1~2~3~;
 loop softMelody
     --5~--5-|--5-3---|----4~--|--------;
 loop snarePattern
@@ -36,7 +36,7 @@ loop snarePattern
 loop subPattern
     0-------|0-----0-|0-------|0-0---0-;
 
-track introSong sineish smoothEnvelope 1
+track introSong sineish smoothEnvelope 4
     heaveRiff;
 track introSong squareish sharpEnvelope 2
     softMelody;

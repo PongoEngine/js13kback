@@ -23,53 +23,33 @@
 
 package game;
 
+import engine.Assets;
 import js.lib.Promise;
 import engine.display.Canvas;
 import js.html.ImageElement;
-import engine.display.Texture;
 import engine.util.Simplex;
 import engine.map.TileMap;
 
 class CanvasTools
 {
-    public static function createGradient(r :Int, g :Int, b :Int, randomAmount :Int, width :Int, height :Int, cellWidth :Int, simplex :Simplex) : Promise<ImageElement>
+    public static function createGradient(name :String, r :Int, g :Int, b :Int, randomAmount :Int, width :Int, height :Int, cellWidth :Int, simplex :Simplex) : Texture
     {
-        return Texture.create(width, height, function(canvas) {
-            var widthLength = Math.ceil(width / cellWidth);
-            var heightLength = Math.ceil(height / cellWidth);
-
-            for(y in 0...heightLength) {
-                for(x in 0...widthLength) {
-                    canvas.setColor(val(r, randomAmount, x, y, simplex),val(g, randomAmount, x, y, simplex),val(b, randomAmount, x, y, simplex),1);
-                    canvas.drawRect(x*cellWidth, y*cellWidth, cellWidth, cellWidth);
-                }
-            }
-        });
-    }
-
-    public static function createTileThing(promiseImg :Promise<ImageElement>, ?tilemap :TileMap, width :Int, height :Int, simplex :Simplex, offset :Int, probability :Float) : Promise<ImageElement>
-    {
-        return promiseImg.then(img -> {
-            return Texture.create(width, height, function(canvas) {
-                var widthLength = Math.ceil(width / img.width);
-                var heightLength = Math.ceil(height / img.height);
+        return {
+            name: name,
+            width: width,
+            height: height,
+            draw: function(canvas) {
+                var widthLength = Math.ceil(width / cellWidth);
+                var heightLength = Math.ceil(height / cellWidth);
 
                 for(y in 0...heightLength) {
                     for(x in 0...widthLength) {
-                        if(simplex.get(x+offset,y+offset) > probability) {
-                            canvas.drawImage(img, x*img.width, y*img.height);
-                        }
+                        canvas.setColor(val(r, randomAmount, x, y, simplex),val(g, randomAmount, x, y, simplex),val(b, randomAmount, x, y, simplex),1);
+                        canvas.drawRect(x*cellWidth, y*cellWidth, cellWidth, cellWidth);
                     }
                 }
-
-                if(tilemap != null) {
-                    tilemap.populate((x,y,tile,width) -> {
-                        for(_x in x...(x+width))
-                        canvas.drawImage(img, _x*img.width, y*img.height);
-                    });
-                }
-            }); 
-        });
+            }
+        }
     }
 
     private static function val(input :Int, change :Int, x :Int, y :Int, simplex :Simplex) :Int
