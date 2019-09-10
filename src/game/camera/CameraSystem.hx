@@ -28,7 +28,7 @@ import engine.System;
 import engine.Engine;
 import engine.display.Sprite;
 
-class CameraSystem implements System
+class CameraSystem implements System<GameState>
 {
     public function new() : Void
     {
@@ -39,7 +39,7 @@ class CameraSystem implements System
         return e.has(Stage) && e.has(Sprite);
     }
 
-    public function logic(engine :Engine, e :Entity, dt :Float) : Void
+    public function logic(engine :Engine<GameState>, e :Entity, dt :Float) : Void
     {
         var players = engine.getGroup(e -> e.has(Player) && e.has(Sprite));
         var p = players[0];

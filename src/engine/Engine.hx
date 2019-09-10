@@ -31,17 +31,19 @@ import engine.System;
 import engine.sound.synth.Synth;
 import js.Browser;
 
-class Engine 
+class Engine<T>
 {
     public var root (default, null) :Entity;
     public var synth (default, null) :Synth;
+	public var state (default, null) :T;
 
-    public function new(canvas :CanvasElement) : Void
+    public function new(canvas :CanvasElement, state :T) : Void
     {
         this.root = new Entity();
         this._systems = [];
 		var hasTouched = false;
 		this.synth = new Synth();
+		this.state = state;
 		_canUpdate = !Browser.document.hidden;
 
 		canvas.onclick = function() {
@@ -93,12 +95,12 @@ class Engine
 		iterateOnGroup(this.root, meetsCriteria, fn);
 	}
 
-	public inline function addSystem(system :System) : Void
+	public inline function addSystem(system :System<T>) : Void
 	{
 		_systems.push(system);
 	}
 
-    private var _systems :Array<System>;
+    private var _systems :Array<System<T>>;
 	private var _shouldUpdate :Bool = false;
 	private var _canUpdate :Bool = false;
 
@@ -122,7 +124,7 @@ class Engine
 		}
 	}
 
-    private static function update(engine :Engine, entity :Entity, canvas :Canvas, dt :Float, systems :Array<System>) : Void
+    private static function update<T>(engine :Engine<T>, entity :Entity, canvas :Canvas, dt :Float, systems :Array<System<T>>) : Void
 	{
 		canvas.save();
 		for(system in systems) {

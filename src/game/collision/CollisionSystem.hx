@@ -29,7 +29,7 @@ import engine.System;
 import engine.Engine;
 import engine.display.Sprite;
 
-class CollisionSystem implements System
+class CollisionSystem implements System<GameState>
 {
     private static inline var MAX_VELOX = 10;
     private static inline var MAX_VELOY = 24;
@@ -48,7 +48,7 @@ class CollisionSystem implements System
         return e.has(Collider) && e.has(Sprite);
     }
 
-    public function logic(engine :Engine, e :Entity, dt :Float) : Void
+    public function logic(engine :Engine<GameState>, e :Entity, dt :Float) : Void
     {
         var collider = e.get(Collider);
         if(collider.type == COLLIDER_CHARACTER) {

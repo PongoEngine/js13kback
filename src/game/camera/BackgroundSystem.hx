@@ -29,7 +29,7 @@ import engine.System;
 import engine.Engine;
 import engine.display.SimplexSprite;
 
-class BackgroundSystem implements System
+class BackgroundSystem implements System<GameState>
 {
     public function new() : Void
     {
@@ -41,7 +41,7 @@ class BackgroundSystem implements System
         return hasSprite ? e.get(SimplexSprite).setSimpXY != null : false; 
     }
 
-    public function logic(engine :Engine, e :Entity, dt :Float) : Void
+    public function logic(engine :Engine<GameState>, e :Entity, dt :Float) : Void
     {
         engine.iterate(other -> other.has(Stage) && other.has(Sprite), other -> {
             var spr = other.get(Sprite);

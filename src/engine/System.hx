@@ -23,8 +23,8 @@
 
 package engine;
 
-interface System
+interface System<T>
 {
     public function shouldUpdate(e :Entity) : Bool;
-    public function logic(engine :Engine, e :Entity, dt :Float) : Void;
+    public function logic(engine :Engine<T>, e :Entity, dt :Float) : Void;
 }

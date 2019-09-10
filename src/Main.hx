@@ -41,6 +41,7 @@ import engine.sound.track.TrackParser;
 import engine.sound.track.TrackData;
 
 import game.Player;
+import game.GameState;
 import game.enemy.EnemySystem;
 import game.boid.Boid;
 import game.boid.BoidSystem;
@@ -72,24 +73,24 @@ class Main {
 			CanvasTools.createGradient("player", 60,60,72,20,60,60,10, simplex),
 			CanvasTools.createGradient("eyes", 255,255,255,40,5,5,5, simplex)
 		]).then(assets -> {
-			startGame(new Engine(canvas), assets, simplex);
+			startGame(new Engine(canvas, new GameState(simplex)), assets);
 		});
 	}
 
-	static inline function startGame(engine :Engine, assets :Assets, simplex :Simplex) : Void
+	static inline function startGame(engine :Engine<GameState>, assets :Assets) : Void
 	{
 		var background = new Entity()
 			.add(new Sprite())
 			.add(new Stage());
 
 		engine.root
-			.add(new SimplexSprite(simplex, GAME_WIDTH, GAME_HEIGHT, 4))
+			.add(new SimplexSprite(engine.state.simplex, GAME_WIDTH, GAME_HEIGHT, 4))
 			.addChild(background
 				.addChild(new Entity()
 					.add(new FillSprite(0,0,0,1,300,300))));
 		engine.root.add(new SoundComp());
 
-		var player = createPlayer(new Player(), assets.getImage("player"), assets.getImage("eyes"), simplex, 0, 0);
+		var player = createPlayer(new Player(), assets.getImage("player"), assets.getImage("eyes"), engine.state.simplex, 0, 0);
 		background.addChild(player);
 		for(i in 0...30) {
 			background.addChild(new Entity()

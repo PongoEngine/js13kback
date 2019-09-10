@@ -30,7 +30,7 @@ import engine.Engine;
 import engine.display.Sprite;
 import game.collision.Collider;
 
-class ControllerSystem implements System
+class ControllerSystem implements System<GameState>
 {
     public function new() : Void
     {
@@ -43,7 +43,7 @@ class ControllerSystem implements System
         return e.has(Player) && e.has(Sprite) && e.has(Collider);
     }
 
-    public function logic(engine :Engine, e :Entity, dt :Float) : Void
+    public function logic(engine :Engine<GameState>, e :Entity, dt :Float) : Void
     {
         if(_player == null) {
             _player = e.get(Collider);

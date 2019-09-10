@@ -28,7 +28,7 @@ import engine.System;
 import engine.Engine;
 import engine.sound.Sequencer;
 
-class SoundSystem implements System
+class SoundSystem implements System<GameState>
 {
     public function new(sequence :Sequencer) : Void
     {
@@ -40,7 +40,7 @@ class SoundSystem implements System
         return e.has(SoundComp);
     }
 
-    public function logic(engine :Engine, e :Entity, dt :Float) : Void
+    public function logic(engine :Engine<GameState>, e :Entity, dt :Float) : Void
     {
         _sequence.update(engine.synth, dt);
     }

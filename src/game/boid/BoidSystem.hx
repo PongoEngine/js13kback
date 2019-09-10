@@ -29,7 +29,7 @@ import engine.Engine;
 import engine.display.FillSprite;
 import engine.util.EMath;
 
-class BoidSystem implements System
+class BoidSystem implements System<GameState>
 {
     public function new() : Void
     {
@@ -48,7 +48,7 @@ class BoidSystem implements System
         return e.has(Boid) && e.has(FillSprite);
     }
 
-    public function logic(engine :Engine, e :Entity, dt :Float) : Void
+    public function logic(engine :Engine<GameState>, e :Entity, dt :Float) : Void
     {
         _flock.resize(0);
         _targets.resize(0);

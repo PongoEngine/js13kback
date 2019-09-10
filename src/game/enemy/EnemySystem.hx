@@ -30,7 +30,7 @@ import engine.display.Sprite;
 import engine.util.EMath;
 import game.collision.Collider;
 
-class EnemySystem implements System
+class EnemySystem implements System<GameState>
 {
 
     public function new() : Void
@@ -42,7 +42,7 @@ class EnemySystem implements System
         return e.has(Enemy) && e.has(Collider);
     }
 
-    public function logic(engine :Engine, e :Entity, dt :Float) : Void
+    public function logic(engine :Engine<GameState>, e :Entity, dt :Float) : Void
     {
         var collider :Collider = e.get(Collider);
         var enemy :Enemy = e.get(Enemy);
