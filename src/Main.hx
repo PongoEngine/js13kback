@@ -27,36 +27,30 @@ import engine.sound.track.TrackData;
 import engine.display.FillSprite;
 import engine.display.ImageSprite;
 import engine.display.Sprite;
-import engine.display.TileSprite;
 import engine.Entity;
 import engine.sound.track.TrackParser;
 import engine.Engine;
 import game.Player;
-import game.Enemy;
 import game.EnemySystem;
-import game.Boid;
-import game.BoidSystem;
-import game.Stage;
+import game.boid.Boid;
+import game.boid.BoidSystem;
+import game.camera.Stage;
 import game.collision.Collider;
 import game.SoundComp;
 import game.ControllerSystem;
-import game.CameraSystem;
+import game.camera.CameraSystem;
 import game.SoundSystem;
 import game.collision.CollisionSystem;
-// import game.collision.SpatialHash;
-import game.CanvasTools;
+import game.util.CanvasTools;
 import game.TileType;
-// import game.Boids;
 import js.Browser;
-import js.lib.Promise;
-import game.BackgroundSystem;
+import game.camera.BackgroundSystem;
 
 import engine.util.Simplex;
 import engine.sound.theory.Scale;
 import engine.sound.theory.Scale.ScaleType;
 import engine.sound.theory.Note.Root;
 import engine.sound.Sequencer;
-import engine.map.TileMap;
 import engine.Assets;
 import engine.display.SimplexSprite;
 
@@ -86,7 +80,6 @@ class Main {
 
 	static inline function startGame(engine :Engine, assets :Assets, simplex :Simplex) : Void
 	{
-		var tileMap :TileMap = TileMap.parse("./src/game/tiles.dsmap");
 		var background = new Entity()
 			.add(new Sprite())
 			.add(new Stage());
@@ -99,41 +92,18 @@ class Main {
 					.add(new FillSprite(0,0,0,1,300,300))));
 		engine.root.add(new SoundComp());
 
-		tileMap.populate(function(x :Int, y :Int, type :TileType, width :Int) {
-			switch type {
-				case TILE_WALL: {
-					// background.addChild(new Entity()
-					// 	.add(new Collider(COLLIDER_WALL))
-					// 	.add(new TileSprite(assets.getImage("border"),TILE_WIDTH*width,TILE_WIDTH)
-					// 		.setXY(x*TILE_WIDTH, y*TILE_WIDTH)));
-				}
-				case TILE_ENEMY: {
-					// var enemy = createThing(new Enemy(), assets.getImage("enemy"), assets.getImage("eyes"), simplex, x, y, type);
-					// background.addChild(enemy);
 
-					// for(i in 0...30) {
-					// 	background.addChild(new Entity()
-					// 		.add(new FillSprite(200,200,200,1,20,10)
-					// 			// .setBlendmode(OVERLAY)
-					// 			.setAnchor(10,5))
-					// 		.add(new Collider(COLLIDER_BOID))
-					// 		.add(new Boid(enemy)));
-					// }
-				}
-				case TILE_PLAYER: {
-					var player = createThing(new Player(), assets.getImage("player"), assets.getImage("eyes"), simplex, x, y, type);
-					background.addChild(player);
+		var player = createThing(new Player(), assets.getImage("player"), assets.getImage("eyes"), simplex, 0, 0, TileType.TILE_PLAYER);
+		background.addChild(player);
 
-					for(i in 0...30) {
-						background.addChild(new Entity()
-							.add(new FillSprite(255,255,255,1,20,10)
-								.setAnchor(10,5))
-							.add(new Collider(COLLIDER_BOID))
-							.add(new Boid(player)));
-					}
-				}
-			}
-		});
+		for(i in 0...30) {
+			background.addChild(new Entity()
+				.add(new FillSprite(255,255,255,1,20,10)
+					.setAnchor(10,5))
+				.add(new Collider(COLLIDER_BOID))
+				.add(new Boid(player)));
+		}
+
 
 		engine.addSystem(new ControllerSystem());
 		engine.addSystem(new EnemySystem());

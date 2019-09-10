@@ -21,7 +21,7 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package game;
+package game.boid;
 
 import game.collision.Collider;
 import engine.Component;

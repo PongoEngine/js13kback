@@ -21,14 +21,10 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package game;
+package game.util;
 
 import engine.Assets;
-import js.lib.Promise;
-import engine.display.Canvas;
-import js.html.ImageElement;
 import engine.util.Simplex;
-import engine.map.TileMap;
 
 class CanvasTools
 {

@@ -21,7 +21,7 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package game;
+package game.camera;
 
 import engine.display.Sprite;
 import engine.Entity;
