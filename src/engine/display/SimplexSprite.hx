@@ -28,7 +28,7 @@ import engine.util.Simplex;
 class SimplexSprite extends Sprite
 {
 
-    public function new(simplex :Simplex, width :Float, height :Float, tileWidth :Int) : Void
+    public function new(simplex :Void -> Simplex, width :Float, height :Float, tileWidth :Int) : Void
     {
         super();
         _simplex = simplex;
@@ -78,9 +78,9 @@ class SimplexSprite extends Sprite
 
     private function setColor(canvas:Canvas, x :Int, y :Int) : Bool
     {
-        var val = _simplex.get(x, y);
+        var val = _simplex().get(x, y);
         if(val > 0.98) {
-            var alpha = (_simplex.get(x,y+_elapsed) + 1)/2;
+            var alpha = (_simplex().get(x,y+_elapsed) + 1)/2;
             canvas.setColor(255,255,255,alpha);
             return true;
         }
@@ -103,13 +103,7 @@ class SimplexSprite extends Sprite
         return _height;
     }
 
-    private function getTile(x :Int, y :Int) : Int
-    {
-        var percent = (_simplex.get(x,y));
-        return Math.floor(percent*20);
-    }
-
-    private var _simplex :Simplex;
+    private var _simplex :Void -> Simplex;
     public var _x :Int;
     public var _y :Int;
     public var _xPercent :Float;

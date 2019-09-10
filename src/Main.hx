@@ -90,7 +90,7 @@ class Main {
 					.add(new FillSprite(0,0,0,1,300,300))));
 		engine.root.add(new SoundComp());
 
-		var player = createPlayer(new Player(), assets.getImage("player"), assets.getImage("eyes"), engine.state.simplex, 0, 0);
+		var player = createPlayer(new Player(), assets.getImage("player"), assets.getImage("eyes"), engine.state.simplex(), 0, 0);
 		background.addChild(player);
 		for(i in 0...30) {
 			background.addChild(new Entity()
