@@ -17,6 +17,9 @@ class Assets
         return _images.get(name);
     }
 
+
+
+
     public static function load(textures :Array<Texture>) : Promise<Assets>
     {
         var images = new Map<String, ImageElement>();

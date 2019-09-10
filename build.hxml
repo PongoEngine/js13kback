@@ -3,4 +3,6 @@
 -main Main
 -dce full
 -js ./dist/index.js
+-debug
+# -D source-map-content
 --connect 6221

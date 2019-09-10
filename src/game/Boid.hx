@@ -57,7 +57,7 @@ class Boid implements Component
             var collider = _attractor.get(Collider);
             var offsetX = collider.isLeft ? -OFFSET_X : collider.isRight ? OFFSET_X : 0;
             _target.x = sprite.x + offsetX;
-            var offsetY = collider.isUp ? 20 : collider.isDown ? OFFSET_Y : 20;
+            var offsetY = collider.isUp ? 0 : collider.isDown ? OFFSET_Y : 20;
             _target.y = sprite.y + sprite.naturalHeight() + offsetY;
         }
 

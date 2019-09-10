@@ -11,7 +11,7 @@ class Simplex
         this.init(seed);
     }
 
-    public function get(xin :Int, yin :Int) : Float
+    public function get(xin :Float, yin :Float) : Float
     {
         // Noise contributions from the three corners
         var n0 :Float;
