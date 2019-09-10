@@ -22,37 +22,37 @@
  */
 
 import js.html.ImageElement;
+import js.Browser;
+
+import engine.Entity;
 import engine.Component;
-import engine.sound.track.TrackData;
+import engine.Engine;
+import engine.Assets;
+import engine.util.Simplex;
 import engine.display.FillSprite;
 import engine.display.ImageSprite;
 import engine.display.Sprite;
-import engine.Entity;
-import engine.sound.track.TrackParser;
-import engine.Engine;
-import game.Player;
-import game.EnemySystem;
-import game.boid.Boid;
-import game.boid.BoidSystem;
-import game.camera.Stage;
-import game.collision.Collider;
-import game.SoundComp;
-import game.ControllerSystem;
-import game.camera.CameraSystem;
-import game.SoundSystem;
-import game.collision.CollisionSystem;
-import game.util.CanvasTools;
-import game.TileType;
-import js.Browser;
-import game.camera.BackgroundSystem;
-
-import engine.util.Simplex;
+import engine.display.SimplexSprite;
 import engine.sound.theory.Scale;
 import engine.sound.theory.Scale.ScaleType;
 import engine.sound.theory.Note.Root;
 import engine.sound.Sequencer;
-import engine.Assets;
-import engine.display.SimplexSprite;
+import engine.sound.track.TrackParser;
+import engine.sound.track.TrackData;
+
+import game.Player;
+import game.enemy.EnemySystem;
+import game.boid.Boid;
+import game.boid.BoidSystem;
+import game.camera.Stage;
+import game.collision.Collider;
+import game.sound.SoundComp;
+import game.controller.ControllerSystem;
+import game.camera.CameraSystem;
+import game.sound.SoundSystem;
+import game.collision.CollisionSystem;
+import game.util.CanvasTools;
+import game.camera.BackgroundSystem;
 
 class Main {
 	public static var GAME_WIDTH :Int = 800;
@@ -66,8 +66,6 @@ class Main {
 		canvas.height = GAME_HEIGHT;
 		app.appendChild(canvas);
 		var simplex = new Simplex(239);
-
-		
 
 		Assets.load([
 			CanvasTools.createGradient("enemy", 100,0,0,20,120,60,10, simplex),
@@ -84,7 +82,6 @@ class Main {
 			.add(new Sprite())
 			.add(new Stage());
 
-
 		engine.root
 			.add(new SimplexSprite(simplex, GAME_WIDTH, GAME_HEIGHT, 4))
 			.addChild(background
@@ -92,10 +89,8 @@ class Main {
 					.add(new FillSprite(0,0,0,1,300,300))));
 		engine.root.add(new SoundComp());
 
-
-		var player = createThing(new Player(), assets.getImage("player"), assets.getImage("eyes"), simplex, 0, 0, TileType.TILE_PLAYER);
+		var player = createPlayer(new Player(), assets.getImage("player"), assets.getImage("eyes"), simplex, 0, 0);
 		background.addChild(player);
-
 		for(i in 0...30) {
 			background.addChild(new Entity()
 				.add(new FillSprite(255,255,255,1,20,10)
@@ -104,7 +99,6 @@ class Main {
 				.add(new Boid(player)));
 		}
 
-
 		engine.addSystem(new ControllerSystem());
 		engine.addSystem(new EnemySystem());
 		engine.addSystem(new CameraSystem());
@@ -112,11 +106,11 @@ class Main {
 		engine.addSystem(new BoidSystem());
 		engine.addSystem(new BackgroundSystem());
 		var scale = new Scale(Root.G_SHARP, ScaleType.NATURAL_MINOR);
-		var trackData :TrackData = cast TrackParser.parse("./src/game/track.dstrack");
+		var trackData :TrackData = cast TrackParser.parse("./src/game/_assets/track.dstrack");
 		engine.addSystem(new SoundSystem(Sequencer.create("introSong", trackData, 130, scale)));
 	}
 
-	private static function createThing(comp :Component, mainTexture :ImageElement, eyes :ImageElement, simplex :Simplex, x :Int, y :Int, type :TileType) : Entity
+	private static function createPlayer(comp :Component, mainTexture :ImageElement, eyes :ImageElement, simplex :Simplex, x :Int, y :Int) : Entity
 	{
 		return new Entity()
 			.add(new ImageSprite(mainTexture)

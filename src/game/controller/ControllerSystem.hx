@@ -21,7 +21,7 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package game;
+package game.controller;
 
 import js.Browser;
 import engine.Entity;
@@ -55,9 +55,6 @@ class ControllerSystem implements System
         if(_player != null) {
             if (keyCode == '38') {
                 _player.isUp = isKeyDown;
-                // if(isKeyDown) {
-                //     ZZFX.make(0.9, 0.1, 440);
-                // }
                 if(_player.isUp && _player.isDown) {
                     _player.isDown = false;
                 }

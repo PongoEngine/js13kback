@@ -21,12 +21,29 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package game;
+package game.sound;
 
-@:enum
-abstract TileType(Int) from Int
+import engine.Entity;
+import engine.System;
+import engine.Engine;
+import engine.sound.Sequencer;
+
+class SoundSystem implements System
 {
-	var TILE_WALL = 0;
-	var TILE_PLAYER = 1;
-	var TILE_ENEMY = 2;
+    public function new(sequence :Sequencer) : Void
+    {
+        _sequence = sequence;
+    }
+
+    public function shouldUpdate(e :Entity) : Bool
+    {
+        return e.has(SoundComp);
+    }
+
+    public function logic(engine :Engine, e :Entity, dt :Float) : Void
+    {
+        _sequence.update(engine.synth, dt);
+    }
+
+    private var _sequence :Sequencer;
 }
