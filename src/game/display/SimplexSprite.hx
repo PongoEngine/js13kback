@@ -21,9 +21,11 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package engine.display;
+package game.display;
 
 import engine.util.Simplex;
+import engine.display.Canvas;
+import engine.display.Sprite;
 
 class SimplexSprite extends Sprite
 {

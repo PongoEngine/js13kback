@@ -28,7 +28,6 @@ import engine.System;
 import engine.Engine;
 import engine.display.Sprite;
 import engine.util.EMath;
-import game.collision.Collider;
 
 class EnemySystem implements System<GameState>
 {
@@ -39,54 +38,23 @@ class EnemySystem implements System<GameState>
 
     public function shouldUpdate(e :Entity) : Bool
     {
-        return e.has(Enemy) && e.has(Collider);
+        return e.has(Enemy) && e.has(Sprite);
     }
 
     public function logic(engine :Engine<GameState>, e :Entity, dt :Float) : Void
     {
-        var collider :Collider = e.get(Collider);
-        var enemy :Enemy = e.get(Enemy);
-        enemy.elapsed += dt;
-        if(enemy.elapsed > enemy.timeout && collider.isOnGround) {
-            engine.iterate(other -> {other.has(Player) && other.has(Sprite);}, other -> {
-                var thatSprite = other.get(Sprite);
-                var thisSprite = e.get(Sprite);
-                var angle = EMath.angle(thisSprite.x, thisSprite.y, thatSprite.x, thatSprite.y);
+        var thisSprite :Sprite = e.get(Sprite);
+        engine.iterate(other -> {other.has(Player) && other.has(Sprite);}, other -> {
+            var thatSprite = other.get(Sprite);
+            var angle = EMath.angle(thisSprite.x, thisSprite.y, thatSprite.x, thatSprite.y);
 
-                var isLeft = Math.cos(angle) < 0;
-                var isUp = Math.sin(angle) < 0;
+            var x = Math.cos(angle) * 200*dt;
+            var y = Math.sin(angle) * 200*dt;
+            thisSprite.x += x;
+            thisSprite.y += y;
 
-                if(isLeft) {
-                    collider.isLeft = true;
-                    collider.isRight = false;
-                    if(collider.velocityX > 0) {
-                        collider.velocityX *= 0.2;
-                    }
-                }
-                else {
-                    collider.isLeft = false;
-                    collider.isRight = true;
-                    if(collider.velocityX < 0) {
-                        collider.velocityX *= 0.2;
-                    }
-                }
-
-                if(collider.isOnGround) {
-                    collider.isUp = isUp;
-                    collider.isDown = !isUp;
-                }
-                else {
-                    collider.isUp = false;
-                    collider.isDown = false;
-                }
-                return true;
-            });
-            enemy.elapsed = 0;
-        }
-
-    
-        
-        
+            return true;
+        });
     }
 
     private static var middle = Math.PI/2;

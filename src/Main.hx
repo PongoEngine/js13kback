@@ -21,6 +21,7 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import game.enemy.Enemy;
 import js.html.ImageElement;
 import js.Browser;
 
@@ -32,7 +33,6 @@ import engine.util.Simplex;
 import engine.display.FillSprite;
 import engine.display.ImageSprite;
 import engine.display.Sprite;
-import engine.display.SimplexSprite;
 import engine.sound.theory.Scale;
 import engine.sound.theory.Scale.ScaleType;
 import engine.sound.theory.Note.Root;
@@ -42,18 +42,19 @@ import engine.sound.track.TrackData;
 
 import game.Player;
 import game.GameState;
+import game.SimplexSystem;
 import game.enemy.EnemySystem;
 import game.boid.Boid;
 import game.boid.BoidSystem;
 import game.camera.Stage;
-import game.collision.Collider;
-import game.sound.SoundComp;
-import game.controller.ControllerSystem;
 import game.camera.CameraSystem;
-import game.sound.SoundSystem;
+import game.collision.Collider;
 import game.collision.CollisionSystem;
+import game.sound.SoundComp;
+import game.sound.SoundSystem;
+import game.controller.ControllerSystem;
 import game.util.CanvasTools;
-import game.camera.BackgroundSystem;
+import game.display.SimplexSprite;
 
 class Main {
 	public static var GAME_WIDTH :Int = 800;
@@ -82,12 +83,11 @@ class Main {
 		var background = new Entity()
 			.add(new Sprite())
 			.add(new Stage());
+		engine.state.setBackground(background);
 
 		engine.root
 			.add(new SimplexSprite(engine.state.simplex, GAME_WIDTH, GAME_HEIGHT, 4))
-			.addChild(background
-				.addChild(new Entity()
-					.add(new FillSprite(0,0,0,1,300,300))));
+			.addChild(background);
 		engine.root.add(new SoundComp());
 
 		var player = createPlayer(new Player(), assets.getImage("player"), assets.getImage("eyes"), engine.state.simplex(), 0, 0);
@@ -100,12 +100,19 @@ class Main {
 				.add(new Boid(player)));
 		}
 
+		// var enemy = new Entity()
+		// 	.add(new FillSprite(30, 30, 30, 1, 100, 100)
+		// 		.centerAnchor())
+		// 	// .add(new Collider(COLLIDER_CHARACTER))
+		// 	.add(new Enemy());
+		// background.addChild(enemy);
+
 		engine.addSystem(new ControllerSystem());
 		engine.addSystem(new EnemySystem());
 		engine.addSystem(new CameraSystem());
 		engine.addSystem(new CollisionSystem());
 		engine.addSystem(new BoidSystem());
-		engine.addSystem(new BackgroundSystem());
+		engine.addSystem(new SimplexSystem());
 		var scale = new Scale(Root.G_SHARP, ScaleType.NATURAL_MINOR);
 		var trackData :TrackData = cast TrackParser.parse("./src/game/_assets/track.dstrack");
 		engine.addSystem(new SoundSystem(Sequencer.create("introSong", trackData, 130, scale)));

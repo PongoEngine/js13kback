@@ -21,15 +21,18 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package game.camera;
+package game;
 
+import engine.display.FillSprite;
 import engine.display.Sprite;
 import engine.Entity;
 import engine.System;
 import engine.Engine;
-import engine.display.SimplexSprite;
+import game.display.SimplexSprite;
+import game.camera.Stage;
+import game.enemy.Enemy;
 
-class BackgroundSystem implements System<GameState>
+class SimplexSystem implements System<GameState>
 {
     public function new() : Void
     {
@@ -46,7 +49,20 @@ class BackgroundSystem implements System<GameState>
         engine.iterate(other -> other.has(Stage) && other.has(Sprite), other -> {
             var spr = other.get(Sprite);
             e.get(SimplexSprite).setSimpXY(spr.x, spr.y);
+            if(shouldCreateEnemy(engine.state, spr.x,spr.y)) {
+                engine.state.background()
+                    .addChild(new Entity()
+                        .add(new FillSprite(10,200,40,1,30,30)
+                            .setXY(spr.x, spr.y)
+                            .centerAnchor())
+                        .add(new Enemy()));
+            }
             return true;
         });
+    }
+
+    private function shouldCreateEnemy(state :GameState, x :Float, y :Float) : Bool
+    {
+        return state.simplex().get(x,y) > 0.8;
     }
 }
