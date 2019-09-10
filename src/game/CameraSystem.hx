@@ -64,7 +64,7 @@ class CameraSystem implements System
             return stageCur += distX;
         }
 
-        stageCur += isX ? percentage * distX : percentage*percentage*percentage * distX;
+        stageCur += isX ? percentage * distX : percentage*percentage*percentage*percentage * distX;
         return stageCur;
     }
 

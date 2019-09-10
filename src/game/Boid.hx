@@ -67,7 +67,7 @@ class Boid implements Component
 
     private var _attractor :Entity;
     private var _target :{x:Float, y:Float};
-    private static inline var OFFSET_X = 30;
-    private static inline var OFFSET_Y = 120;
+    private static inline var OFFSET_X = 40;
+    private static inline var OFFSET_Y = -200;
 
 }

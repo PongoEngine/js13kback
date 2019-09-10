@@ -77,7 +77,7 @@ class Main {
 
 		Assets.load([
 			CanvasTools.createGradient("enemy", 100,0,0,20,120,60,10, simplex),
-			CanvasTools.createGradient("player", 0,0,0,20,60,60,10, simplex),
+			CanvasTools.createGradient("player", 60,60,72,20,60,60,10, simplex),
 			CanvasTools.createGradient("eyes", 255,255,255,40,5,5,5, simplex)
 		]).then(assets -> {
 			startGame(new Engine(canvas), assets, simplex);
@@ -90,6 +90,7 @@ class Main {
 		var background = new Entity()
 			.add(new Sprite())
 			.add(new Stage());
+
 
 		engine.root
 			.add(new SimplexSprite(simplex, GAME_WIDTH, GAME_HEIGHT, 4))

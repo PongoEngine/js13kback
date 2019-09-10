@@ -34,7 +34,7 @@ class BoidSystem implements System
     public function new() : Void
     {
         _settings = {
-            avoidance: 400,
+            avoidance: 300,
             avoidanceDistance: 5,
             flockCentre: 1,
             targetPosition: 90
@@ -64,8 +64,8 @@ class BoidSystem implements System
         s.x = b.x;
         s.y = b.y;
         s.angle = b.angle;
-        var colorVeloX = Std.int(EMath.clamp(Math.abs(b.veloX) * 20, 0, 255));
-        var colorVeloY = Std.int(EMath.clamp(Math.abs(b.veloY) * 20, 0, 255));
+        var colorVeloX = Std.int(EMath.clamp(Math.abs(b.veloX) * 20, 50, 90));
+        var colorVeloY = Std.int(EMath.clamp(Math.abs(b.veloY) * 20, 50, 90));
         s.r = colorVeloX;
         s.g = colorVeloX;
         s.b = colorVeloX;

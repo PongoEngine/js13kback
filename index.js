@@ -20,7 +20,7 @@ function createWatcher() {
         open: false
     });
 
-    haxe("--wait", "6221");
+    // haxe("--wait", "6221");
 
     watch('./src', { recursive: true }, function (event, filename) {
         if(event === "update") {
