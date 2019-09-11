@@ -7,6 +7,7 @@ class GameState
 {
     public var simplex (default, null) :Void -> Simplex;
     public var background (default, null) :Void -> Entity;
+    public var enemyCount :Int = 0;
 
     public function new(simplex :Simplex) : Void
     {

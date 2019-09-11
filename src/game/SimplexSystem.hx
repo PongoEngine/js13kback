@@ -49,11 +49,20 @@ class SimplexSystem implements System<GameState>
         engine.iterate(other -> other.has(Stage) && other.has(Sprite), other -> {
             var spr = other.get(Sprite);
             e.get(SimplexSprite).setSimpXY(spr.x, spr.y);
+            return true;
+        });
+
+        engine.iterate(other -> other.has(Player) && other.has(Sprite), other -> {
+            var spr = other.get(Sprite);
             if(shouldCreateEnemy(engine.state, spr.x,spr.y)) {
+                var angle = Math.random() * Math.PI*2;
+                var distance = 800;
+                var _x = Math.cos(angle) * distance + spr.x;
+                var _y = Math.sin(angle) * distance + spr.y;
                 engine.state.background()
                     .addChild(new Entity()
                         .add(new FillSprite(10,200,40,1,30,30)
-                            .setXY(spr.x, spr.y)
+                            .setXY(_x, _y)
                             .centerAnchor())
                         .add(new Enemy()));
             }
